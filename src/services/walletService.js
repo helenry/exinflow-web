@@ -8,42 +8,42 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
-} from 'firebase/firestore';
-import { db } from '../api/firebase';
-import { DEFAULT_CREATOR, DEFAULT_WALLET } from '../constants/defaults';
+} from "firebase/firestore";
+import { db } from "../api/firebase";
+import { DEFAULT_CREATOR, DEFAULT_WALLET } from "../constants/defaults";
 
-export const getWalletsService = async userUid => {
+export const getWalletsService = async (userUid) => {
   const q = query(
-    collection(db, 'wallets'),
-    where('is_deleted', '==', false),
-    where('user_uid', '==', userUid)
+    collection(db, "wallets"),
+    where("is_deleted", "==", false),
+    where("user_uid", "==", userUid),
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 
-export const createWalletService = async newWallet =>
-  await addDoc(collection(db, 'wallets'), newWallet);
+export const createWalletService = async (newWallet) =>
+  await addDoc(collection(db, "wallets"), newWallet);
 
 export const updateWalletService = async (walletId, updateData) =>
-  await updateDoc(doc(db, 'wallets', walletId), updateData);
+  await updateDoc(doc(db, "wallets", walletId), updateData);
 
-export const deleteWalletService = async walletId =>
-  await updateDoc(doc(db, 'wallets', walletId), { is_deleted: true });
+export const deleteWalletService = async (walletId) =>
+  await updateDoc(doc(db, "wallets", walletId), { is_deleted: true });
 
-export const createStarterWalletService = async userId => {
-  const walletsRef = collection(db, 'wallets');
+export const createStarterWalletService = async (userId) => {
+  const walletsRef = collection(db, "wallets");
   const q = query(
     walletsRef,
-    where('user_uid', '==', userId),
-    where('is_deleted', '==', false)
+    where("user_uid", "==", userId),
+    where("is_deleted", "==", false),
   );
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
     await addDoc(walletsRef, {
       ...DEFAULT_WALLET,
-      currency_code: 'IDR',
+      currency_code: "IDR",
       user_uid: userId,
       created_at: serverTimestamp(),
       created_by: DEFAULT_CREATOR,
@@ -51,8 +51,8 @@ export const createStarterWalletService = async userId => {
       updated_by: null,
       is_deleted: false,
     });
-    console.log('Default wallet created');
+    console.log("Default wallet created");
   } else {
-    console.log('Wallet already exists');
+    console.log("Wallet already exists");
   }
 };

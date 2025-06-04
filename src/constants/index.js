@@ -1,2 +1,2 @@
 // constants/index.js
-export const TRIM_FIELDS = ['name'];
+export const TRIM_FIELDS = ["name"];

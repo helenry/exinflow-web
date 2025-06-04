@@ -1,10 +1,10 @@
 // stores/authStore.js
-import { create } from 'zustand';
-import { subscribeWithSelector } from 'zustand/middleware';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../api/firebase';
-import { signInWithGoogle as firebaseSignIn } from '../services/authService';
-import useUserConfigStore from './userConfigStore';
+import { create } from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../api/firebase";
+import { signInWithGoogle as firebaseSignIn } from "../services/authService";
+import useUserConfigStore from "./userConfigStore";
 
 const useAuthStore = create(
   subscribeWithSelector((set, get) => ({
@@ -13,11 +13,12 @@ const useAuthStore = create(
     isLoading: true,
     authError: null,
 
-    setCurrentUser: (user) => set({ 
-      currentUser: user, 
-      isAuthenticated: !!user, 
-      authError: null 
-    }),
+    setCurrentUser: (user) =>
+      set({
+        currentUser: user,
+        isAuthenticated: !!user,
+        authError: null,
+      }),
 
     setLoading: (loading) => set({ isLoading: loading }),
 
@@ -38,10 +39,10 @@ const useAuthStore = create(
     signOut: async () => {
       try {
         await auth.signOut();
-        set({ 
-          currentUser: null, 
-          isAuthenticated: false, 
-          authError: null 
+        set({
+          currentUser: null,
+          isAuthenticated: false,
+          authError: null,
         });
         useUserConfigStore.getState().clearUserConfig();
       } catch (error) {
@@ -67,7 +68,7 @@ const useAuthStore = create(
 
       return unsubscribe;
     },
-  }))
+  })),
 );
 
 export default useAuthStore;

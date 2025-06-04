@@ -1,6 +1,6 @@
 /* styles/index.css */
-@import './fonts.css';
-@import 'tailwindcss';
+@import "./fonts.css";
+@import "tailwindcss";
 
 ::-webkit-scrollbar {
   width: 10px;

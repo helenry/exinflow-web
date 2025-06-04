@@ -1,11 +1,11 @@
 // constants/defaults.js
-import { THEME_COLOR } from './colors';
-import { TRANSACTION_TYPES } from './types';
+import { THEME_COLOR } from "./colors";
+import { TRANSACTION_TYPES } from "./types";
 
-export const DEFAULT_CREATOR = 'system';
+export const DEFAULT_CREATOR = "system";
 
 export const DEFAULT_WALLET = {
-  name: 'Cash',
+  name: "Cash",
   base_amount: 0,
   amount: 0,
   color: THEME_COLOR.RAW,
@@ -14,193 +14,193 @@ export const DEFAULT_WALLET = {
 export const DEFAULT_CATEGORIES = [
   // EXPENSE
   {
-    name: 'Foods & Drinks',
+    name: "Foods & Drinks",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Groceries',
-        icon: '',
+        name: "Groceries",
+        icon: "",
       },
       {
-        name: 'Restaurants & Café',
-        icon: '',
+        name: "Restaurants & Café",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Transportation',
+    name: "Transportation",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Motorcycle',
-        icon: '',
+        name: "Motorcycle",
+        icon: "",
       },
       {
-        name: 'Car',
-        icon: '',
+        name: "Car",
+        icon: "",
       },
       {
-        name: 'Bus',
-        icon: '',
+        name: "Bus",
+        icon: "",
       },
       {
-        name: 'Train',
-        icon: '',
+        name: "Train",
+        icon: "",
       },
       {
-        name: 'Ship',
-        icon: '',
+        name: "Ship",
+        icon: "",
       },
       {
-        name: 'Plane',
-        icon: '',
+        name: "Plane",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Entertainment',
+    name: "Entertainment",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Game',
-        icon: '',
+        name: "Game",
+        icon: "",
       },
       {
-        name: 'Movie',
-        icon: '',
+        name: "Movie",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Gifts & Donations',
+    name: "Gifts & Donations",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Giving',
-        icon: '',
+        name: "Giving",
+        icon: "",
       },
       {
-        name: 'Wedding',
-        icon: '',
+        name: "Wedding",
+        icon: "",
       },
       {
-        name: 'Funeral',
-        icon: '',
+        name: "Funeral",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Bills',
+    name: "Bills",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Elecrticity',
-        icon: '',
+        name: "Elecrticity",
+        icon: "",
       },
       {
-        name: 'Water',
-        icon: '',
+        name: "Water",
+        icon: "",
       },
       {
-        name: 'Internet',
-        icon: '',
+        name: "Internet",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Home & Family',
+    name: "Home & Family",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Children',
-        icon: '',
+        name: "Children",
+        icon: "",
       },
       {
-        name: 'Pets',
-        icon: '',
+        name: "Pets",
+        icon: "",
       },
       {
-        name: 'Furniture',
-        icon: '',
+        name: "Furniture",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Health & Wellness',
+    name: "Health & Wellness",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Drugs',
-        icon: '',
+        name: "Drugs",
+        icon: "",
       },
       {
-        name: 'Sports',
-        icon: '',
+        name: "Sports",
+        icon: "",
       },
       {
-        name: 'Personal Care',
-        icon: '',
+        name: "Personal Care",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Shopping',
+    name: "Shopping",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Clothes',
-        icon: '',
+        name: "Clothes",
+        icon: "",
       },
       {
-        name: 'Electronics',
-        icon: '',
+        name: "Electronics",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Vacation',
+    name: "Vacation",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
   },
   {
-    name: 'Education',
+    name: "Education",
     type: TRANSACTION_TYPES.EXPENSE,
-    icon: '',
+    icon: "",
   },
 
   // INCOME
   {
-    name: 'Salary',
+    name: "Salary",
     type: TRANSACTION_TYPES.INCOME,
-    icon: '',
+    icon: "",
     subcategories: [
       {
-        name: 'Bonus',
-        icon: '',
+        name: "Bonus",
+        icon: "",
       },
     ],
   },
   {
-    name: 'Gift',
+    name: "Gift",
     type: TRANSACTION_TYPES.INCOME,
-    icon: '',
+    icon: "",
   },
   {
-    name: 'Retirement',
+    name: "Retirement",
     type: TRANSACTION_TYPES.INCOME,
-    icon: '',
+    icon: "",
   },
   {
-    name: 'Profit',
+    name: "Profit",
     type: TRANSACTION_TYPES.INCOME,
-    icon: '',
+    icon: "",
   },
 ];

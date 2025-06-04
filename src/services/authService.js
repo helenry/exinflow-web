@@ -1,9 +1,9 @@
 // services/authService.js
-import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../api/firebase';
-import { createStarterWalletService } from './walletService';
-import { createStarterCategoriesService } from './categoryService';
-import { createEmptyUserConfigService } from './userConfigService';
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../api/firebase";
+import { createStarterWalletService } from "./walletService";
+import { createStarterCategoriesService } from "./categoryService";
+import { createEmptyUserConfigService } from "./userConfigService";
 
 export const signInWithGoogle = async () => {
   try {
@@ -17,7 +17,7 @@ export const signInWithGoogle = async () => {
 
     return user;
   } catch (error) {
-    console.error('Error signing in with Google:', error);
+    console.error("Error signing in with Google:", error);
     throw error;
   }
 };

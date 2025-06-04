@@ -1,11 +1,11 @@
 // routes/Routes.jsx
-import React, { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import PrivateRoute from './PrivateRoute';
-import PublicRoute from './PublicRoute';
-import { paths, routes } from './allRoutes';
-import useAuthStore from '../stores/authStore';
+import React, { lazy, Suspense } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import LoadingSpinner from "../components/common/LoadingSpinner";
+import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
+import { paths, routes } from "./allRoutes";
+import useAuthStore from "../stores/authStore";
 
 const RouteRenderer = ({ route }) => {
   const { component: Component, layout: Layout, title } = route;
@@ -25,10 +25,7 @@ const RouteRenderer = ({ route }) => {
 };
 
 const DefaultRedirect = () => {
-  const { 
-    currentUser,
-    isLoading
-  } = useAuthStore();
+  const { currentUser, isLoading } = useAuthStore();
 
   if (isLoading) {
     return <LoadingSpinner />;

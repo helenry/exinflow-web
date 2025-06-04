@@ -1,5 +1,5 @@
 // pages/Savings.jsx
-import React from 'react';
+import React from "react";
 
 const Savings = () => {
   return (

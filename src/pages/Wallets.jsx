@@ -1,17 +1,17 @@
 // pages/Wallets.jsx
-import React, { useEffect } from 'react';
-import { useWalletModal } from '../hooks/useWalletModal';
-import Title from '../components/texts/Title';
-import WalletModal from '../components/menu/wallets/WalletModal';
-import WalletList from '../components/menu/wallets/WalletList';
-import useAuthStore from '../stores/authStore';
-import useWalletStore from '../stores/walletStore';
-import useUserConfigStore from '../stores/userConfigStore';
+import React, { useEffect } from "react";
+import { useWalletModal } from "../hooks/useWalletModal";
+import Title from "../components/texts/Title";
+import WalletModal from "../components/menu/wallets/WalletModal";
+import WalletList from "../components/menu/wallets/WalletList";
+import useAuthStore from "../stores/authStore";
+import useWalletStore from "../stores/walletStore";
+import useUserConfigStore from "../stores/userConfigStore";
 
 const Wallets = () => {
   const { currentUser } = useAuthStore();
   const { userConfig } = useUserConfigStore();
-  
+
   const {
     wallets,
     loading,

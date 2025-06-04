@@ -1,5 +1,5 @@
 // pages/Categories.jsx
-import React from 'react';
+import React from "react";
 
 const Categories = () => {
   return (

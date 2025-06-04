@@ -1,9 +1,9 @@
 // components/menu/wallets/WalletItem.jsx
-import React from 'react';
+import React from "react";
 
 const WalletItem = ({ wallet, onEdit, onDelete }) => {
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this wallet?')) {
+    if (window.confirm("Are you sure you want to delete this wallet?")) {
       onDelete(wallet.id);
     }
   };
@@ -12,7 +12,7 @@ const WalletItem = ({ wallet, onEdit, onDelete }) => {
     <li className="py-2 flex justify-between items-center border-b border-gray-200">
       <div>
         <p>
-          <strong>Name:</strong> {wallet.name || 'Unnamed'}
+          <strong>Name:</strong> {wallet.name || "Unnamed"}
         </p>
         <p>
           <strong>Balance:</strong> {wallet.amount || 0}

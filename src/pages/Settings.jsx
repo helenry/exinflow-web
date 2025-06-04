@@ -1,6 +1,6 @@
 // pages/Settings.jsx
-import React from 'react';
-import Layout from '../components/layout/Layout';
+import React from "react";
+import Layout from "../components/layout/Layout";
 
 const Settings = () => {
   return (

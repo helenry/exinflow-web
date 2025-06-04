@@ -1,15 +1,12 @@
 // routes/PublicRoute.jsx
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import useAuthStore from '../stores/authStore';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import { paths } from './allRoutes';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import useAuthStore from "../stores/authStore";
+import LoadingSpinner from "../components/common/LoadingSpinner";
+import { paths } from "./allRoutes";
 
 const PublicRoute = ({ restricted = false, children }) => {
-  const { 
-    currentUser,
-    isLoading
-  } = useAuthStore();
+  const { currentUser, isLoading } = useAuthStore();
 
   if (isLoading) {
     return <LoadingSpinner />;

@@ -1,8 +1,8 @@
 // utils/type.js
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from "firebase/firestore";
 
 // Helper to convert Firestore timestamps to JS Date
-export const convertFirestoreTimestamps = wallet => ({
+export const convertFirestoreTimestamps = (wallet) => ({
   ...wallet,
   created_at:
     wallet.created_at instanceof Timestamp

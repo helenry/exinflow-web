@@ -1,7 +1,7 @@
 // stores/userConfigStore.js
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { getUserConfigService } from '../services/userConfigService';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { getUserConfigService } from "../services/userConfigService";
 
 const useUserConfigStore = create(
   persist(
@@ -35,12 +35,12 @@ const useUserConfigStore = create(
         }),
     }),
     {
-      name: 'user-config-storage',
+      name: "user-config-storage",
       partialize: (state) => ({
         userConfig: state.userConfig,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export default useUserConfigStore;

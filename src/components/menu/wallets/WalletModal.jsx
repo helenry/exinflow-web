@@ -1,8 +1,8 @@
 // components/menu/wallets/WalletModal.jsx
-import React, { useState, useEffect } from 'react';
-import { walletSchema } from '../../../models/walletSchema';
-import { z } from 'zod';
-import { THEME_COLOR } from '../../../constants/colors';
+import React, { useState, useEffect } from "react";
+import { walletSchema } from "../../../models/walletSchema";
+import { z } from "zod";
+import { THEME_COLOR } from "../../../constants/colors";
 
 const WalletModal = ({
   isOpen,
@@ -13,22 +13,22 @@ const WalletModal = ({
   error,
 }) => {
   const [form, setForm] = useState({
-    name: '',
+    name: "",
     base_amount: 0,
     amount: 0,
     color: THEME_COLOR.RAW,
-    currency_code: 'IDR',
+    currency_code: "IDR",
   });
 
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     setForm({
-      name: '',
+      name: "",
       base_amount: 0,
       amount: 0,
       color: THEME_COLOR.RAW,
-      currency_code: 'IDR',
+      currency_code: "IDR",
       ...initialData,
     });
     setValidationErrors({});
@@ -36,16 +36,16 @@ const WalletModal = ({
 
   if (!isOpen) return null;
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      [name]: name === 'base_amount' ? Number(value) : value,
+      [name]: name === "base_amount" ? Number(value) : value,
     }));
   };
 
-  const handleCurrencyChange = e => {
-    setForm(prev => ({
+  const handleCurrencyChange = (e) => {
+    setForm((prev) => ({
       ...prev,
       currency_code: e.target.value.toUpperCase(),
     }));
@@ -67,7 +67,7 @@ const WalletModal = ({
     } catch (e) {
       if (e instanceof z.ZodError) {
         const errs = {};
-        e.errors.forEach(err => {
+        e.errors.forEach((err) => {
           if (err.path[0]) errs[err.path[0]] = err.message;
         });
         setValidationErrors(errs);
@@ -79,7 +79,7 @@ const WalletModal = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-96 max-w-full">
         <h2 className="text-xl font-semibold mb-4">
-          {initialData ? 'Edit Wallet' : 'Create Wallet'}
+          {initialData ? "Edit Wallet" : "Create Wallet"}
         </h2>
 
         <div className="mb-3">
@@ -158,7 +158,7 @@ const WalletModal = ({
             disabled={loading}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
-            {loading ? 'Saving...' : 'Save'}
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
       </div>

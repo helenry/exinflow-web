@@ -1,6 +1,6 @@
 // components/menu/wallets/WalletList.jsx
-import React from 'react';
-import WalletItem from './WalletItem';
+import React from "react";
+import WalletItem from "./WalletItem";
 
 const WalletList = ({ wallets, loading, error, onEdit, onDelete }) => {
   if (loading) {
@@ -22,7 +22,7 @@ const WalletList = ({ wallets, loading, error, onEdit, onDelete }) => {
 
   return (
     <ul className="space-y-2">
-      {wallets.map(wallet => (
+      {wallets.map((wallet) => (
         <WalletItem
           key={wallet.id}
           wallet={wallet}

@@ -1,6 +1,6 @@
 // components/layout/navbar/MenuItem.jsx
-import { NavLink } from 'react-router-dom';
-import { THEME_COLOR } from '../../../constants/colors';
+import { NavLink } from "react-router-dom";
+import { THEME_COLOR } from "../../../constants/colors";
 
 export default function MenuItem({ label, to }) {
   return (

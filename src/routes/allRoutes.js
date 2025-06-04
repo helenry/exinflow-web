@@ -1,30 +1,30 @@
 // routes/allRoutes.js
-import { lazy } from 'react';
+import { lazy } from "react";
 
-const SignIn = lazy(() => import('../pages/SignIn'));
-const Dashboard = lazy(() => import('../pages/Dashboard'));
-const Transactions = lazy(() => import('../pages/Transactions'));
-const Budgets = lazy(() => import('../pages/Budgets'));
-const Savings = lazy(() => import('../pages/Savings'));
-const Investments = lazy(() => import('../pages/Investments'));
-const Analytics = lazy(() => import('../pages/Analytics'));
-const Wallets = lazy(() => import('../pages/Wallets'));
-const Categories = lazy(() => import('../pages/Categories'));
-const NotFound = lazy(() => import('../pages/NotFound'));
+const SignIn = lazy(() => import("../pages/SignIn"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
+const Transactions = lazy(() => import("../pages/Transactions"));
+const Budgets = lazy(() => import("../pages/Budgets"));
+const Savings = lazy(() => import("../pages/Savings"));
+const Investments = lazy(() => import("../pages/Investments"));
+const Analytics = lazy(() => import("../pages/Analytics"));
+const Wallets = lazy(() => import("../pages/Wallets"));
+const Categories = lazy(() => import("../pages/Categories"));
+const NotFound = lazy(() => import("../pages/NotFound"));
 
-const Layout = lazy(() => import('../components/layouts/Layout'));
+const Layout = lazy(() => import("../components/layouts/Layout"));
 
 export const paths = {
-  sign_in: '/sign-in',
-  dashboard: '/dashboard',
-  transactions: '/transactions',
-  budgets: '/budgets',
-  savings: '/savings',
-  investments: '/investments',
-  analytics: '/analytics',
-  wallets: '/wallets',
-  categories: '/categories',
-  settings: '/settings',
+  sign_in: "/sign-in",
+  dashboard: "/dashboard",
+  transactions: "/transactions",
+  budgets: "/budgets",
+  savings: "/savings",
+  investments: "/investments",
+  analytics: "/analytics",
+  wallets: "/wallets",
+  categories: "/categories",
+  settings: "/settings",
 };
 
 export const routes = [
@@ -34,7 +34,7 @@ export const routes = [
     isProtected: false,
     isRestricted: true,
     layout: null,
-    title: 'Sign In',
+    title: "Sign In",
   },
   {
     path: paths.dashboard,
@@ -42,7 +42,7 @@ export const routes = [
     isProtected: true,
     isInSidebar: true,
     layout: Layout,
-    title: 'Dashboard',
+    title: "Dashboard",
   },
   {
     path: paths.transactions,
@@ -50,7 +50,7 @@ export const routes = [
     isProtected: true,
     isInSidebar: true,
     layout: Layout,
-    title: 'Transactions',
+    title: "Transactions",
   },
   {
     path: paths.budgets,
@@ -58,7 +58,7 @@ export const routes = [
     isProtected: true,
     isInSidebar: true,
     layout: Layout,
-    title: 'Budgets',
+    title: "Budgets",
   },
   {
     path: paths.savings,
@@ -66,7 +66,7 @@ export const routes = [
     isProtected: true,
     isInSidebar: true,
     layout: Layout,
-    title: 'Savings',
+    title: "Savings",
   },
   {
     path: paths.investments,
@@ -74,7 +74,7 @@ export const routes = [
     isProtected: true,
     isInSidebar: true,
     layout: Layout,
-    title: 'Investments',
+    title: "Investments",
   },
   {
     path: paths.analytics,
@@ -82,7 +82,7 @@ export const routes = [
     isProtected: true,
     isInSidebar: true,
     layout: Layout,
-    title: 'Analytics',
+    title: "Analytics",
   },
   {
     path: paths.wallets,
@@ -90,7 +90,7 @@ export const routes = [
     isProtected: true,
     isInSidebar: true,
     layout: Layout,
-    title: 'Wallets',
+    title: "Wallets",
   },
   {
     path: paths.categories,
@@ -98,13 +98,13 @@ export const routes = [
     isProtected: true,
     isInSidebar: true,
     layout: Layout,
-    title: 'Categories',
+    title: "Categories",
   },
   {
-    path: '*',
+    path: "*",
     component: NotFound,
     isProtected: false,
     layout: null,
-    title: 'Page Not Found',
+    title: "Page Not Found",
   },
 ];
