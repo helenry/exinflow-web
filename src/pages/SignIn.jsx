@@ -1,28 +1,58 @@
-import { auth, provider } from "../firebase";
-import { signInWithPopup } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+// pages/SignIn.jsx
+import React, { useState } from 'react';
+import sign_in from '../assets/images/sign_in.jpg';
+import logo_white from '../assets/images/logo/logo_white.png';
+import useAuthStore from '../stores/authStore';
 
-export default function SignIn() {
-  const navigate = useNavigate();
+const SignIn = () => {
+  const { signInWithGoogle, authError, isLoading } = useAuthStore();
+  const [localError, setLocalError] = useState('');
 
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithPopup(auth, provider);
-      navigate("/dashboard");
+      setLocalError('');
+      await signInWithGoogle();
     } catch (error) {
-      console.error("Google sign-in error", error);
+      setLocalError('Failed to sign in with Google. Please try again.');
     }
   };
 
+  const displayError = localError || authError;
+
   return (
-    <div className="h-screen flex flex-col justify-center items-center">
-      <h1 className="text-2xl mb-4">Welcome</h1>
+    <div
+      className="h-screen flex flex-col justify-center items-center"
+      style={{
+        backgroundImage: `url(${sign_in})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <img src={logo_white} alt="Exinflow" className="h-16 mb-14" />
+      
+      {displayError && (
+        <div className="text-red-500 mb-4 text-center">
+          {displayError}
+        </div>
+      )}
+      
       <button
         onClick={handleGoogleSignIn}
-        className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700"
+        disabled={isLoading}
+        className={`cursor-pointer bg-black text-white px-8 py-4 rounded-full shadow-md hover:bg-grey-700 flex items-center ${
+          isLoading ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
       >
-        Continue with Google
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/800px-Google_%22G%22_logo.svg.png"
+          alt="Google Logo"
+          className="w-6 h-6 mr-3"
+        />
+        {isLoading ? 'Signing in...' : 'Continue with Google'}
       </button>
     </div>
   );
-}
+};
+
+export default SignIn;

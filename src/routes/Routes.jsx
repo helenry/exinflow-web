@@ -1,57 +1,94 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
+// routes/Routes.jsx
+import React, { lazy, Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import PrivateRoute from './PrivateRoute';
+import PublicRoute from './PublicRoute';
+import { paths, routes } from './allRoutes';
+import useAuthStore from '../stores/authStore';
 
-import SignIn from "../pages/SignIn";
-import Dashboard from "../pages/Dashboard";
-import LoadingSpinner from "../components/LoadingSpinner";
+const RouteRenderer = ({ route }) => {
+  const { component: Component, layout: Layout, title } = route;
 
-export default function AppRoutes() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  React.useEffect(() => {
+    if (title) {
+      document.title = `${title} | exinflow`;
+    }
+  }, [title]);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, currentUser => {
-      setUser(currentUser);
-      setLoading(false);
-    });
+  if (!Component) {
+    return Layout ? <Layout /> : <div />;
+  }
 
-    return () => unsubscribe();
-  }, []);
+  const content = <Component />;
+  return Layout ? <Layout>{content}</Layout> : content;
+};
 
-  if (loading) return <LoadingSpinner />;
+const DefaultRedirect = () => {
+  const { 
+    currentUser,
+    isLoading
+  } = useAuthStore();
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
+    <Navigate to={currentUser ? paths.dashboard : paths.sign_in} replace />
+  );
+};
+
+const AppRoutes = () => {
+  return (
     <Routes>
-      <Route
-        path="/"
-        element={user ? <Navigate to="/dashboard" /> : <SignIn />}
-      />
-      <Route
-        path="/dashboard"
-        element={user ? <Dashboard /> : <Navigate to="/" />}
-      />
-      {/* <Route
-        path="/transaction"
-        element={user ? <Transaction /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/wallet"
-        element={user ? <Wallet /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/saving"
-        element={user ? <Saving /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/budget"
-        element={user ? <Budget /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/analytic"
-        element={user ? <Analytic /> : <Navigate to="/" />}
-      /> */}
+      <Route path="/" element={<DefaultRedirect />} />
+
+      {routes.map((route, index) => {
+        const { path, isProtected, isRestricted } = route;
+
+        const routeElement = (
+          <Suspense fallback={<LoadingSpinner />}>
+            <RouteRenderer route={route} />
+          </Suspense>
+        );
+
+        const routeKey = `${path}-${index}`;
+
+        if (isProtected) {
+          return (
+            <Route
+              key={routeKey}
+              path={path}
+              element={<PrivateRoute>{routeElement}</PrivateRoute>}
+            />
+          );
+        }
+
+        if (!isProtected && isRestricted) {
+          return (
+            <Route
+              key={routeKey}
+              path={path}
+              element={
+                <PublicRoute restricted={true}>{routeElement}</PublicRoute>
+              }
+            />
+          );
+        }
+
+        return (
+          <Route
+            key={routeKey}
+            path={path}
+            element={
+              <PublicRoute restricted={false}>{routeElement}</PublicRoute>
+            }
+          />
+        );
+      })}
     </Routes>
   );
-}
+};
+
+export default AppRoutes;
