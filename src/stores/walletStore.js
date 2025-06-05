@@ -81,6 +81,7 @@ const useWalletStore = create((set, get) => ({
 
       const newWallet = {
         ...trimmed,
+        amount: 0,
         user_uid: currentUserUid,
         is_deleted: false,
         created_at: serverTimestamp(),

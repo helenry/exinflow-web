@@ -1,5 +1,5 @@
 // services/userConfigService.js
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../api/firebase";
 
 export const getUserConfigService = async (userId) => {
@@ -13,6 +13,12 @@ export const updateUserConfigService = async (userId, updateData) =>
 
 export const createEmptyUserConfigService = async (userId) => {
   const userConfigRef = doc(db, "user_config", userId);
+  const docSnap = await getDoc(userConfigRef);
+
+  if (docSnap.exists()) {
+    console.log("User config already exists");
+    return;
+  }
 
   await setDoc(userConfigRef, {
     main_currency_code: null,

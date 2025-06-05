@@ -1,8 +1,13 @@
 // components/menu/wallets/WalletList.jsx
-import React from "react";
 import WalletItem from "./WalletItem";
 
-const WalletList = ({ wallets, loading, error, onEdit, onDelete }) => {
+const WalletList = ({
+  wallets,
+  handleEditWalletClick,
+  handleDeleteWalletClick,
+  loading,
+  error,
+}) => {
   if (loading) {
     return <p>Loading wallets...</p>;
   }
@@ -24,10 +29,9 @@ const WalletList = ({ wallets, loading, error, onEdit, onDelete }) => {
     <ul className="space-y-2">
       {wallets.map((wallet) => (
         <WalletItem
-          key={wallet.id}
           wallet={wallet}
-          onEdit={onEdit}
-          onDelete={onDelete}
+          handleEditWalletClick={handleEditWalletClick}
+          handleDeleteWalletClick={handleDeleteWalletClick}
         />
       ))}
     </ul>

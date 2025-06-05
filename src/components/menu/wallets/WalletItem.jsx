@@ -1,13 +1,9 @@
 // components/menu/wallets/WalletItem.jsx
-import React from "react";
-
-const WalletItem = ({ wallet, onEdit, onDelete }) => {
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this wallet?")) {
-      onDelete(wallet.id);
-    }
-  };
-
+const WalletItem = ({
+  wallet,
+  handleEditWalletClick,
+  handleDeleteWalletClick,
+}) => {
   return (
     <li className="py-2 flex justify-between items-center border-b border-gray-200">
       <div>
@@ -23,13 +19,13 @@ const WalletItem = ({ wallet, onEdit, onDelete }) => {
       </div>
       <div className="space-x-2">
         <button
-          onClick={() => onEdit(wallet)}
+          onClick={() => handleEditWalletClick(wallet)}
           className="px-3 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700"
         >
           Edit
         </button>
         <button
-          onClick={handleDelete}
+          onClick={() => handleDeleteWalletClick(wallet.id)}
           className="px-3 py-1 bg-red-600 text-white rounded-full hover:bg-red-700"
         >
           Delete

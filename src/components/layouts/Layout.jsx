@@ -1,24 +1,27 @@
 // components/layout/Layout.jsx
 import { MAIN_BACKGROUND_WHITE } from "../../constants/colors";
 import { NAVBAR } from "../../constants/layout";
+import useModalStore from "../../stores/modalStore";
 import Modal from "./modal/Modal";
 import Navbar from "./navbar/Navbar";
 import Sidebar from "./sidebar/Sidebar";
 
 const Layout = ({ children }) => {
+  const { modal } = useModalStore();
+
   return (
     <div
       className={`${MAIN_BACKGROUND_WHITE.BG} min-h-screen h-screen flex flex-col`}
     >
       <Navbar />
       <div
-        className={`${NAVBAR.MARGIN} flex-1 grid grid-cols-[auto_65fr_35fr] overflow-hidden`}
+        className={`${NAVBAR.MARGIN} ${modal.isOpen ? "grid-cols-[auto_65fr_35fr]" : "grid-cols-[auto_100fr]"} flex-1 grid overflow-hidden`}
       >
         <Sidebar />
 
-        <main className="overflow-y-auto p-3">{children}</main>
+        <main className="overflow-y-auto p-4">{children}</main>
 
-        <Modal>sdfsdfdsf</Modal>
+        <Modal />
       </div>
     </div>
   );
