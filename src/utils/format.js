@@ -1,5 +1,5 @@
 // utils/format.js
-import { TRIM_FIELDS } from "../constants";
+import { TRIM_FIELDS } from "@/constants";
 
 export const trimStrings = (input) => {
   const trimmed = { ...input };

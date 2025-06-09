@@ -3,6 +3,8 @@ import WalletItem from "./WalletItem";
 
 const WalletList = ({
   wallets,
+  activeWallet,
+  setActiveWallet,
   handleEditWalletClick,
   handleDeleteWalletClick,
   loading,
@@ -30,6 +32,8 @@ const WalletList = ({
       {wallets.map((wallet) => (
         <WalletItem
           wallet={wallet}
+          activeWallet={activeWallet}
+          setActiveWallet={setActiveWallet}
           handleEditWalletClick={handleEditWalletClick}
           handleDeleteWalletClick={handleDeleteWalletClick}
         />

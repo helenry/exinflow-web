@@ -1,10 +1,12 @@
 // components/menu/wallets/WalletModal.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { walletSchema } from "../../../models/walletSchema";
 import { z } from "zod";
-import { THEME_COLOR } from "../../../constants/colors";
 import useUserConfigStore from "../../../stores/userConfigStore";
-import { WALLET_FORM_BASE } from "../../../constants/form_bases";
+import { WALLET_FORM_BASE, CURRENCY_OPTIONS } from "@/constants";
+import Input from "../../forms/Input";
+import Dropdown from "../../forms/Dropdown";
+import ColorPicker from "../../forms/ColorPicker";
 
 const WalletModal = ({ onSubmit, initialData, onCancel, loading }) => {
   const { userConfig } = useUserConfigStore();
@@ -34,21 +36,6 @@ const WalletModal = ({ onSubmit, initialData, onCancel, loading }) => {
       setValidationErrors(prev => ({
         ...prev,
         [name]: undefined
-      }));
-    }
-  };
-
-  const handleCurrencyChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      currency_code: e.target.value.toUpperCase(),
-    }));
-    
-    // Clear validation error for currency_code when user starts typing
-    if (validationErrors.currency_code) {
-      setValidationErrors(prev => ({
-        ...prev,
-        currency_code: undefined
       }));
     }
   };
@@ -90,69 +77,53 @@ const WalletModal = ({ onSubmit, initialData, onCancel, loading }) => {
 
   return (
     <div onKeyDown={handleKeyPress}>
-      <div className="mb-3">
-        <label className="block font-medium">Name</label>
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          disabled={loading}
-          className="border rounded px-2 py-1 w-full disabled:bg-gray-100"
-          autoFocus
-        />
-        {validationErrors.name && (
-          <p className="text-red-600 text-sm">{validationErrors.name}</p>
-        )}
-      </div>
+      <Input
+        label="Name"
+        name="name"
+        value={form.name}
+        onChange={handleChange}
+        error={validationErrors.name}
+        disabled={loading}
+        required
+        autoFocus
+        placeholder="Enter wallet name"
+      />
 
-      <div className="mb-3">
-        <label className="block font-medium">Base Amount</label>
-        <input
-          name="base_amount"
-          type="number"
-          min="0"
-          step="0.01"
-          value={form.base_amount}
-          onChange={handleChange}
-          disabled={loading}
-          className="border rounded px-2 py-1 w-full disabled:bg-gray-100"
-        />
-        {validationErrors.base_amount && (
-          <p className="text-red-600 text-sm">{validationErrors.base_amount}</p>
-        )}
-      </div>
+      <Input
+        label="Base Amount"
+        name="base_amount"
+        type="number"
+        min="0"
+        step="0.01"
+        value={form.base_amount}
+        onChange={handleChange}
+        error={validationErrors.base_amount}
+        disabled={loading}
+        placeholder="0.00"
+      />
 
-      <div className="mb-3">
-        <label className="block font-medium">Color (Hex, e.g. ffffff)</label>
-        <input
-          name="color"
-          maxLength={6}
-          value={form.color}
-          onChange={handleChange}
-          disabled={loading}
-          className="border rounded px-2 py-1 w-full disabled:bg-gray-100"
-        />
-        {validationErrors.color && (
-          <p className="text-red-600 text-sm">{validationErrors.color}</p>
-        )}
-      </div>
+      <ColorPicker
+        label="Color"
+        name="color"
+        value={form.color}
+        onChange={handleChange}
+        error={validationErrors.color}
+        disabled={loading}
+        showPreview={true}
+      />
 
-      <div className="mb-3">
-        <label className="block font-medium">Currency Code (3 letters)</label>
-        <input
-          name="currency_code"
-          maxLength={3}
-          value={form.currency_code}
-          onChange={handleCurrencyChange}
-          disabled={loading}
-          className="border rounded px-2 py-1 w-full uppercase disabled:bg-gray-100"
-        />
-        {validationErrors.currency_code && (
-          <p className="text-red-600 text-sm">
-            {validationErrors.currency_code}
-          </p>
-        )}
-      </div>
+      <Dropdown
+        label="Currency"
+        name="currency_code"
+        value={form.currency_code}
+        onChange={handleChange}
+        options={CURRENCY_OPTIONS}
+        error={validationErrors.currency_code}
+        disabled={loading}
+        placeholder="Select currency"
+        showSymbol={true}
+        required
+      />
 
       <div className="flex justify-end space-x-2">
         <button

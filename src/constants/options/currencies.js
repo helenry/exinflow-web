@@ -1,5 +1,5 @@
 // constants/options/currencies.js
-export const CURRENCIES_OPTIONS = [
+export const CURRENCY_OPTIONS = [
   {
     iso_code: "AED",
     name: "Emirati Dirham",

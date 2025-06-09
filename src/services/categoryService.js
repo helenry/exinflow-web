@@ -10,7 +10,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../api/firebase";
-import { DEFAULT_CATEGORIES, DEFAULT_CREATOR } from "../constants/defaults";
+import { DEFAULT_CATEGORIES, DEFAULT_CREATOR } from "@/constants";
 
 export const getCategoriesService = async (userUid) => {
   const q = query(

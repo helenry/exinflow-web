@@ -24,16 +24,12 @@ const Modal = () => {
   }, [modal.action, modal.itemId, createWallet, updateWallet, closeModal]);
 
   // Modal configuration based on type and action
-  const getModalConfig = useCallback(() => {
+  const getModalTitle = useCallback(() => {
     switch (modal.type) {
       case "wallet":
-        return {
-          title: modal.action === "edit" ? "Edit Wallet" : "Create Wallet",
-        };
+        return modal.action === "edit" ? "Edit Wallet" : "Create Wallet";
       default:
-        return {
-          title: "Modal",
-        };
+        return "Modal";
     }
   }, [modal.type, modal.action]);
 
@@ -57,11 +53,11 @@ const Modal = () => {
   // Don't render anything if modal is closed
   if (!modal.isOpen) return null;
 
-  const config = getModalConfig();
+  const title = getModalTitle();
 
   return (
     <div className="m-4 p-4 rounded-lg bg-[#e8f8fc]">
-      <h2 className="text-xl font-semibold mb-4">{config.title}</h2>
+      <h2 className="text-xl font-semibold mb-4">{title}</h2>
       
       {error && (
         <div className="mb-3 p-2 bg-red-100 border border-red-300 rounded text-red-700">

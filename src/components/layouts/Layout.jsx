@@ -1,6 +1,5 @@
 // components/layout/Layout.jsx
-import { MAIN_BACKGROUND_WHITE } from "../../constants/colors";
-import { NAVBAR } from "../../constants/layout";
+import { MAIN_BACKGROUND_WHITE, NAVBAR } from "@/constants";
 import useModalStore from "../../stores/modalStore";
 import Modal from "./modal/Modal";
 import Navbar from "./navbar/Navbar";

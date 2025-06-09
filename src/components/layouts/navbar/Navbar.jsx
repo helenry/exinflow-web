@@ -1,6 +1,6 @@
 // components/layout/navbar/Navbar.jsx
 import AccountPopover from "./AccountPopover";
-import { NAVBAR } from "../../../constants/layout";
+import { NAVBAR } from "@/constants";
 import logo_color from "../../../assets/images/logo/logo_color.png";
 import Menus from "./Menus";
 import { LuBell } from "react-icons/lu";

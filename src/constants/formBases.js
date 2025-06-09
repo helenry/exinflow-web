@@ -1,5 +1,5 @@
-// constants/form_bases.js
-import { THEME_COLOR } from "./colors";
+// constants/formBases.js
+import { THEME_COLOR } from "./themeColors";
 
 export const WALLET_FORM_BASE = (mainCurrencyCode) => ({
   name: "",

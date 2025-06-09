@@ -1,16 +1,10 @@
 // components/layout/sidebar/Sidebar.jsx
-import { useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { NAVBAR, SIDEBAR } from "../../../constants/layout";
 import {
   PiLightbulbFilamentBold,
-  PiPlus,
   PiPlusBold,
-  PiSiren,
   PiSirenBold,
 } from "react-icons/pi";
-import { TbPlus } from "react-icons/tb";
-import { LuPlus, LuSparkles, LuWand, LuWandSparkles } from "react-icons/lu";
+import { LuWandSparkles } from "react-icons/lu";
 import CircleButton from "../../buttons/CircleButton";
 
 export default function Sidebar() {

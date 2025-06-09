@@ -1,6 +1,6 @@
 // models/categorySchema.js
 import { z } from "zod";
-import { TRANSACTION_TYPES } from "../constants/types";
+import { TRANSACTION_TYPES } from "@/constants";
 
 export const categorySchema = z.object({
   name: z.string().min(1),

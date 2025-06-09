@@ -13,7 +13,7 @@ const Wallets = lazy(() => import("../pages/Wallets"));
 const Categories = lazy(() => import("../pages/Categories"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
-const Layout = lazy(() => import("../components/layouts/Layout"));
+const Layout = lazy(() => import("@/components/layouts/Layout"));
 
 export const paths = {
   sign_in: "/sign-in",

@@ -10,7 +10,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../api/firebase";
-import { DEFAULT_CREATOR, DEFAULT_WALLET } from "../constants/defaults";
+import { DEFAULT_CREATOR, DEFAULT_WALLET } from "@/constants";
 
 export const getWalletsService = async (userUid) => {
   const q = query(

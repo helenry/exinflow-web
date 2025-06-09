@@ -1,7 +1,7 @@
 // pages/Wallets.jsx
-import { useEffect } from "react";
-import Title from "../components/texts/Title";
-import WalletList from "../components/menu/wallets/WalletList";
+import { useEffect, useState } from "react";
+import Title from "@/components/texts/Title";
+import WalletList from "@/components/menu/wallets/WalletList";
 import useAuthStore from "../stores/authStore";
 import useWalletStore from "../stores/walletStore";
 import useModalStore from "../stores/modalStore";
@@ -14,6 +14,9 @@ import {
 const Wallets = () => {
   // TYPE
   const type = "wallet";
+
+  // STATES
+  const [activeWallet, setActiveWallet] = useState(null);
 
   // STORES
   const { currentUser } = useAuthStore();
@@ -51,6 +54,8 @@ const Wallets = () => {
 
       <WalletList
         wallets={wallets}
+        activeWallet={activeWallet}
+        setActiveWallet={setActiveWallet}
         handleEditWalletClick={handleEditWalletClick}
         handleDeleteWalletClick={handleDeleteWalletClick}
         loading={loading}

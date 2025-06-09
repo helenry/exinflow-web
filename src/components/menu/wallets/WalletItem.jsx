@@ -1,11 +1,16 @@
 // components/menu/wallets/WalletItem.jsx
 const WalletItem = ({
   wallet,
+  activeWallet,
+  setActiveWallet,
   handleEditWalletClick,
   handleDeleteWalletClick,
 }) => {
   return (
-    <li className="py-2 flex justify-between items-center border-b border-gray-200">
+    <li
+      onClick={() => setActiveWallet(wallet.id === activeWallet ? null : wallet.id)}
+      className={`p-2 flex justify-between items-center rounded-lg border ${wallet.id == activeWallet ? "border-red-500" : "border-gray-300"}`}
+    >
       <div>
         <p>
           <strong>Name:</strong> {wallet.name || "Unnamed"}

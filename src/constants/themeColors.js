@@ -1,4 +1,4 @@
-// constants/colors.js
+// constants/themeColors.js
 // theme
 export const THEME_COLOR = {
   RAW: "00a6e0",
