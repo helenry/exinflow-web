@@ -6,7 +6,7 @@ import { THEME_COLOR } from "../../../constants/colors";
 import useUserConfigStore from "../../../stores/userConfigStore";
 import { WALLET_FORM_BASE } from "../../../constants/form_bases";
 
-const WalletModal = ({ onSubmit, initialData }) => {
+const WalletModal = ({ onSubmit, initialData, onCancel, loading }) => {
   const { userConfig } = useUserConfigStore();
 
   const [form, setForm] = useState(
@@ -20,7 +20,7 @@ const WalletModal = ({ onSubmit, initialData }) => {
       ...initialData,
     });
     setValidationErrors({});
-  }, [initialData]);
+  }, [initialData, userConfig.main_currency_code]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +28,14 @@ const WalletModal = ({ onSubmit, initialData }) => {
       ...prev,
       [name]: name === "base_amount" ? Number(value) : value,
     }));
+    
+    // Clear validation error for this field when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
   };
 
   const handleCurrencyChange = (e) => {
@@ -35,11 +43,19 @@ const WalletModal = ({ onSubmit, initialData }) => {
       ...prev,
       currency_code: e.target.value.toUpperCase(),
     }));
+    
+    // Clear validation error for currency_code when user starts typing
+    if (validationErrors.currency_code) {
+      setValidationErrors(prev => ({
+        ...prev,
+        currency_code: undefined
+      }));
+    }
   };
 
-  const handleSubmit = () => {
+  const validateAndSubmit = () => {
     try {
-      walletSchema
+      const validatedData = walletSchema
         .pick({
           name: true,
           base_amount: true,
@@ -48,7 +64,8 @@ const WalletModal = ({ onSubmit, initialData }) => {
         })
         .parse(form);
 
-      onSubmit(form);
+      setValidationErrors({});
+      onSubmit(validatedData);
     } catch (e) {
       if (e instanceof z.ZodError) {
         const errs = {};
@@ -60,28 +77,28 @@ const WalletModal = ({ onSubmit, initialData }) => {
     }
   };
 
-  // Listen for submit event from parent modal
-  useEffect(() => {
-    const formElement = document.querySelector("[data-modal-form]");
-    if (formElement) {
-      const handleModalSubmit = () => {
-        handleSubmit();
-      };
-      formElement.addEventListener("modalSubmit", handleModalSubmit);
-      return () =>
-        formElement.removeEventListener("modalSubmit", handleModalSubmit);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !loading) {
+      e.preventDefault();
+      validateAndSubmit();
     }
-  }, [form]);
+    if (e.key === 'Escape' && !loading) {
+      e.preventDefault();
+      onCancel();
+    }
+  };
 
   return (
-    <div data-modal-form>
+    <div onKeyDown={handleKeyPress}>
       <div className="mb-3">
         <label className="block font-medium">Name</label>
         <input
           name="name"
           value={form.name}
           onChange={handleChange}
-          className="border rounded px-2 py-1 w-full"
+          disabled={loading}
+          className="border rounded px-2 py-1 w-full disabled:bg-gray-100"
+          autoFocus
         />
         {validationErrors.name && (
           <p className="text-red-600 text-sm">{validationErrors.name}</p>
@@ -97,7 +114,8 @@ const WalletModal = ({ onSubmit, initialData }) => {
           step="0.01"
           value={form.base_amount}
           onChange={handleChange}
-          className="border rounded px-2 py-1 w-full"
+          disabled={loading}
+          className="border rounded px-2 py-1 w-full disabled:bg-gray-100"
         />
         {validationErrors.base_amount && (
           <p className="text-red-600 text-sm">{validationErrors.base_amount}</p>
@@ -111,7 +129,8 @@ const WalletModal = ({ onSubmit, initialData }) => {
           maxLength={6}
           value={form.color}
           onChange={handleChange}
-          className="border rounded px-2 py-1 w-full"
+          disabled={loading}
+          className="border rounded px-2 py-1 w-full disabled:bg-gray-100"
         />
         {validationErrors.color && (
           <p className="text-red-600 text-sm">{validationErrors.color}</p>
@@ -125,13 +144,31 @@ const WalletModal = ({ onSubmit, initialData }) => {
           maxLength={3}
           value={form.currency_code}
           onChange={handleCurrencyChange}
-          className="border rounded px-2 py-1 w-full uppercase"
+          disabled={loading}
+          className="border rounded px-2 py-1 w-full uppercase disabled:bg-gray-100"
         />
         {validationErrors.currency_code && (
           <p className="text-red-600 text-sm">
             {validationErrors.currency_code}
           </p>
         )}
+      </div>
+
+      <div className="flex justify-end space-x-2">
+        <button
+          onClick={onCancel}
+          disabled={loading}
+          className="px-4 py-2 border rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={validateAndSubmit}
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? "Saving..." : "Save"}
+        </button>
       </div>
     </div>
   );

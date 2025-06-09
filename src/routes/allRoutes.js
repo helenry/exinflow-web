@@ -5,6 +5,7 @@ const SignIn = lazy(() => import("../pages/SignIn"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 const Transactions = lazy(() => import("../pages/Transactions"));
 const Budgets = lazy(() => import("../pages/Budgets"));
+const Credits = lazy(() => import("../pages/Credits"));
 const Savings = lazy(() => import("../pages/Savings"));
 const Investments = lazy(() => import("../pages/Investments"));
 const Analytics = lazy(() => import("../pages/Analytics"));
@@ -19,6 +20,7 @@ export const paths = {
   dashboard: "/dashboard",
   transactions: "/transactions",
   budgets: "/budgets",
+  credits: "/credits",
   savings: "/savings",
   investments: "/investments",
   analytics: "/analytics",
@@ -59,6 +61,14 @@ export const routes = [
     isInSidebar: true,
     layout: Layout,
     title: "Budgets",
+  },
+  {
+    path: paths.credits,
+    component: Credits,
+    isProtected: true,
+    isInSidebar: true,
+    layout: Layout,
+    title: "Credits",
   },
   {
     path: paths.savings,
