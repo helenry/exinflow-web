@@ -1,5 +1,6 @@
 // components/forms/Dropdown.jsx
 import React from "react";
+import Select from "react-select";
 
 const Dropdown = ({
   label,
@@ -15,78 +16,50 @@ const Dropdown = ({
   className = "",
   ...props
 }) => {
-  const baseClassName = "border rounded px-2 py-1 w-full";
-  const stateClassName = disabled 
-    ? "disabled:bg-gray-100 disabled:cursor-not-allowed" 
-    : "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
-  const errorClassName = error ? "border-red-500" : "border-gray-300";
-  
-  const selectClassName = `${baseClassName} ${stateClassName} ${errorClassName} ${className}`;
-
   const renderOption = (option) => {
-    if (typeof option === 'string') {
-      return option;
+    if (typeof option === "string") {
+      return { value: option, label: option };
     }
-    
-    // For currency options with iso_code, name, and symbol
+
     if (option.iso_code && option.name) {
-      return showSymbol && option.symbol 
+      const label = showSymbol && option.symbol
         ? `${option.iso_code} - ${option.name} (${option.symbol})`
         : `${option.iso_code} - ${option.name}`;
+      return { value: option.iso_code, label };
     }
-    
-    // For simple objects with value and label
-    if (option.value && option.label) {
-      return option.label;
-    }
-    
-    return option.toString();
-  };
 
-  const getOptionValue = (option) => {
-    if (typeof option === 'string') {
+    if (option.value && option.label) {
       return option;
     }
-    
-    if (option.iso_code) {
-      return option.iso_code;
-    }
-    
-    if (option.value) {
-      return option.value;
-    }
-    
-    return option.toString();
+
+    return { value: option.toString(), label: option.toString() };
   };
 
+  const selectOptions = options.map(renderOption);
+
+  // Find selected option
+  const selectedOption = selectOptions.find(opt => opt.value === value) || null;
+
   return (
-    <div className="mb-3">
+    <div className={`mb-3 ${className}`}>
       {label && (
         <label className="block font-medium mb-1">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      <select
+      <Select
         name={name}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        className={selectClassName}
+        value={selectedOption}
+        onChange={(selected) => onChange({ target: { name, value: selected?.value || "" } })}
+        options={selectOptions}
+        isDisabled={disabled}
+        placeholder={placeholder}
+        classNames={{
+          control: () => `border ${error ? "border-red-500" : "border-gray-300"} rounded`,
+        }}
         {...props}
-      >
-        <option value="" disabled>
-          {placeholder}
-        </option>
-        {options.map((option, index) => (
-          <option 
-            key={getOptionValue(option) || index} 
-            value={getOptionValue(option)}
-          >
-            {renderOption(option)}
-          </option>
-        ))}
-      </select>
+      />
       {error && (
         <p className="text-red-600 text-sm mt-1">{error}</p>
       )}

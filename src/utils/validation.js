@@ -2,7 +2,7 @@
 import { normalizeString } from "./format";
 
 export const validateUniqueName = (existing, name, excludeId = null) => {
-  const normalized = normalizeString(name);
+  const normalized = normalizeString(name || "");
   return !existing.some(
     (e) =>
       normalizeString(e.name) === normalized &&

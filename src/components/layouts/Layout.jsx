@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
     >
       <Navbar />
       <div
-        className={`${NAVBAR.MARGIN} ${modal.isOpen ? "grid-cols-[auto_65fr_35fr]" : "grid-cols-[auto_100fr]"} flex-1 grid overflow-hidden`}
+        className={`${NAVBAR.MARGIN_TOP} ${modal.isOpen ? "grid-cols-[auto_65fr_35fr]" : "grid-cols-[auto_100fr]"} flex-1 grid overflow-hidden`}
       >
         <Sidebar />
 

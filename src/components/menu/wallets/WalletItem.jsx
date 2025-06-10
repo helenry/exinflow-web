@@ -9,28 +9,31 @@ const WalletItem = ({
   return (
     <li
       onClick={() => setActiveWallet(wallet.id === activeWallet ? null : wallet.id)}
-      className={`p-2 flex justify-between items-center rounded-lg border ${wallet.id == activeWallet ? "border-red-500" : "border-gray-300"}`}
+      className={`p-2 flex justify-between items-center rounded-lg border ${
+        wallet.id == activeWallet ? "border-red-500" : "border-gray-300"
+      }`}
     >
       <div>
         <p>
-          <strong>Name:</strong> {wallet.name || "Unnamed"}
+          <strong style={{ color: `#${wallet.color}` }}>Name:</strong> {wallet.name || "Unnamed"}
         </p>
         <p>
-          <strong>Balance:</strong> {wallet.amount || 0}
+          <strong style={{ color: `#${wallet.color}` }}>Balance:</strong> {wallet.base_amount || 0}
         </p>
         <p>
-          <strong>Currency:</strong> {wallet.currency_code}
+          <strong style={{ color: `#${wallet.color}` }}>Currency:</strong> {wallet.currency_code}
         </p>
       </div>
       <div className="space-x-2">
         <button
-          onClick={() => handleEditWalletClick(wallet)}
+          onClick={(e) => handleEditWalletClick(e, wallet)}
           className="px-3 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700"
         >
           Edit
         </button>
+
         <button
-          onClick={() => handleDeleteWalletClick(wallet.id)}
+          onClick={(e) => handleDeleteWalletClick(e, wallet.id)}
           className="px-3 py-1 bg-red-600 text-white rounded-full hover:bg-red-700"
         >
           Delete

@@ -3,10 +3,11 @@ import React, { useCallback } from "react";
 import useModalStore from "../../../stores/modalStore";
 import WalletModal from "../../menu/wallets/WalletModal";
 import useWalletStore from "../../../stores/walletStore";
+import { MODAL } from "@/constants";
 
 const Modal = () => {
   const { closeModal, modal } = useModalStore();
-  const { createWallet, updateWallet, loading, error } = useWalletStore();
+  const { createWallet, updateWallet, loading } = useWalletStore();
 
   // Handle wallet modal submissions
   const handleWalletSubmit = useCallback(async (formData) => {
@@ -56,16 +57,14 @@ const Modal = () => {
   const title = getModalTitle();
 
   return (
-    <div className="m-4 p-4 rounded-lg bg-[#e8f8fc]">
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
-      
-      {error && (
-        <div className="mb-3 p-2 bg-red-100 border border-red-300 rounded text-red-700">
-          {error}
-        </div>
-      )}
-      
-      {renderModalContent()}
+    <div className={`${MODAL.MARGIN} ${MODAL.HEIGHT} bg-[#e8f8fc] p-4 rounded-lg flex justify-between items-center`}>
+      <div className="w-[100%] grid grid-rows-[8fr_84fr_8fr] gap-y-5 h-full">
+        <h2 className="text-xl font-semibold flex items-center">
+          {title}
+        </h2>
+        
+        {renderModalContent()}
+      </div>
     </div>
   );
 };

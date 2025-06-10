@@ -1,5 +1,6 @@
 // components/forms/ColorPicker.jsx
 import React, { useState, useEffect, useRef } from "react";
+import { COLOR_OPTIONS } from "../../constants/options/colors";
 
 const ColorPicker = ({
   label,
@@ -33,13 +34,6 @@ const ColorPicker = ({
   const isValidHex = (hex) => /^[A-F0-9]{6}$/i.test(hex);
   const previewColor = isValidHex(inputValue) ? `#${inputValue}` : "#CCCCCC";
 
-  const colorPalette = [
-    "00a6e0", "FFE66D", "4ECDC4", "45B7D1",
-    "96CEB4", "FFEAA7", "DDA0DD", "F4A261",
-    "E76F51", "2A9D8F", "264653", "F72585",
-    "4CC9F0", "7209B7", "FB8500", "219EBC"
-  ];
-
   const handleChange = (hex) => {
     const formatted = hex.replace("#", "").toUpperCase();
     setInputValue(formatted);
@@ -56,7 +50,9 @@ const ColorPicker = ({
       )}
 
       <div
-        className={`w-full h-10 rounded border cursor-pointer border-gray-300 ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+        className={`w-full h-10 rounded border cursor-pointer border-gray-300 ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
         style={{ backgroundColor: previewColor }}
         onClick={() => !disabled && setShowPalette(!showPalette)}
         title={`#${inputValue}`}
@@ -65,19 +61,18 @@ const ColorPicker = ({
       {showPalette && !disabled && (
         <div className="absolute z-10 mt-2 bg-white border rounded shadow-lg p-3 w-full">
           <div className="grid grid-cols-8 gap-2 mb-2">
-            {colorPalette.map((color) => (
+            {COLOR_OPTIONS.map((color) => (
               <button
-                key={color}
+                key={color.RAW}
                 type="button"
                 onClick={() => {
-                  handleChange(color);
+                  handleChange(color.RAW);
                   setShowPalette(false);
                 }}
-                className={`w-6 h-6 rounded-full border-2 transition-transform ${
-                  inputValue === color ? "border-black" : "border-transparent"
-                } hover:scale-110`}
-                style={{ backgroundColor: `#${color}` }}
-                title={`#${color}`}
+                className={`${color.BG} w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 ${
+                  inputValue === color.RAW ? "border-black" : "border-transparent"
+                }`}
+                title={`#${color.RAW}`}
               />
             ))}
           </div>

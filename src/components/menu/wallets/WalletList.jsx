@@ -28,7 +28,7 @@ const WalletList = ({
   }
 
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-2 overflow-y-auto">
       {wallets.map((wallet) => (
         <WalletItem
           wallet={wallet}
