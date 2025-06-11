@@ -108,7 +108,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "BTN",
     name: "Bhutanese Ngultrum",
-    symbol: "Ngultrum",
+    symbol: "Nu.",
   },
   {
     iso_code: "BWP",
@@ -138,7 +138,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "CHF",
     name: "Swiss Franc",
-    symbol: "CHF",
+    symbol: "SFr.",
   },
   {
     iso_code: "CLP",
@@ -183,7 +183,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "DJF",
     name: "Djiboutian Franc",
-    symbol: "Franc",
+    symbol: "Fdj",
   },
   {
     iso_code: "DKK",
@@ -258,12 +258,12 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "GMD",
     name: "Gambian Dalasi",
-    symbol: "Dalasi",
+    symbol: "D",
   },
   {
     iso_code: "GNF",
     name: "Guinean Franc",
-    symbol: "Franc",
+    symbol: "GFr",
   },
   {
     iso_code: "GTQ",
@@ -343,7 +343,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "JOD",
     name: "Jordanian Dinar",
-    symbol: "Dinar",
+    symbol: "JD",
   },
   {
     iso_code: "JPY",
@@ -368,7 +368,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "KMF",
     name: "Comorian Franc",
-    symbol: "Franc",
+    symbol: "CF",
   },
   {
     iso_code: "KPW",
@@ -428,7 +428,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "MAD",
     name: "Moroccan Dirham",
-    symbol: "Dirham",
+    symbol: "د.م.",
   },
   {
     iso_code: "MDL",
@@ -468,7 +468,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "MVR",
     name: "Maldivian Rufiyaa",
-    symbol: "Rufiyaa",
+    symbol: "MVR",
   },
   {
     iso_code: "MWK",
@@ -658,7 +658,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "SZL",
     name: "Swazi Lilangeni",
-    symbol: "Lilangeni",
+    symbol: "L",
   },
   {
     iso_code: "THB",
@@ -668,17 +668,17 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "TJS",
     name: "Tajikistani Somoni",
-    symbol: "Somoni",
+    symbol: "SM",
   },
   {
     iso_code: "TMT",
     name: "Turkmenistani Manat",
-    symbol: "Manat",
+    symbol: "T",
   },
   {
     iso_code: "TND",
     name: "Tunisian Dinar",
-    symbol: "Dinar",
+    symbol: "DT",
   },
   {
     iso_code: "TOP",
@@ -703,7 +703,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "TZS",
     name: "Tanzanian Shilling",
-    symbol: "Shilling",
+    symbol: "tzs",
   },
   {
     iso_code: "UAH",
@@ -753,7 +753,7 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "XAF",
     name: "Central African CFA Franc BEAC",
-    symbol: "CFA Franc BEAC",
+    symbol: "F.CFA",
   },
   {
     iso_code: "XCD",
@@ -763,17 +763,17 @@ export const CURRENCY_OPTIONS = [
   {
     iso_code: "XDR",
     name: "IMF Special Drawing Rights",
-    symbol: "Special Drawing Rights",
+    symbol: "XDR",
   },
   {
     iso_code: "XOF",
     name: "CFA Franc",
-    symbol: "Franc",
+    symbol: "CFA",
   },
   {
     iso_code: "XPF",
     name: "CFP Franc",
-    symbol: "Franc",
+    symbol: "₣",
   },
   {
     iso_code: "YER",

@@ -2,7 +2,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import useAuthStore from "../stores/authStore";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { paths } from "./allRoutes";
 
 const PrivateRoute = ({ children }) => {

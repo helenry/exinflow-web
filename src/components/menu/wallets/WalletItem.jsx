@@ -1,33 +1,32 @@
 import { LuPencil, LuTrash2 } from "react-icons/lu";
-import CircleButton from "../../buttons/CircleButton";
+import CircleButton from "../../ui/buttons/CircleButton";
 import { formatMoney, getCurrencySymbol } from "../../../utils/format";
 
 // components/menu/wallets/WalletItem.jsx
 const WalletItem = ({
   wallet,
   activeWallet,
-  setActiveWallet,
+  handleWalletItemClick,
   handleEditWalletClick,
   handleDeleteWalletClick,
 }) => {
-  const handleWalletItemClick = (e) => {
-    e.stopPropagation();
-    setActiveWallet(wallet.id);
-  };
-
+  const currency = getCurrencySymbol(wallet.currency_code)
   return (
     <li
-      onClick={handleWalletItemClick}
+      onClick={(e) => handleWalletItemClick(e, wallet)}
       className={`p-2 flex justify-between items-center rounded-lg border ${
-        wallet.id == activeWallet ? "border-red-500" : "border-gray-300"
+        activeWallet && (wallet.id == activeWallet.id) ? "border-red-500" : "border-gray-300"
       }`}
     >
       <div>
-        <p>
+        <p className="text-lg">
           <strong style={{ color: `#${wallet.color}` }}>{wallet.name || "Unnamed"}</strong>
         </p>
         <p>
-          {getCurrencySymbol(wallet.currency_code)}{formatMoney(wallet.base_amount || 0)}
+          {currency?.symbol}{formatMoney(wallet.base_amount || 0)}
+        </p>
+        <p className="text-gray-400">
+          ({currency?.iso_code}) {currency?.name}
         </p>
       </div>
 

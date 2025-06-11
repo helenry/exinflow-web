@@ -18,7 +18,7 @@ export const getCurrencySymbol = (isoCode) => {
   const currency = CURRENCY_OPTIONS.find(
     (item) => item.iso_code === isoCode.toUpperCase()
   );
-  return currency?.symbol;
+  return currency;
 }
 
 export const formatMoney = (amount) => {
@@ -28,4 +28,10 @@ export const formatMoney = (amount) => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+}
+
+export const formatDonutChartData = (data, type) => {
+  if(type == 'wallet') {
+    
+  }
 }

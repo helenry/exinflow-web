@@ -8,6 +8,7 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "../api/firebase";
 import { DEFAULT_CREATOR, DEFAULT_WALLET } from "@/constants";
@@ -17,6 +18,7 @@ export const getWalletsService = async (userUid) => {
     collection(db, "wallets"),
     where("is_deleted", "==", false),
     where("user_uid", "==", userUid),
+    orderBy("created_at", "asc")
   );
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));

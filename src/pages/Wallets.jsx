@@ -1,6 +1,6 @@
 // pages/Wallets.jsx
-import { useEffect, useState } from "react";
-import Title from "@/components/texts/Title";
+import { useCallback, useEffect, useState } from "react";
+import Title from "@/components/ui/texts/Title";
 import WalletList from "@/components/menu/wallets/WalletList";
 import useAuthStore from "../stores/authStore";
 import useWalletStore from "../stores/walletStore";
@@ -10,6 +10,7 @@ import {
   deleteWalletHandler,
   editWalletHandler,
 } from "../handlers/walletHandlers";
+import WalletSummary from "../components/menu/wallets/WalletSummary";
 
 const Wallets = () => {
   // TYPE
@@ -17,6 +18,7 @@ const Wallets = () => {
 
   // STATES
   const [activeWallet, setActiveWallet] = useState(null);
+  const [summaryExpanded, setSummaryExpanded] = useState(true);
 
   // STORES
   const { currentUser } = useAuthStore();
@@ -30,6 +32,14 @@ const Wallets = () => {
   }, [currentUser?.uid, setCurrentUser]);
 
   // CLICK HANDLER
+  const toggleExpand = () => {
+    setSummaryExpanded((prev) => !prev);
+  };
+
+  const handleWalletItemClick = (e, wallet) => {
+    e.stopPropagation();
+    setActiveWallet(wallet);
+  };
   const handleCreateWalletClick = createWalletHandler(openModal, type);
   const handleEditWalletClick = editWalletHandler(openModal, type);
   const handleDeleteWalletClick = deleteWalletHandler(
@@ -39,28 +49,44 @@ const Wallets = () => {
     type,
   );
 
+  const handleContainerClick = useCallback((e) => {
+    if (e.target === e.currentTarget) {
+      setActiveWallet(null);
+    }
+  }, [setActiveWallet]);
+
   // JSX
   return (
     <div className="">
-      <div className="flex justify-between items-center mb-6">
-        <Title>Wallets</Title>
-        <button
-          onClick={handleCreateWalletClick}
-          className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
-        >
-          + New Wallet
-        </button>
-      </div>
-
-      <WalletList
-        wallets={wallets}
+      <WalletSummary
         activeWallet={activeWallet}
-        setActiveWallet={setActiveWallet}
-        handleEditWalletClick={handleEditWalletClick}
-        handleDeleteWalletClick={handleDeleteWalletClick}
-        loading={loading}
-        error={error}
+        summaryExpanded={summaryExpanded}
+        setSummaryExpanded={setSummaryExpanded}
+        toggleExpand={toggleExpand}
       />
+
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <Title>Wallets</Title>
+          <button
+            onClick={handleCreateWalletClick}
+            className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
+          >
+            + New Wallet
+          </button>
+        </div>
+
+        <WalletList
+          wallets={wallets}
+          activeWallet={activeWallet}
+          handleWalletItemClick={handleWalletItemClick}
+          handleEditWalletClick={handleEditWalletClick}
+          handleDeleteWalletClick={handleDeleteWalletClick}
+          handleContainerClick={handleContainerClick}
+          loading={loading}
+          error={error}
+        />
+      </div>
     </div>
   );
 };

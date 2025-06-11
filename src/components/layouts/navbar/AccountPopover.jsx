@@ -5,7 +5,7 @@ import { signOut } from "firebase/auth";
 import { FaSignOutAlt } from "react-icons/fa";
 import { auth } from "../../../api/firebase";
 import { paths } from "../../../routes/allRoutes";
-import CircleButton from "../../buttons/CircleButton";
+import CircleButton from "../../ui/buttons/CircleButton";
 import useAuthStore from "../../../stores/authStore";
 
 export default function AccountPopover() {

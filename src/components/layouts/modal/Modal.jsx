@@ -6,7 +6,7 @@ import useWalletStore from "../../../stores/walletStore";
 import { MODAL } from "@/constants";
 import { PiXBold } from "react-icons/pi";
 import { LuX } from "react-icons/lu";
-import CircleButton from "../../buttons/CircleButton";
+import CircleButton from "../../ui/buttons/CircleButton";
 
 const Modal = () => {
   const { closeModal, modal } = useModalStore();

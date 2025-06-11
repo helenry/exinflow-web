@@ -1,31 +1,17 @@
 // components/menu/wallets/WalletList.jsx
 import { useCallback } from "react";
-import useClickOutside from "../../../hooks/useClickOutside";
 import WalletItem from "./WalletItem";
 
 const WalletList = ({
   wallets,
   activeWallet,
-  setActiveWallet,
+  handleWalletItemClick,
   handleEditWalletClick,
   handleDeleteWalletClick,
+  handleContainerClick,
   loading,
   error,
 }) => {
-  const handleContainerClick = useCallback((e) => {
-    // Only deselect if clicking directly on the container, not on child items
-    if (e.target === e.currentTarget) {
-      setActiveWallet(null);
-    }
-  }, [setActiveWallet]);
-
-  // Memoize the callback to prevent unnecessary re-renders
-  const handleClickOutside = useCallback(() => {
-    setActiveWallet(null);
-  }, [setActiveWallet]);
-
-  const walletListRef = useClickOutside(handleClickOutside);
-
   if (loading) {
     return <p>Loading wallets...</p>;
   }
@@ -45,7 +31,6 @@ const WalletList = ({
 
   return (
     <ul
-      ref={walletListRef}
       onClick={handleContainerClick}
       className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4"
     >
@@ -54,7 +39,7 @@ const WalletList = ({
           key={wallet.id} // Add a key if available
           wallet={wallet}
           activeWallet={activeWallet}
-          setActiveWallet={setActiveWallet}
+          handleWalletItemClick={handleWalletItemClick}
           handleEditWalletClick={handleEditWalletClick}
           handleDeleteWalletClick={handleDeleteWalletClick}
         />

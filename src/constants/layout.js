@@ -9,6 +9,7 @@ export const NAVBAR = {
 
 export const SIDEBAR = {
   WIDTH: "w-20",
+  WIDTH_RAW: 20
 };
 
 export const MODAL = {

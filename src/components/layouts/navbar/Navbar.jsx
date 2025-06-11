@@ -4,7 +4,7 @@ import { NAVBAR } from "@/constants";
 import logo_color from "../../../assets/images/logo/logo_color.png";
 import Menus from "./Menus";
 import { LuBell } from "react-icons/lu";
-import CircleButton from "../../buttons/CircleButton";
+import CircleButton from "../../ui/buttons/CircleButton";
 import { PiGearSix, PiGearSixBold } from "react-icons/pi";
 
 export default function Navbar() {
