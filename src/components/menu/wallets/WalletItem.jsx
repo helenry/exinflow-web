@@ -1,3 +1,7 @@
+import { LuPencil, LuTrash2 } from "react-icons/lu";
+import CircleButton from "../../buttons/CircleButton";
+import { formatMoney, getCurrencySymbol } from "../../../utils/format";
+
 // components/menu/wallets/WalletItem.jsx
 const WalletItem = ({
   wallet,
@@ -6,38 +10,36 @@ const WalletItem = ({
   handleEditWalletClick,
   handleDeleteWalletClick,
 }) => {
+  const handleWalletItemClick = (e) => {
+    e.stopPropagation();
+    setActiveWallet(wallet.id);
+  };
+
   return (
     <li
-      onClick={() => setActiveWallet(wallet.id === activeWallet ? null : wallet.id)}
+      onClick={handleWalletItemClick}
       className={`p-2 flex justify-between items-center rounded-lg border ${
         wallet.id == activeWallet ? "border-red-500" : "border-gray-300"
       }`}
     >
       <div>
         <p>
-          <strong style={{ color: `#${wallet.color}` }}>Name:</strong> {wallet.name || "Unnamed"}
+          <strong style={{ color: `#${wallet.color}` }}>{wallet.name || "Unnamed"}</strong>
         </p>
         <p>
-          <strong style={{ color: `#${wallet.color}` }}>Balance:</strong> {wallet.base_amount || 0}
-        </p>
-        <p>
-          <strong style={{ color: `#${wallet.color}` }}>Currency:</strong> {wallet.currency_code}
+          {getCurrencySymbol(wallet.currency_code)}{formatMoney(wallet.base_amount || 0)}
         </p>
       </div>
-      <div className="space-x-2">
-        <button
-          onClick={(e) => handleEditWalletClick(e, wallet)}
-          className="px-3 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700"
-        >
-          Edit
-        </button>
 
-        <button
-          onClick={(e) => handleDeleteWalletClick(e, wallet.id)}
-          className="px-3 py-1 bg-red-600 text-white rounded-full hover:bg-red-700"
-        >
-          Delete
-        </button>
+      <div className="space-x-2">
+        <CircleButton
+          onClick={() => handleEditWalletClick(wallet)}
+          icon={LuPencil}
+        />
+        <CircleButton
+          onClick={() => handleDeleteWalletClick(wallet.id)}
+          icon={LuTrash2}
+        />
       </div>
     </li>
   );

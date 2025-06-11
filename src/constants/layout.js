@@ -18,5 +18,5 @@ export const MODAL = {
   MARGIN_Y_PIXEL: "32px",
   MARGIN_Y_PIXEL_RAW: 32,
 
-  HEIGHT: "h-[calc(100vh-104px)]" // screen height - NAVBAR.HEIGHT_PIXEL - MODAL.MARGIN_Y_PIXEL
+  HEIGHT: "h-[calc(100vh-72px-16px-16px)]" // screen height - NAVBAR.HEIGHT_PIXEL - MODAL.MARGIN_PIXEL - MODAL.MARGIN_PIXEL
 }

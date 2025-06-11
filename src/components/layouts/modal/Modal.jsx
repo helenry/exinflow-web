@@ -4,6 +4,9 @@ import useModalStore from "../../../stores/modalStore";
 import WalletModal from "../../menu/wallets/WalletModal";
 import useWalletStore from "../../../stores/walletStore";
 import { MODAL } from "@/constants";
+import { PiXBold } from "react-icons/pi";
+import { LuX } from "react-icons/lu";
+import CircleButton from "../../buttons/CircleButton";
 
 const Modal = () => {
   const { closeModal, modal } = useModalStore();
@@ -59,9 +62,15 @@ const Modal = () => {
   return (
     <div className={`${MODAL.MARGIN} ${MODAL.HEIGHT} bg-[#e8f8fc] p-4 rounded-lg flex justify-between items-center`}>
       <div className="w-[100%] grid grid-rows-[8fr_84fr_8fr] gap-y-5 h-full">
-        <h2 className="text-xl font-semibold flex items-center">
-          {title}
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">
+            {title}
+          </h2>
+          <CircleButton
+            icon={LuX}
+            onClick={closeModal}
+          />
+        </div>
         
         {renderModalContent()}
       </div>

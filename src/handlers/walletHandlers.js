@@ -6,8 +6,7 @@ export const createWalletHandler = (openModal, type) => () => {
   });
 };
 
-export const editWalletHandler = (openModal, type) => (e, wallet) => {
-  e.stopPropagation();
+export const editWalletHandler = (openModal, type) => (wallet) => {
   openModal({
     type: type,
     action: "edit",
@@ -17,8 +16,7 @@ export const editWalletHandler = (openModal, type) => (e, wallet) => {
 };
 
 export const deleteWalletHandler =
-  (deleteWallet, closeModal, modal, type) => (e, walletId) => {
-    e.stopPropagation();
+  (deleteWallet, closeModal, modal, type) => (walletId) => {
     if (window.confirm("Are you sure you want to delete this wallet?")) {
       if (modal.isOpen && modal.type === type && modal.itemId === walletId) {
         closeModal();

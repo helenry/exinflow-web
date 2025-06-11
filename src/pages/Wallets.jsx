@@ -29,7 +29,7 @@ const Wallets = () => {
     setCurrentUser(currentUser?.uid);
   }, [currentUser?.uid, setCurrentUser]);
 
-  // CED HANDLER
+  // CLICK HANDLER
   const handleCreateWalletClick = createWalletHandler(openModal, type);
   const handleEditWalletClick = editWalletHandler(openModal, type);
   const handleDeleteWalletClick = deleteWalletHandler(
