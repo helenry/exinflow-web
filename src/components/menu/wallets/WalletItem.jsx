@@ -11,11 +11,12 @@ const WalletItem = ({
   handleDeleteWalletClick,
 }) => {
   const currency = getCurrencySymbol(wallet.currency_code)
+  
   return (
     <li
       onClick={(e) => handleWalletItemClick(e, wallet.id)}
       className={`p-2 flex justify-between items-center rounded-lg border ${
-        activeWallet && (wallet.id == activeWallet.id) ? "border-red-500" : "border-gray-300"
+        activeWallet && (wallet.id == activeWallet) ? "border-red-500" : "border-gray-300"
       }`}
     >
       <div>

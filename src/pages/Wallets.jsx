@@ -62,6 +62,7 @@ const Wallets = () => {
       <WalletSummary
         wallets={wallets}
         activeWallet={activeWallet}
+        setActiveWallet={setActiveWallet}
         summaryExpanded={summaryExpanded}
         setSummaryExpanded={setSummaryExpanded}
         toggleExpand={toggleExpand}

@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import { PieChart as MUIPieChart } from '@mui/x-charts';
 
-const PieChart = ({ data }) => {
-  const [selectedId, setSelectedId] = useState(null);
-
+const PieChart = ({
+  data,
+  activeWallet,
+  setActiveWallet
+}) => {
   // Convert hex to rgba
   const hexToRgba = (hex, alpha = 1) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -17,7 +19,7 @@ const PieChart = ({ data }) => {
     value: item.base_amount,
     label: item.name,
     color:
-      selectedId === null || selectedId === item.id
+      activeWallet === null || activeWallet === item.id
         ? `#${item.color}`
         : hexToRgba(`#${item.color}`, 0.2),
   }));
@@ -36,7 +38,7 @@ const PieChart = ({ data }) => {
         onItemClick={(event, itemIdentifier) => {
           const clickedIndex = itemIdentifier.dataIndex;
           const clickedId = data[clickedIndex]?.id;
-          setSelectedId(prevId => prevId === clickedId ? null : clickedId);
+          setActiveWallet(prevId => prevId === clickedId ? null : clickedId);
         }}
         width={250}
         height={250}

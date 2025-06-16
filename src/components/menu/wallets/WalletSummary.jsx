@@ -7,11 +7,12 @@ import { PieChart } from "../../charts/PieChart";
 const WalletSummary = ({
   wallets,
   activeWallet,
+  setActiveWallet,
   summaryExpanded,
   toggleExpand
 }) => {
   const wallet = wallets.find(wallet => wallet.id == activeWallet);
-  if(wallet & activeWallet) wallet.currency = getCurrencySymbol(wallet.currency_code)
+  if(wallet && activeWallet) wallet.currency = getCurrencySymbol(wallet.currency_code)
 
   return (
     <div className="rounded-lg p-4 border border-gray-200 mb-5">
@@ -29,6 +30,8 @@ const WalletSummary = ({
           <div className="col-span-3">
             <PieChart
               data={wallets}
+              activeWallet={activeWallet}
+              setActiveWallet={setActiveWallet}
             />
           </div>
 
