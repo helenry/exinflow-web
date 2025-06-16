@@ -36,15 +36,16 @@ const Wallets = () => {
     setSummaryExpanded((prev) => !prev);
   };
 
-  const handleWalletItemClick = (e, wallet) => {
+  const handleWalletItemClick = (e, walletId) => {
     e.stopPropagation();
-    setActiveWallet(wallet);
+    setActiveWallet(walletId);
   };
   const handleCreateWalletClick = createWalletHandler(openModal, type);
   const handleEditWalletClick = editWalletHandler(openModal, type);
   const handleDeleteWalletClick = deleteWalletHandler(
     deleteWallet,
     closeModal,
+    setActiveWallet,
     modal,
     type,
   );
@@ -59,6 +60,7 @@ const Wallets = () => {
   return (
     <div className="">
       <WalletSummary
+        wallets={wallets}
         activeWallet={activeWallet}
         summaryExpanded={summaryExpanded}
         setSummaryExpanded={setSummaryExpanded}

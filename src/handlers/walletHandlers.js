@@ -16,8 +16,9 @@ export const editWalletHandler = (openModal, type) => (wallet) => {
 };
 
 export const deleteWalletHandler =
-  (deleteWallet, closeModal, modal, type) => (walletId) => {
+  (deleteWallet, closeModal, setActiveWallet, modal, type) => (walletId) => {
     if (window.confirm("Are you sure you want to delete this wallet?")) {
+      setActiveWallet(null)
       if (modal.isOpen && modal.type === type && modal.itemId === walletId) {
         closeModal();
       }
