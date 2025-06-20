@@ -15,7 +15,7 @@ const WalletSummary = ({
   if(wallet && activeWallet) wallet.currency = getCurrencySymbol(wallet.currency_code)
 
   return (
-    <div className="rounded-lg p-4 border border-gray-200 mb-5">
+    <div className="rounded-lg px-4 py-2 border border-gray-200 mb-5">
       <div className="flex justify-between items-center">
         <p>Summary</p>
         <CircleButton
@@ -33,19 +33,21 @@ const WalletSummary = ({
               activeWallet={activeWallet}
               setActiveWallet={setActiveWallet}
             />
+            {/* 
+              - total/amount active
+              - percentage active
+              - total/amount including saving and investment
+              - percentage including saving and investment
+              - total transaction count
+              - total categories used
+            */}
           </div>
 
           <div className="col-span-7">
             {wallet && activeWallet && (
               <>
-                <p className="text-lg">
-                  <strong style={{ color: `#${wallet.color}` }}>{wallet.name || "Unnamed"}</strong>
-                </p>
-                <p>
+                <p className="text-4xl">
                   {wallet.currency?.symbol}{formatMoney(wallet.base_amount || 0)}
-                </p>
-                <p className="text-gray-400">
-                  ({wallet.currency?.iso_code}) {wallet.currency?.name}
                 </p>
               </>
             )}

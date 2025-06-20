@@ -24,6 +24,11 @@ const PieChart = ({
         : hexToRgba(`#${item.color}`, 0.2),
   }));
 
+  const handleItemClick = (clickedIndex) => {
+    const clickedId = data[clickedIndex]?.id;
+    setActiveWallet(prevId => prevId === clickedId ? null : clickedId);
+  };
+
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <MUIPieChart
@@ -35,16 +40,16 @@ const PieChart = ({
             cornerRadius: 5,
           },
         ]}
-        onItemClick={(event, itemIdentifier) => {
-          const clickedIndex = itemIdentifier.dataIndex;
-          const clickedId = data[clickedIndex]?.id;
-          setActiveWallet(prevId => prevId === clickedId ? null : clickedId);
-        }}
+        onItemClick={(event, itemIdentifier) => handleItemClick(itemIdentifier.dataIndex)}
         width={250}
         height={250}
         margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
         slotProps={{
-          legend: { hidden: true },
+          legend: {
+            onItemClick: (event, legendItem, index) => {
+              handleItemClick(index);
+            }
+          }
         }}
       />
     </div>

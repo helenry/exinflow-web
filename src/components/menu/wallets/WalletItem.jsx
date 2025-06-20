@@ -15,9 +15,11 @@ const WalletItem = ({
   return (
     <li
       onClick={(e) => handleWalletItemClick(e, wallet.id)}
-      className={`p-2 flex justify-between items-center rounded-lg border ${
-        activeWallet && (wallet.id == activeWallet) ? "border-red-500" : "border-gray-300"
-      }`}
+      className="p-2 flex justify-between items-center rounded-lg border"
+      style={{
+        borderColor: activeWallet && wallet.id == activeWallet ? `#${wallet.color}` : '#e6e6e6',
+        borderWidth: 1,
+      }}
     >
       <div>
         <p className="text-lg">
