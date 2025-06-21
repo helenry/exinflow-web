@@ -1,5 +1,5 @@
 // constants/index.js
-export * from './themeColors';
+export * from './colors';
 export * from './env';
 export * from './layout';
 export * from './formBases';
@@ -9,6 +9,6 @@ export * from './formats';
 export * from './configs';
 export * from './uis';
 
-export * from './options/currencies';
-export * from './options/icons';
-export * from './options/colors';
+export * from './options/currencyOptions';
+export * from './options/iconOptions';
+export * from './options/colorOptions';

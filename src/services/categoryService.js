@@ -32,6 +32,8 @@ export const getCategoriesService = async (userUid) => {
       id: doc.id, 
       ...doc.data() 
     }));
+    console.log("categories")
+    console.log(categories)
 
     const subcategories = subcategoriesSnapshot.docs.map((doc) => ({ 
       id: doc.id, 

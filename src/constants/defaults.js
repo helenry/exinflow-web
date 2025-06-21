@@ -1,5 +1,5 @@
 // constants/defaults.js
-import { THEME_COLOR } from "./themeColors";
+import { THEME_COLOR } from "./colors";
 import { TRANSACTION_TYPES } from "./types";
 
 export const DEFAULT_CREATOR = "system";

@@ -1,8 +1,8 @@
 // components/menu/wallets/WalletItem.jsx
-import { LuPencil, LuTrash2 } from "react-icons/lu";
 import CircleButton from "../../ui/buttons/CircleButton";
 import { formatMoney, getCurrencySymbol } from "../../../utils/format";
 import Tooltip from "../../ui/Tooltip";
+import { ICONS } from "../../../constants/icons";
 
 const WalletItem = ({
   wallet,
@@ -38,11 +38,11 @@ const WalletItem = ({
 
       <div className="space-x-2 flex">
         <Tooltip key={`${wallet.id}-edit`} content="Edit" position="top" delay={500}>
-          <CircleButton onClick={() => handleEditWalletClick(wallet)} icon={LuPencil} />
+          <CircleButton onClick={() => handleEditWalletClick(wallet)} icon={ICONS.EDIT} />
         </Tooltip>
 
         <Tooltip key={`${wallet.id}-delete`} content="Delete" position="top" delay={500}>
-          <CircleButton onClick={() => handleDeleteWalletClick(wallet.id)} icon={LuTrash2} />
+          <CircleButton onClick={() => handleDeleteWalletClick(wallet.id)} icon={ICONS.DELETE} />
         </Tooltip>
       </div>
     </li>

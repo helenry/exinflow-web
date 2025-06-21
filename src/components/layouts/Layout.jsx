@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
       >
         <Sidebar />
 
-        <main className="overflow-y-auto px-4 pb-4">{children}</main>
+        <main className="overflow-y-auto pl-4 pr-2 pb-4">{children}</main>
 
         <Modal />
       </div>

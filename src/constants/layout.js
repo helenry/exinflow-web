@@ -13,7 +13,7 @@ export const SIDEBAR = {
 };
 
 export const MODAL = {
-  MARGIN: "mx-4 mb-4",
+  MARGIN: "ml-2 mr-4 mb-4",
   MARGIN_PIXEL: "16px",
   MARGIN_PIXEL_RAW: 16,
   MARGIN_Y_PIXEL: "32px",

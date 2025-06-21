@@ -1,6 +1,6 @@
 // components/forms/ColorPicker.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { COLOR_OPTIONS } from "../../constants/options/colors";
+import { COLOR_OPTIONS } from "../../constants/options/colorOptions";
 
 const ColorPicker = ({
   label,
