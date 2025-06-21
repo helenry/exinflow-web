@@ -1,44 +1,28 @@
 // components/ui/Popover.jsx
-import { useCallback } from 'react';
-import useClickOutside from '../../hooks/useClickOutside';
-import { SIDEBAR } from '../../constants/layout';
+import React from 'react';
 
-const Popover = ({ 
+export default function Popover({ 
   isOpen, 
-  onClose, 
-  children, 
-  position = 'right',
-  className = '',
-  offset = 8 
-}) => {
-  const handleClickOutside = useCallback(() => {
-    if (isOpen) {
-      onClose();
-    }
-  }, [isOpen, onClose]);
-
-  const popoverRef = useClickOutside(handleClickOutside);
-
+  position = { top: 0 }, 
+  children,
+  className = "",
+  style = {},
+  onClose
+}) {
   if (!isOpen) return null;
 
-  const positionClasses = {
-    right: `left-${SIDEBAR.WIDTH_RAW} ml-${offset}`,
-    bottom: `top-full mt-${offset}`,
+  const defaultStyle = { 
+    top: position.top,
+    ...style 
   };
 
   return (
     <div
-      ref={popoverRef}
-      className={`absolute z-50 ${positionClasses[position]} ${className}`}
-      style={{ 
-        transform: position === 'right' 
-          ? 'translateY(-50%)' 
-          : 'translateX(-50%)' 
-      }}
+      className={`fixed left-16 z-50 w-42 bg-white rounded-lg shadow-lg border border-gray-200 ${className}`}
+      style={defaultStyle}
+      data-popover
     >
       {children}
     </div>
   );
-};
-
-export default Popover;
+}

@@ -56,7 +56,17 @@ const Dropdown = ({
         isDisabled={disabled}
         placeholder={placeholder}
         classNames={{
-          control: () => `border ${error ? "border-red-500" : "border-gray-300"} rounded`,
+          control: () => `border ${error ? "border-red-500" : "border-gray-300"} rounded-full`,
+        }}
+        styles={{
+          control: (base) => ({
+            ...base,
+            borderRadius: '9999px', // Forces a fully rounded control
+          }),
+          menu: (base) => ({
+            ...base,
+            borderRadius: '12px',
+          }),
         }}
         {...props}
       />

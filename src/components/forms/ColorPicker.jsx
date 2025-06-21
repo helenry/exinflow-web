@@ -50,7 +50,7 @@ const ColorPicker = ({
       )}
 
       <div
-        className={`w-full h-10 rounded border cursor-pointer border-gray-300 ${
+        className={`w-full h-10 rounded-full border cursor-pointer border-gray-300 ${
           disabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
         style={{ backgroundColor: previewColor }}

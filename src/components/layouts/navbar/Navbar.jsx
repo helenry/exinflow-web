@@ -6,6 +6,7 @@ import Menus from "./Menus";
 import { LuBell } from "react-icons/lu";
 import CircleButton from "../../ui/buttons/CircleButton";
 import { PiGearSix, PiGearSixBold } from "react-icons/pi";
+import Tooltip from "../../ui/Tooltip";
 
 export default function Navbar() {
   return (
@@ -17,11 +18,26 @@ export default function Navbar() {
       <Menus />
 
       <div className="flex items-center gap-3">
-        <CircleButton
-          icon={PiGearSixBold}
-          onClick={() => console.log("Clicked!")}
-        />
-        <CircleButton icon={LuBell} onClick={() => console.log("Clicked!")} />
+        <Tooltip
+          key={`navbar-settings`}
+          content="Settngs"
+          position="bottom"
+          delay={500}
+        >
+          <CircleButton
+            icon={PiGearSixBold}
+            onClick={() => console.log("Clicked!")}
+          />
+        </Tooltip>
+
+        <Tooltip
+          key={`navbar-notifications`}
+          content="Notifications"
+          position="bottom"
+          delay={500}
+        >
+          <CircleButton icon={LuBell} onClick={() => console.log("Clicked!")} />
+        </Tooltip>
         <AccountPopover />
       </div>
     </div>

@@ -89,10 +89,6 @@ export const COLOR_OPTIONS = [
     BG: "bg-[#FF6347]"
   }, // Tomato
   {
-    RAW: "FFD700",
-    BG: "bg-[#FFD700]"
-  }, // Gold (again, but vibrant)
-  {
     RAW: "00FA9A",
     BG: "bg-[#00FA9A]"
   }, // Medium Spring Green

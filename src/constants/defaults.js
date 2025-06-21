@@ -3,6 +3,7 @@ import { THEME_COLOR } from "./themeColors";
 import { TRANSACTION_TYPES } from "./types";
 
 export const DEFAULT_CREATOR = "system";
+export const DEFAULT_CURRENCY = "IDR";
 
 export const DEFAULT_WALLET = {
   name: "Cash",

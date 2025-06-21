@@ -6,11 +6,17 @@ export default function CircleButton({
   imageSrc,
   onClick,
   size = 42,
+  iconSize = 18,
+  isActive = false,
 }) {
   return (
     <button
       onClick={onClick}
-      className="flex items-center justify-center rounded-full bg-white transition cursor-pointer text-gray-600"
+      className={`flex items-center justify-center rounded-full transition cursor-pointer ${
+        isActive 
+          ? 'bg-blue-100 text-blue-600 shadow-md' 
+          : 'bg-white text-gray-600 hover:bg-gray-50'
+      }`}
       style={{ width: size, height: size }}
     >
       {imageSrc ? (
@@ -20,7 +26,7 @@ export default function CircleButton({
           className="w-full h-full rounded-full object-cover"
         />
       ) : (
-        Icon && <Icon size={18} />
+        Icon && <Icon size={iconSize} />
       )}
     </button>
   );

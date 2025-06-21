@@ -3,7 +3,7 @@ import { routes } from "../../../routes/allRoutes";
 import MenuItem from "./MenuItem";
 
 export default function Menus() {
-  const menus = routes.filter((r) => r.isInSidebar);
+  const menus = routes.filter((r) => r.isInNavbar);
 
   return (
     <nav className="flex gap-2 p-2 rounded-full bg-[#e8f8fc]/75 backdrop-blur-lg border border-white/75">

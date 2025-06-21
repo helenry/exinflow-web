@@ -13,13 +13,51 @@ import { db } from "../api/firebase";
 import { DEFAULT_CATEGORIES, DEFAULT_CREATOR } from "@/constants";
 
 export const getCategoriesService = async (userUid) => {
-  const q = query(
-    collection(db, "categories"),
-    where("is_deleted", "==", false),
-    where("user_uid", "==", userUid),
-  );
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  try {
+    // Execute both queries in parallel - this is the key optimization
+    const [categoriesSnapshot, subcategoriesSnapshot] = await Promise.all([
+      getDocs(query(
+        collection(db, "categories"),
+        where("is_deleted", "==", false),
+        where("user_uid", "==", userUid)
+      )),
+      getDocs(query(
+        collection(db, "subcategories"),
+        where("is_deleted", "==", false),
+        where("user_uid", "==", userUid) // Assuming subcategories also have user_uid
+      ))
+    ]);
+
+    const categories = categoriesSnapshot.docs.map((doc) => ({ 
+      id: doc.id, 
+      ...doc.data() 
+    }));
+
+    const subcategories = subcategoriesSnapshot.docs.map((doc) => ({ 
+      id: doc.id, 
+      ...doc.data() 
+    }));
+
+    // Create a Map for O(1) lookup performance instead of reduce
+    const subcategoriesMap = new Map();
+    subcategories.forEach(subcategory => {
+      const categoryId = subcategory.category_id;
+      if (!subcategoriesMap.has(categoryId)) {
+        subcategoriesMap.set(categoryId, []);
+      }
+      subcategoriesMap.get(categoryId).push(subcategory);
+    });
+
+    // Combine categories with their subcategories
+    return categories.map(category => ({
+      ...category,
+      subcategories: subcategoriesMap.get(category.id) || []
+    }));
+
+  } catch (error) {
+    console.error('Error fetching categories with subcategories:', error);
+    throw error;
+  }
 };
 
 export const createCategoryService = async (newCategory) =>

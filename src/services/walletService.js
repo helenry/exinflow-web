@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../api/firebase";
 import { DEFAULT_CREATOR, DEFAULT_WALLET } from "@/constants";
+import { DEFAULT_CURRENCY } from "../constants";
 
 export const getWalletsService = async (userUid) => {
   const q = query(
@@ -45,7 +46,7 @@ export const createStarterWalletService = async (userId) => {
   if (snapshot.empty) {
     await addDoc(walletsRef, {
       ...DEFAULT_WALLET,
-      currency_code: "IDR",
+      currency_code: DEFAULT_CURRENCY,
       user_uid: userId,
       created_at: serverTimestamp(),
       created_by: DEFAULT_CREATOR,

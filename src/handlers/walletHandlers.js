@@ -1,24 +1,27 @@
 // handlers/walletHandlers.js
-export const createWalletHandler = (openModal, type) => () => {
+const type = "wallet";
+
+export const createWalletHandler = (openModal) => () => {
   openModal({
-    type: type,
+    type,
     action: "create",
   });
 };
 
-export const editWalletHandler = (openModal, type) => (wallet) => {
+export const editWalletHandler = (openModal) => (wallet) => {
   openModal({
-    type: type,
+    type,
     action: "edit",
     itemId: wallet.id,
     data: wallet,
   });
 };
 
-export const deleteWalletHandler =
-  (deleteWallet, closeModal, setActiveWallet, modal, type) => (walletId) => {
+export const deleteWalletHandler = (deleteWallet, closeModal, setActiveWallet, modal) => 
+  (walletId) => {
     if (window.confirm("Are you sure you want to delete this wallet?")) {
-      setActiveWallet(null)
+      setActiveWallet(prev => prev === walletId ? null : prev);
+      
       if (modal.isOpen && modal.type === type && modal.itemId === walletId) {
         closeModal();
       }

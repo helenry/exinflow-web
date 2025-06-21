@@ -13,9 +13,6 @@ import {
 import WalletSummary from "../components/menu/wallets/WalletSummary";
 
 const Wallets = () => {
-  // TYPE
-  const type = "wallet";
-
   // STATES
   const [activeWallet, setActiveWallet] = useState(null);
   const [summaryExpanded, setSummaryExpanded] = useState(true);
@@ -40,14 +37,13 @@ const Wallets = () => {
     e.stopPropagation();
     setActiveWallet(walletId);
   };
-  const handleCreateWalletClick = createWalletHandler(openModal, type);
-  const handleEditWalletClick = editWalletHandler(openModal, type);
+  const handleCreateWalletClick = createWalletHandler(openModal);
+  const handleEditWalletClick = editWalletHandler(openModal);
   const handleDeleteWalletClick = deleteWalletHandler(
     deleteWallet,
     closeModal,
     setActiveWallet,
     modal,
-    type,
   );
 
   const handleContainerClick = useCallback((e) => {
@@ -55,18 +51,20 @@ const Wallets = () => {
       setActiveWallet(null);
     }
   }, [setActiveWallet]);
-
+  
   // JSX
   return (
-    <div className="">
-      <WalletSummary
-        wallets={wallets}
-        activeWallet={activeWallet}
-        setActiveWallet={setActiveWallet}
-        summaryExpanded={summaryExpanded}
-        setSummaryExpanded={setSummaryExpanded}
-        toggleExpand={toggleExpand}
-      />
+    <div className="relative">
+      <div className="sticky top-0 z-50">
+        <WalletSummary
+          wallets={wallets}
+          activeWallet={activeWallet}
+          setActiveWallet={setActiveWallet}
+          summaryExpanded={summaryExpanded}
+          setSummaryExpanded={setSummaryExpanded}
+          toggleExpand={toggleExpand}
+        />
+      </div>
 
       <div>
         <div className="flex justify-between items-center mb-6">

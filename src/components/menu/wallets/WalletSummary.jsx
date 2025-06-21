@@ -15,13 +15,13 @@ const WalletSummary = ({
   if(wallet && activeWallet) wallet.currency = getCurrencySymbol(wallet.currency_code)
 
   return (
-    <div className="rounded-lg px-4 py-2 border border-gray-200 mb-5">
+    <div className="rounded-lg p-4 border border-gray-200 mb-5 bg-white">
       <div className="flex justify-between items-center">
         <p>Summary</p>
         <CircleButton
           icon={summaryExpanded ? LuChevronUp : LuChevronDown}
           onClick={toggleExpand}
-          size={30}
+          size={18}
         />
       </div>
 

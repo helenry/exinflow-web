@@ -19,7 +19,7 @@ const Input = ({
   className = "",
   ...props
 }) => {
-  const baseClassName = "border rounded px-2 py-1 w-full";
+  const baseClassName = "border rounded-full px-2 py-1 w-full";
   const stateClassName = disabled 
     ? "disabled:bg-gray-100 disabled:cursor-not-allowed" 
     : "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";

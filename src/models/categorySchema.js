@@ -10,6 +10,7 @@ export const categorySchema = z.object({
       message: "Invalid transaction type",
     }),
   icon: z.string().min(1, { message: "icon cannot be empty" }),
+  color: z.string().regex(/^([0-9a-fA-F]{6})$/, "Invalid hex color code"),
   user_uid: z.string().min(1),
   created_at: z.instanceof(Date).or(z.any()),
   created_by: z.string().min(1),

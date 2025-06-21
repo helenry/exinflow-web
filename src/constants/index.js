@@ -6,6 +6,8 @@ export * from './formBases';
 export * from './defaults';
 export * from './types';
 export * from './formats';
+export * from './configs';
+export * from './uis';
 
 export * from './options/currencies';
 export * from './options/icons';

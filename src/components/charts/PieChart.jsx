@@ -1,56 +1,91 @@
 // /components/charts/PieChart.jsx
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import { PieChart as MUIPieChart } from '@mui/x-charts';
+import { PIE_CHART_CONFIG } from '../../constants/configs';
+import { usePieChartData } from '../../hooks/charts/usePieChartData';
 
-const PieChart = ({
-  data,
-  activeWallet,
-  setActiveWallet
-}) => {
-  // Convert hex to rgba
-  const hexToRgba = (hex, alpha = 1) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  };
+const PieChart = ({ data, activeWallet, setActiveWallet }) => {
+  const processedData = usePieChartData(data, activeWallet);
 
-  const processedData = data.map((item) => ({
-    value: item.base_amount,
-    label: item.name,
-    color:
-      activeWallet === null || activeWallet === item.id
-        ? `#${item.color}`
-        : hexToRgba(`#${item.color}`, 0.2),
-  }));
+  const handleItemClick = useCallback((clickedIndex) => {
+    if (!data[clickedIndex]) {
+      console.warn('Invalid click index:', clickedIndex);
+      return;
+    }
 
-  const handleItemClick = (clickedIndex) => {
-    const clickedId = data[clickedIndex]?.id;
+    const clickedId = data[clickedIndex].id;
     setActiveWallet(prevId => prevId === clickedId ? null : clickedId);
-  };
+  }, [data, setActiveWallet]);
+
+  const handleLegendClick = useCallback((event, legendItem, index) => {
+    event.preventDefault();
+    handleItemClick(index);
+  }, [handleItemClick]);
+
+  const handleSliceClick = useCallback((event, itemIdentifier) => {
+    if (itemIdentifier?.dataIndex !== undefined) {
+      handleItemClick(itemIdentifier.dataIndex);
+    }
+  }, [handleItemClick]);
+
+  const handleContainerClick = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
+  
+  const series = [{
+    data: processedData,
+    innerRadius: PIE_CHART_CONFIG.innerRadius,
+    outerRadius: PIE_CHART_CONFIG.outerRadius,
+    cornerRadius: PIE_CHART_CONFIG.cornerRadius,
+  }];
+
+  if (!processedData || processedData.length === 0) {
+    return (
+      <div className="pie-chart-empty" style={{ width: PIE_CHART_CONFIG.width, height: PIE_CHART_CONFIG.height }}>
+        <p>No data available</p>
+      </div>
+    );
+  }
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
+    <div className="pie-chart-container h-64" onClick={handleContainerClick}>
       <MUIPieChart
-        series={[
-          {
-            data: processedData,
-            innerRadius: 30,
-            outerRadius: 100,
-            cornerRadius: 5,
-          },
-        ]}
-        onItemClick={(event, itemIdentifier) => handleItemClick(itemIdentifier.dataIndex)}
-        width={250}
-        height={250}
-        margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
+        series={series}
+        sx={{
+          height: '100%',
+        }}
+        onItemClick={handleSliceClick}
+        width={PIE_CHART_CONFIG.width}
+        height={PIE_CHART_CONFIG.height}
+        margin={PIE_CHART_CONFIG.margin}
         slotProps={{
           legend: {
-            onItemClick: (event, legendItem, index) => {
-              handleItemClick(index);
+            onItemClick: handleLegendClick,
+            sx: {
+              overflowY: 'scroll',
+              flexWrap: 'nowrap',
+              height: '100%',
+              padding: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'start',
+              '& .MuiChartsLegend-label': {
+                maxWidth: 84,
+                whiteSpace: 'wrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              },
+            },
+            direction: 'vertical',
+            position: { 
+              vertical: 'middle',
+              horizontal: 'start'
             }
-          }
+          },
         }}
+        aria-label="Interactive pie chart"
+        role="img"
       />
     </div>
   );

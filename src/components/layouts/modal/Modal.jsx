@@ -22,7 +22,6 @@ const Modal = () => {
       }
       closeModal();
     } catch (error) {
-      // Error is handled by the store, modal stays open to show error
       console.error("Modal submission error:", error);
     }
   }, [modal.action, modal.itemId, createWallet, updateWallet, closeModal]);
