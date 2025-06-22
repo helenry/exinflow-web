@@ -3,6 +3,7 @@ import { LuChevronDown, LuChevronUp } from "react-icons/lu"; // or use any other
 import CircleButton from "../../ui/buttons/CircleButton";
 import { formatMoney, getCurrencySymbol } from "../../../utils/format";
 import { PieChart } from "../../charts/PieChart";
+import { ICONS } from "../../../constants/icons";
 
 const WalletSummary = ({
   wallets,
@@ -19,7 +20,7 @@ const WalletSummary = ({
       <div className="flex justify-between items-center">
         <p>Summary</p>
         <CircleButton
-          icon={summaryExpanded ? LuChevronUp : LuChevronDown}
+          icon={summaryExpanded ? ICONS.ARROW_UP : ICONS.ARROR_DOWN}
           onClick={toggleExpand}
           size={18}
         />

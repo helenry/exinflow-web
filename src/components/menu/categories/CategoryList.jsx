@@ -27,7 +27,7 @@ const CategoryList = ({
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2 items-center">
       {categories.map((category) => (
         <React.Fragment key={category.id}>
           <CategoryItem

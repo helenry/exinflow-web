@@ -2,11 +2,12 @@
 import { LuWandSparkles } from "react-icons/lu";
 import { PiLightbulbFilamentBold, PiPlusBold, PiSirenBold } from "react-icons/pi";
 import { createWalletHandler } from "../handlers/walletHandlers";
+import { ICONS } from "./icons";
 
 export const SIDEBAR_BUTTONS = [
   {
     key: "add",
-    icon: PiPlusBold,
+    icon: ICONS.ADD,
     name: "Add New Item",
     menu: [
       // {

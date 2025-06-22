@@ -38,7 +38,7 @@ const Categories = () => {
 
         <p 
           onClick={() => setExpenseExpanded(!expenseExpanded)} 
-          className="cursor-pointer select-none"
+          className="cursor-pointer select-none mb-2"
         >
           {expenseExpanded ? '▼' : '▶'} Expense
         </p>
@@ -54,7 +54,7 @@ const Categories = () => {
 
         <p 
           onClick={() => setIncomeExpanded(!incomeExpanded)} 
-          className="cursor-pointer select-none"
+          className="cursor-pointer select-none mb-2 mt-5"
         >
           {incomeExpanded ? '▼' : '▶'} Income
         </p>

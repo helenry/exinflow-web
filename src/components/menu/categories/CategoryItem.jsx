@@ -16,10 +16,10 @@ const CategoryItem = ({
   
   return (
     <div
-      className={`flex items-center rounded-full w-fit relative group ${!subcategory && 'cursor-pointer'} ${
+      className={`flex items-center rounded-full w-fit relative group ${
         subcategory 
-          ? 'px-2 py-0.5 text-xs' // Smaller when showing subcategory
-          : 'px-4 py-1 text-sm'   // Normal size when showing category only
+          ? 'px-3 py-1.5 text-sm' // Smaller when showing subcategory
+          : 'px-5 py-2 text-base'   // Normal size when showing category only
       }`}
       style={{ backgroundColor: `#${category.color}` }}
       onMouseEnter={() => setIsHovered(true)}
@@ -28,35 +28,61 @@ const CategoryItem = ({
       {Icon && (
         <Icon 
           className={`text-white ${
-            subcategory ? 'mr-1 w-3 h-3' : 'mr-2 w-4 h-4'
+            subcategory ? 'mr-1 text-sm' : 'mr-2 text-base'
           }`} 
         />
       )}
+
       <p className="text-white">{item.name}</p>
-      
-      {/* Edit/Delete Icons with Animation */}
-      {
-        isHovered && <div className={`ml-2 flex gap-1 transition-all duration-200`}>
-          <button
-            className="text-white hover:text-yellow-300 transition-colors cursor-pointer"
+
+      <div className={`${subcategory ? 'gap-2' : 'gap-3'} ${(!subcategory && item.subcategories.length > 0) || isHovered ? 'ml-2' : ''} flex`}>
+        {
+          !subcategory && item.subcategories.length > 0 && <button
+            className="text-white text-lg hover:text-yellow-300 transition-colors cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
-              // Handle edit
+              // Handle expand
             }}
           >
-            <ICONS.EDIT />
+            <ICONS.ARROW_LEFT />
           </button>
-          <button
-            className="text-white hover:text-red-300 transition-colors cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle delete
-            }}
-          >
-            <ICONS.DELETE />
-          </button>
-        </div>
-      }
+        }
+
+        {/* Add/Edit/Delete Icons with Animation */}
+        {
+          isHovered && <div className={`${subcategory ? 'gap-2' : 'gap-3'} flex transition-all duration-200`}>
+            {
+              !subcategory && <button
+                className="text-white text-base hover:text-yellow-300 transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Handle add
+                }}
+              >
+                <ICONS.ADD />
+              </button>
+            }
+            <button
+              className={`${subcategory ? 'text-sm' : 'text-base'} text-white hover:text-yellow-300 transition-colors cursor-pointer`}
+              onClick={(e) => {
+                e.stopPropagation();
+                // Handle edit
+              }}
+            >
+              <ICONS.EDIT />
+            </button>
+            <button
+              className={`${subcategory ? 'text-sm' : 'text-base'} text-white hover:text-red-300 transition-colors cursor-pointer`}
+              onClick={(e) => {
+                e.stopPropagation();
+                // Handle delete
+              }}
+            >
+              <ICONS.DELETE />
+            </button>
+          </div>
+        }
+      </div>
     </div>
   );
 };
