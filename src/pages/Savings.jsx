@@ -1,10 +1,11 @@
 // pages/Savings.jsx
 import React from "react";
+import Title from "@/components/ui/texts/Title";
 
 const Savings = () => {
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-4">Savings</h1>
+      <Title>Savings</Title>
       <p className="text-gray-600">Welcome to your savings!</p>
     </div>
   );

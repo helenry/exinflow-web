@@ -1,10 +1,11 @@
 // pages/Dashboard.jsx
 import React from "react";
+import Title from "@/components/ui/texts/Title";
 
 const Dashboard = () => {
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <Title>Dashboard</Title>
       <p className="text-gray-600">Welcome to your dashboard!</p>
     </div>
   );

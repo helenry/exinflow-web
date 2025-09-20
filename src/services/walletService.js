@@ -42,9 +42,9 @@ export const createStarterWalletService = async (userId) => {
     where("is_deleted", "==", false),
   );
   const snapshot = await getDocs(q);
-
+  
   if (snapshot.empty) {
-    await addDoc(walletsRef, {
+    const defaultWalletData = {
       ...DEFAULT_WALLET,
       currency_code: DEFAULT_CURRENCY,
       user_uid: userId,
@@ -53,7 +53,9 @@ export const createStarterWalletService = async (userId) => {
       updated_at: null,
       updated_by: null,
       is_deleted: false,
-    });
+    };
+    
+    await createWalletService(defaultWalletData);
     console.log("Default wallet created");
   } else {
     console.log("Wallet already exists");

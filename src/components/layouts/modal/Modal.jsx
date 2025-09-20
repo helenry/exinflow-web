@@ -23,7 +23,7 @@ const Modal = () => {
       <div className="w-[100%] grid grid-rows-[8fr_84fr_8fr] gap-y-5 h-full">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">
-            <ModalConfig.getTitle action={modal.action} />
+            {ModalConfig.getTitle(modal.action)}
           </h2>
           <CircleButton
             icon={LuX}

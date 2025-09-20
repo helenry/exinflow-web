@@ -1,10 +1,11 @@
 // pages/Budgets.jsx
 import React from "react";
+import Title from "@/components/ui/texts/Title";
 
 const Budgets = () => {
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-4">Budgets</h1>
+      <Title>Budgets</Title>
       <p className="text-gray-600">Welcome to your budgets!</p>
     </div>
   );

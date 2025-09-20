@@ -71,7 +71,7 @@ const SubcategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           disabled={loading}
           required
           autoFocus
-          placeholder="Enter category name"
+          placeholder="Enter subcategory name"
         />
 
         <IconPicker

@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../api/firebase";
 import { DEFAULT_CATEGORIES, DEFAULT_CREATOR } from "@/constants";
+import { createSubcategoryService } from "./subcategoryService";
 
 export const getCategoriesService = async (userUid) => {
   try {
@@ -68,19 +69,17 @@ export const deleteCategoryService = async (categoryId) =>
 
 export const createStarterCategoriesService = async (userId) => {
   const categoriesRef = collection(db, "categories");
-
   const q = query(
     categoriesRef,
     where("user_uid", "==", userId),
     where("is_deleted", "==", false)
   );
-
   const snapshot = await getDocs(q);
-
+  
   if (snapshot.empty) {
     for (const category of DEFAULT_CATEGORIES) {
-      // Create category document
-      const categoryDocRef = await addDoc(categoriesRef, {
+      // Create category document using the service
+      const categoryData = {
         name: category.name,
         type: category.type,
         icon: category.icon,
@@ -90,15 +89,15 @@ export const createStarterCategoriesService = async (userId) => {
         updated_at: null,
         updated_by: null,
         is_deleted: false,
-      });
+      };
       
+      const categoryDocRef = await createCategoryService(categoryData);
       console.log(`Category "${category.name}" created`);
       
-      // Create subcategories as a subcollection inside this category document
+      // Create subcategories using the subcategory service
       if (category.subcategories && category.subcategories.length > 0) {
-        const subcategoriesRef = collection(categoryDocRef, "subcategories");
         for (const sub of category.subcategories) {
-          await addDoc(subcategoriesRef, {
+          const subcategoryData = {
             name: sub.name,
             icon: sub.icon,
             created_at: serverTimestamp(),
@@ -106,7 +105,9 @@ export const createStarterCategoriesService = async (userId) => {
             updated_at: null,
             updated_by: null,
             is_deleted: false,
-          });
+          };
+          
+          await createSubcategoryService(categoryDocRef.id, subcategoryData);
           console.log(
             `Subcategory "${sub.name}" created under "${category.name}"`
           );
