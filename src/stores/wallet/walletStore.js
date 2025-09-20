@@ -5,11 +5,11 @@ import {
   createWalletService,
   updateWalletService,
   deleteWalletService,
-} from "../services/walletService";
-import { walletSchema } from "../models/walletSchema";
-import { trimStrings } from "../utils/format";
-import { convertFirestoreTimestamps } from "../utils/type";
-import { validateUniqueName } from "../utils/validation";
+} from "../../services/walletService";
+import { walletSchema } from "../../models/walletSchema";
+import { trimStrings } from "../../utils/format";
+import { convertFirestoreTimestamps } from "../../utils/type";
+import { validateUniqueName } from "../../utils/validation";
 import { z } from "zod";
 import { serverTimestamp } from "firebase/firestore";
 import toast from "react-hot-toast";

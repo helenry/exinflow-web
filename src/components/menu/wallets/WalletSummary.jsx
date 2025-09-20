@@ -16,7 +16,7 @@ const WalletSummary = ({
   if(wallet && activeWallet) wallet.currency = getCurrencySymbol(wallet.currency_code)
 
   return (
-    <div className="rounded-lg p-4 border border-gray-200 mb-5 bg-white">
+    <div className="rounded-2xl p-4 border border-gray-200 mb-5 bg-white">
       <div className="flex justify-between items-center">
         <p>Summary</p>
         <CircleButton

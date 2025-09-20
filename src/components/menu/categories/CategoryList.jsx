@@ -37,7 +37,7 @@ const CategoryList = ({
             setExpandedCategories={setExpandedCategories}
             />
           {
-            category.subcategories.length > 0 && category.subcategories.map((subcategory) => (
+            category.subcategories && category.subcategories.length > 0 && category.subcategories.map((subcategory) => (
               <CategoryItem
                 key={subcategory.id} // Add a key if available
                 category={category}

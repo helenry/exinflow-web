@@ -35,9 +35,9 @@ const CategoryItem = ({
 
       <p className="text-white">{item.name}</p>
 
-      <div className={`${subcategory ? 'gap-2' : 'gap-3'} ${(!subcategory && item.subcategories.length > 0) || isHovered ? 'ml-2' : ''} flex`}>
+      <div className={`${subcategory ? 'gap-2' : 'gap-3'} ${(!subcategory && item.subcategories && item.subcategories.length > 0) || isHovered ? 'ml-2' : ''} flex`}>
         {
-          !subcategory && item.subcategories.length > 0 && <button
+          !subcategory && item.subcategories && item.subcategories.length > 0 && <button
             className="text-white text-lg hover:text-yellow-300 transition-colors cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();

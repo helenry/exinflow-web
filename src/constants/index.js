@@ -8,6 +8,7 @@ export * from './types';
 export * from './formats';
 export * from './configs';
 export * from './uis';
+export * from './fonts';
 
 export * from './options/currencyOptions';
 export * from './options/iconOptions';

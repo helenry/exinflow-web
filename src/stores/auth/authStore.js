@@ -2,9 +2,9 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../api/firebase";
-import { signInWithGoogle as firebaseSignIn } from "../services/authService";
-import useUserConfigStore from "./userConfigStore";
+import { auth } from "../../api/firebase";
+import { signInWithGoogle as firebaseSignIn } from "../../services/authService";
+import useUserConfigStore from "../userConfig/userConfigStore";
 
 const useAuthStore = create(
   subscribeWithSelector((set, get) => ({

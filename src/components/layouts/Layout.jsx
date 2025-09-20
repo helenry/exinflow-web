@@ -1,16 +1,17 @@
 // components/layout/Layout.jsx
 import { MAIN_BACKGROUND_WHITE, NAVBAR } from "@/constants";
-import useModalStore from "../../stores/modalStore";
+import useModalStore from "../../stores/modal/modalStore";
 import Modal from "./modal/Modal";
 import Navbar from "./navbar/Navbar";
 import Sidebar from "./sidebar/Sidebar";
+import { FONTS } from "../../constants/fonts";
 
 const Layout = ({ children }) => {
   const { modal } = useModalStore();
 
   return (
     <div
-      className={`${MAIN_BACKGROUND_WHITE.BG} min-h-screen h-screen flex flex-col`}
+      className={`${MAIN_BACKGROUND_WHITE.BG} ${FONTS.SOURCE_SANS_3} min-h-screen h-screen flex flex-col`}
     >
       <Navbar />
       <div
@@ -18,7 +19,7 @@ const Layout = ({ children }) => {
       >
         <Sidebar />
 
-        <main className="overflow-y-auto pl-4 pr-2 pb-4">{children}</main>
+        <main className={`overflow-y-auto pl-4 ${modal.isOpen ? 'pr-2' : 'pr-4'} pb-4`}>{children}</main>
 
         <Modal />
       </div>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import sign_in from "../assets/images/sign_in.jpg";
 import logo_white from "../assets/images/logo/logo_white.png";
 import useAuthStore from "../stores/authStore";
+import { FONTS } from "../constants/fonts";
 
 const SignIn = () => {
   const { signInWithGoogle, authError, isLoading } = useAuthStore();
@@ -21,7 +22,7 @@ const SignIn = () => {
 
   return (
     <div
-      className="h-screen flex flex-col justify-center items-center"
+      className={`${FONTS.SOURCE_SANS_3} h-screen flex flex-col justify-center items-center`}
       style={{
         backgroundImage: `url(${sign_in})`,
         backgroundSize: "cover",

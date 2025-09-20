@@ -2,9 +2,9 @@
 import { useCallback, useEffect, useState } from "react";
 import Title from "@/components/ui/texts/Title";
 import WalletList from "@/components/menu/wallets/WalletList";
-import useAuthStore from "../stores/authStore";
-import useWalletStore from "../stores/walletStore";
-import useModalStore from "../stores/modalStore";
+import useAuthStore from "../stores/auth/authStore";
+import useWalletStore from "../stores/wallet/walletStore";
+import useModalStore from "../stores/modal/modalStore";
 import {
   createWalletHandler,
   deleteWalletHandler,

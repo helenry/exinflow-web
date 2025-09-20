@@ -18,7 +18,7 @@ export default function Popover({
 
   return (
     <div
-      className={`fixed left-16 z-50 w-42 bg-white rounded-lg shadow-lg border border-gray-200 ${className}`}
+      className={`fixed left-16 z-5000 w-42 bg-white rounded-2xl shadow-lg border border-gray-200 ${className}`}
       style={defaultStyle}
       data-popover
     >

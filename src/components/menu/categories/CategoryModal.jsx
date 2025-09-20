@@ -1,25 +1,26 @@
 // components/menu/categories/CategoryModal.jsx
 import { useState, useEffect } from "react";
-import { walletSchema } from "../../../models/walletSchema";
 import { z } from "zod";
-import useUserConfigStore from "../../../stores/userConfigStore";
-import { WALLET_FORM_BASE, CURRENCY_OPTIONS } from "@/constants";
+import useUserConfigStore from "../../../stores/userConfig/userConfigStore";
+import { CATEGORY_FORM_BASE } from "@/constants";
 import Input from "../../forms/Input";
-import Dropdown from "../../forms/Dropdown";
 import ColorPicker from "../../forms/ColorPicker";
 import CategoryModalButtons from "./CategoryModalButtons";
+import { categorySchema } from "../../../models/categorySchema";
+import IconPicker from "../../forms/IconPicker";
+import CategoryTypeSelector from "../../forms/CategoryTypeSelector";
 
 const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
   const { userConfig } = useUserConfigStore();
 
   const [form, setForm] = useState(
-    WALLET_FORM_BASE(userConfig.main_currency_code),
+    CATEGORY_FORM_BASE,
   );
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     setForm({
-      ...WALLET_FORM_BASE(userConfig.main_currency_code),
+      ...CATEGORY_FORM_BASE,
       ...initialData,
     });
     setValidationErrors({});
@@ -29,7 +30,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "base_amount" ? Number(value) : value,
+      [name]: value,
     }));
     
     // Clear validation error for this field when user starts typing
@@ -43,12 +44,12 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
 
   const validateAndSubmit = () => {
     try {
-      const validatedData = walletSchema
+      const validatedData = categorySchema
         .pick({
+          type: true,
           name: true,
-          base_amount: true,
           color: true,
-          currency_code: true,
+          icon: true,
         })
         .parse(form);
 
@@ -68,6 +69,13 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
   return (
     <>
       <div className="overflow-y-auto px-2">
+        <CategoryTypeSelector
+          value={form.type}
+          onChange={handleChange}
+          error={validationErrors.type}
+          disabled={loading}
+        />
+
         <Input
           label="Name"
           name="name"
@@ -77,20 +85,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           disabled={loading}
           required
           autoFocus
-          placeholder="Enter wallet name"
-        />
-
-        <Input
-          label="Base Amount"
-          name="base_amount"
-          type="number"
-          min="0"
-          step="0.01"
-          value={form.base_amount}
-          onChange={handleChange}
-          error={validationErrors.base_amount}
-          disabled={loading}
-          placeholder="0.00"
+          placeholder="Enter category name"
         />
 
         <ColorPicker
@@ -103,17 +98,14 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           showPreview={true}
         />
 
-        <Dropdown
-          label="Currency"
-          name="currency_code"
-          value={form.currency_code}
+        <IconPicker
+          label="Icon"
+          name="icon"
+          value={form.icon}
           onChange={handleChange}
-          options={CURRENCY_OPTIONS}
-          error={validationErrors.currency_code}
+          error={validationErrors.icon}
           disabled={loading}
-          placeholder="Select currency"
-          showSymbol={true}
-          required
+          showPreview={true}
         />
       </div>
 

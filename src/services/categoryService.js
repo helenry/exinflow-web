@@ -14,50 +14,42 @@ import { DEFAULT_CATEGORIES, DEFAULT_CREATOR } from "@/constants";
 
 export const getCategoriesService = async (userUid) => {
   try {
-    // Execute both queries in parallel - this is the key optimization
-    const [categoriesSnapshot, subcategoriesSnapshot] = await Promise.all([
-      getDocs(query(
+    // 1. Get all categories for the user
+    const categoriesSnapshot = await getDocs(
+      query(
         collection(db, "categories"),
         where("is_deleted", "==", false),
         where("user_uid", "==", userUid)
-      )),
-      getDocs(query(
-        collection(db, "subcategories"),
-        where("is_deleted", "==", false),
-        where("user_uid", "==", userUid) // Assuming subcategories also have user_uid
-      ))
-    ]);
+      )
+    );
 
-    const categories = categoriesSnapshot.docs.map((doc) => ({ 
-      id: doc.id, 
-      ...doc.data() 
-    }));
-    console.log("categories")
-    console.log(categories)
-
-    const subcategories = subcategoriesSnapshot.docs.map((doc) => ({ 
-      id: doc.id, 
-      ...doc.data() 
+    const categories = categoriesSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
     }));
 
-    // Create a Map for O(1) lookup performance instead of reduce
-    const subcategoriesMap = new Map();
-    subcategories.forEach(subcategory => {
-      const categoryId = subcategory.category_id;
-      if (!subcategoriesMap.has(categoryId)) {
-        subcategoriesMap.set(categoryId, []);
-      }
-      subcategoriesMap.get(categoryId).push(subcategory);
-    });
+    // 2. For each category, check if it has subcategories subcollection
+    const categoriesWithSubs = await Promise.all(
+      categories.map(async (category) => {
+        const subcategoriesSnapshot = await getDocs(
+          collection(db, "categories", category.id, "subcategories")
+        );
 
-    // Combine categories with their subcategories
-    return categories.map(category => ({
-      ...category,
-      subcategories: subcategoriesMap.get(category.id) || []
-    }));
+        const subcategories = subcategoriesSnapshot.docs.map((subDoc) => ({
+          id: subDoc.id,
+          ...subDoc.data(),
+        }));
 
+        return {
+          ...category,
+          subcategories, // empty array if none
+        };
+      })
+    );
+
+    return categoriesWithSubs;
   } catch (error) {
-    console.error('Error fetching categories with subcategories:', error);
+    console.error("Error fetching categories with subcategories:", error);
     throw error;
   }
 };
@@ -73,18 +65,18 @@ export const deleteCategoryService = async (categoryId) =>
 
 export const createStarterCategoriesService = async (userId) => {
   const categoriesRef = collection(db, "categories");
-  const subcategoriesRef = collection(db, "subcategories");
 
   const q = query(
     categoriesRef,
     where("user_uid", "==", userId),
-    where("is_deleted", "==", false),
+    where("is_deleted", "==", false)
   );
 
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
     for (const category of DEFAULT_CATEGORIES) {
+      // Create category document
       const categoryDocRef = await addDoc(categoriesRef, {
         name: category.name,
         type: category.type,
@@ -99,11 +91,11 @@ export const createStarterCategoriesService = async (userId) => {
 
       console.log(`Category "${category.name}" created`);
 
-      // Create subcategories
+      // Create subcategories as a subcollection inside this category document
       if (category.subcategories && category.subcategories.length > 0) {
+        const subcategoriesRef = collection(categoryDocRef, "subcategories");
         for (const sub of category.subcategories) {
           await addDoc(subcategoriesRef, {
-            category_id: categoryDocRef.id,
             name: sub.name,
             icon: sub.icon,
             created_at: serverTimestamp(),
@@ -113,7 +105,7 @@ export const createStarterCategoriesService = async (userId) => {
             is_deleted: false,
           });
           console.log(
-            `Subcategory "${sub.name}" created under "${category.name}"`,
+            `Subcategory "${sub.name}" created under "${category.name}"`
           );
         }
       }

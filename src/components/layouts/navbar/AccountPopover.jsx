@@ -6,7 +6,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { auth } from "../../../api/firebase";
 import { paths } from "../../../routes/allRoutes";
 import CircleButton from "../../ui/buttons/CircleButton";
-import useAuthStore from "../../../stores/authStore";
+import useAuthStore from "../../../stores/auth/authStore";
 
 export default function AccountPopover() {
   const { currentUser } = useAuthStore();

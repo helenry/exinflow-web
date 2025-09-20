@@ -5,7 +5,7 @@ import {
   getUserConfigService,
   updateUserConfigService,
   createEmptyUserConfigService,
-} from "../services/userConfigService";
+} from "../../services/userConfigService";
 
 const useUserConfigStore = create(
   persist(

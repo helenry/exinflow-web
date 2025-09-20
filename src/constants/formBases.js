@@ -7,3 +7,10 @@ export const WALLET_FORM_BASE = (mainCurrencyCode) => ({
   color: THEME_COLOR.RAW,
   currency_code: mainCurrencyCode,
 });
+
+export const CATEGORY_FORM_BASE = {
+  type: "",
+  name: "",
+  color: THEME_COLOR.RAW,
+  icon: "lusmile",
+};

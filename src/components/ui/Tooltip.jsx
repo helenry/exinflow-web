@@ -118,7 +118,7 @@ export default function Tooltip({
           ref={tooltipRef}
           style={tooltipStyle}
           className={`
-            bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg
+            bg-gray-900 text-white text-sm px-3 py-2 rounded-2xl shadow-lg
             whitespace-nowrap transition-opacity duration-200 opacity-100 ${className}
           `}
         >

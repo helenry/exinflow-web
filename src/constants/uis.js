@@ -3,6 +3,7 @@ import { LuWandSparkles } from "react-icons/lu";
 import { PiLightbulbFilamentBold, PiPlusBold, PiSirenBold } from "react-icons/pi";
 import { createWalletHandler } from "../handlers/walletHandlers";
 import { ICONS } from "./icons";
+import { createCategoryHandler } from "../handlers/categoryHandlers";
 
 export const SIDEBAR_BUTTONS = [
   {
@@ -40,11 +41,11 @@ export const SIDEBAR_BUTTONS = [
         label: "Wallet",
         onClick: createWalletHandler
       },
-      // {
-      //   id: "category",
-      //   label: "Category",
-      //   onClick: 
-      // },
+      {
+        id: "category",
+        label: "Category",
+        onClick: createCategoryHandler
+      },
     ]
   },
   // {

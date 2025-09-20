@@ -6,7 +6,7 @@ import Popover from '../../ui/Popover';
 import CreateMenu from './CreateMenu';
 import Tooltip from '../../ui/Tooltip';
 import CircleButton from '../../ui/buttons/CircleButton';
-import useModalStore from '../../../stores/modalStore';
+import useModalStore from '../../../stores/modal/modalStore';
 
 export default function Sidebar() {
   const {

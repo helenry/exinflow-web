@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { walletSchema } from "../../../models/walletSchema";
 import { z } from "zod";
-import useUserConfigStore from "../../../stores/userConfigStore";
+import useUserConfigStore from "../../../stores/userConfig/userConfigStore";
 import { WALLET_FORM_BASE, CURRENCY_OPTIONS } from "@/constants";
 import Input from "../../forms/Input";
 import Dropdown from "../../forms/Dropdown";

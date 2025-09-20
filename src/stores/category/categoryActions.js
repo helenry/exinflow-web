@@ -1,29 +1,18 @@
-// stores/categoryStore.js
-import { create } from "zustand";
+// stores/category/categoryActions.js
 import {
   getCategoriesService,
   createCategoryService,
   updateCategoryService,
   deleteCategoryService,
-} from "../services/categoryService";
-import { categorySchema } from "../models/categorySchema";
-import { trimStrings } from "../utils/format";
-import { convertFirestoreTimestamps } from "../utils/type";
-import { validateUniqueName } from "../utils/validation";
+} from "../../services/categoryService";
+import { trimStrings } from "../../utils/format";
+import { convertFirestoreTimestamps } from "../../utils/type";
+import { validateCategory, validateCategoryUniqueness } from "./categoryValidation";
 import { z } from "zod";
 import { serverTimestamp } from "firebase/firestore";
 import toast from "react-hot-toast";
 
-const validateCategory = (category) => categorySchema.parse(category);
-
-const useCategoryStore = create((set, get) => ({
-  // State
-  categories: [],
-  loading: false,
-  error: null,
-  currentUserUid: null,
-
-  // Actions
+export const categoryActions = (set, get) => ({
   setCurrentUser: (userUid) => {
     const { currentUserUid, getCategories, reset } = get();
 
@@ -73,7 +62,8 @@ const useCategoryStore = create((set, get) => ({
 
     try {
       const trimmed = trimStrings(categoryData);
-      if (!validateUniqueName(categories, trimmed.name)) {
+      
+      if (!validateCategoryUniqueness(categories, trimmed.name)) {
         errorMessage = "Category name must be unique";
         toast.error(errorMessage);
         throw new Error(errorMessage);
@@ -129,7 +119,8 @@ const useCategoryStore = create((set, get) => ({
       }
 
       const trimmed = trimStrings(updatedData);
-      if (!validateUniqueName(categories, trimmed.name, categoryId)) {
+      
+      if (!validateCategoryUniqueness(categories, trimmed.name, categoryId)) {
         errorMessage = "Category name must be unique";
         toast.error(errorMessage);
         throw new Error(errorMessage);
@@ -194,17 +185,4 @@ const useCategoryStore = create((set, get) => ({
       error: null,
     });
   },
-
-  // Computed values (selectors)
-  getCategoryById: (categoryId) => {
-    const { categories } = get();
-    return categories.find((w) => w.id === categoryId);
-  },
-
-  getCategoriesByUser: (userUid) => {
-    const { categories } = get();
-    return categories.filter((w) => w.user_uid === userUid);
-  },
-}));
-
-export default useCategoryStore;
+});

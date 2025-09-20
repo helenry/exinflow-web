@@ -59,8 +59,8 @@ const ColorPicker = ({
       />
 
       {showPalette && !disabled && (
-        <div className="absolute z-10 mt-2 bg-white border rounded shadow-lg p-3 w-full">
-          <div className="grid grid-cols-8 gap-2 mb-2">
+        <div className="absolute z-10 mt-2 bg-white rounded-2xl shadow-lg p-3 w-full h-48 overflow-y-auto">
+          <div className="grid grid-cols-8 gap-2 place-items-center">
             {COLOR_OPTIONS.map((color) => (
               <button
                 key={color.RAW}
@@ -69,28 +69,13 @@ const ColorPicker = ({
                   handleChange(color.RAW);
                   setShowPalette(false);
                 }}
-                className={`${color.BG} w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 ${
-                  inputValue === color.RAW ? "border-black" : "border-transparent"
+                className={`${color.BG} w-6 h-6 rounded-full cursor-pointer transition-transform hover:scale-110 ${
+                  inputValue === color.RAW ? "ring-2 ring-offset-2 ring-blue-500" : ""
                 }`}
                 title={`#${color.RAW}`}
               />
             ))}
           </div>
-
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => {
-              let val = e.target.value.replace(/[^a-fA-F0-9]/g, "").toUpperCase();
-              if (val.length > 6) val = val.slice(0, 6);
-              handleChange(val);
-            }}
-            placeholder="FFFFFF"
-            maxLength={6}
-            disabled={disabled}
-            className="w-full border rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            {...props}
-          />
         </div>
       )}
 

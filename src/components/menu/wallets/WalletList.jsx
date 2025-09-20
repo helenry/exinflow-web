@@ -1,5 +1,4 @@
 // components/menu/wallets/WalletList.jsx
-import { useCallback } from "react";
 import WalletItem from "./WalletItem";
 
 const WalletList = ({
