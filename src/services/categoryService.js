@@ -28,11 +28,14 @@ export const getCategoriesService = async (userUid) => {
       ...doc.data(),
     }));
 
-    // 2. For each category, check if it has subcategories subcollection
+    // 2. For each category, fetch only subcategories that are not deleted
     const categoriesWithSubs = await Promise.all(
       categories.map(async (category) => {
         const subcategoriesSnapshot = await getDocs(
-          collection(db, "categories", category.id, "subcategories")
+          query(
+            collection(db, "categories", category.id, "subcategories"),
+            where("is_deleted", "==", false)
+          )
         );
 
         const subcategories = subcategoriesSnapshot.docs.map((subDoc) => ({
@@ -88,9 +91,9 @@ export const createStarterCategoriesService = async (userId) => {
         updated_by: null,
         is_deleted: false,
       });
-
+      
       console.log(`Category "${category.name}" created`);
-
+      
       // Create subcategories as a subcollection inside this category document
       if (category.subcategories && category.subcategories.length > 0) {
         const subcategoriesRef = collection(categoryDocRef, "subcategories");

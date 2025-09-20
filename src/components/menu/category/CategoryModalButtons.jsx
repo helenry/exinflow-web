@@ -1,4 +1,4 @@
-// components/menu/categories/CategoryModalButtons.jsx
+// components/menu/category/CategoryModalButtons.jsx
 const CategoryModalButtons = ({ validateAndSubmit, onCancel, loading }) => {
   return (
     <div className="flex gap-2">

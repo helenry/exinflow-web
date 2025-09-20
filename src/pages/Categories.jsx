@@ -1,20 +1,19 @@
 // pages/Categories.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useCategoryStore from "../stores/category/categoryStore";
 import useAuthStore from "../stores/auth/authStore";
 import Title from "@/components/ui/texts/Title";
-import CategoryList from "../components/menu/categories/CategoryList";
-import { createCategoryHandler } from "../handlers/categoryHandlers";
+import CategoryList from "../components/menu/category/CategoryList";
+import { createCategoryHandler, deleteCategoryHandler, editCategoryHandler } from "../handlers/categoryHandlers";
 import useModalStore from "../stores/modal/modalStore";
 import { TRANSACTION_TYPES } from "../constants";
+import { createSubcategoryHandler, deleteSubcategoryHandler, editSubcategoryHandler } from "../handlers/subcategoryHandlers";
 
 const Categories = () => {
   const { currentUser } = useAuthStore();
   const { openModal, closeModal, modal } = useModalStore();
-  const { categories, setCurrentUser, loading, error } = useCategoryStore();
+  const { categories, deleteCategory, deleteSubcategory, setCurrentUser, loading, error } = useCategoryStore();
   const [expandedCategories, setExpandedCategories] = useState([]);
-  const [expenseExpanded, setExpenseExpanded] = useState(true);
-  const [incomeExpanded, setIncomeExpanded] = useState(true);
 
   // TRIGGER FETCH BASED ON USER
   useEffect(() => {
@@ -22,6 +21,20 @@ const Categories = () => {
   }, [currentUser?.uid, setCurrentUser]);
 
   const handleCreateCategoryClick = createCategoryHandler(openModal);
+  const handleEditCategoryClick = editCategoryHandler(openModal);
+  const handleDeleteCategoryClick = deleteCategoryHandler(
+    deleteCategory,
+    closeModal,
+    modal,
+  );
+
+  const handleCreateSubcategoryClick = createSubcategoryHandler(openModal);
+  const handleEditSubcategoryClick = editSubcategoryHandler(openModal);
+  const handleDeleteSubcategoryClick = deleteSubcategoryHandler(
+    deleteSubcategory,
+    closeModal,
+    modal,
+  );
 
   const expenseCategories = categories.filter(cat => cat.type === TRANSACTION_TYPES.EXPENSE);
   const incomeCategories = categories.filter(cat => cat.type === TRANSACTION_TYPES.INCOME);
@@ -39,37 +52,42 @@ const Categories = () => {
           </button>
         </div>
 
-        <p 
-          onClick={() => setExpenseExpanded(!expenseExpanded)} 
-          className="cursor-pointer select-none mb-2"
-        >
-          {expenseExpanded ? '▼' : '▶'} Expense
-        </p>
-        {expenseExpanded && (
-          <CategoryList
-            categories={expenseCategories}
-            expandedCategories={expandedCategories}
-            setExpandedCategories={setExpandedCategories}
-            loading={loading}
-            error={error}
-          />
-        )}
+        {/* Two-column layout */}
+        <div className="grid grid-cols-2 gap-8">
+          {/* Expense column */}
+          <div>
+            <p className="cursor-pointer select-none mb-2">Expense</p>
+            <CategoryList
+              categories={expenseCategories}
+              expandedCategories={expandedCategories}
+              setExpandedCategories={setExpandedCategories}
+              handleEditCategoryClick={handleEditCategoryClick}
+              handleDeleteCategoryClick={handleDeleteCategoryClick}
+              handleCreateSubcategoryClick={handleCreateSubcategoryClick}
+              handleEditSubcategoryClick={handleEditSubcategoryClick}
+              handleDeleteSubcategoryClick={handleDeleteSubcategoryClick}
+              loading={loading}
+              error={error}
+            />
+          </div>
 
-        <p 
-          onClick={() => setIncomeExpanded(!incomeExpanded)} 
-          className="cursor-pointer select-none mb-2 mt-5"
-        >
-          {incomeExpanded ? '▼' : '▶'} Income
-        </p>
-        {incomeExpanded && (
-          <CategoryList
-            categories={incomeCategories}
-            expandedCategories={expandedCategories}
-            setExpandedCategories={setExpandedCategories}
-            loading={loading}
-            error={error}
-          />
-        )}
+          {/* Income column */}
+          <div>
+            <p className="cursor-pointer select-none mb-2">Income</p>
+            <CategoryList
+              categories={incomeCategories}
+              expandedCategories={expandedCategories}
+              setExpandedCategories={setExpandedCategories}
+              handleEditCategoryClick={handleEditCategoryClick}
+              handleDeleteCategoryClick={handleDeleteCategoryClick}
+              handleCreateSubcategoryClick={handleCreateSubcategoryClick}
+              handleEditSubcategoryClick={handleEditSubcategoryClick}
+              handleDeleteSubcategoryClick={handleDeleteSubcategoryClick}
+              loading={loading}
+              error={error}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

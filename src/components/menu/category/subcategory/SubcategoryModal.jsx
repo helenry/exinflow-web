@@ -1,30 +1,25 @@
-// components/menu/categories/CategoryModal.jsx
+// components/menu/category/subcategory/SubcategoryModal.jsx
 import { useState, useEffect } from "react";
 import { z } from "zod";
-import useUserConfigStore from "../../../stores/userConfig/userConfigStore";
-import { CATEGORY_FORM_BASE } from "@/constants";
-import Input from "../../forms/Input";
-import ColorPicker from "../../forms/ColorPicker";
-import CategoryModalButtons from "./CategoryModalButtons";
-import { categorySchema } from "../../../models/categorySchema";
-import IconPicker from "../../forms/IconPicker";
-import CategoryTypeSelector from "../../forms/CategoryTypeSelector";
+import { SUBCATEGORY_FORM_BASE } from "@/constants";
+import Input from "../../../forms/Input";
+import SubcategoryModalButtons from "./SubcategoryModalButtons";
+import { subcategorySchema } from "../../../../models/subcategorySchema";
+import IconPicker from "../../../forms/IconPicker";
 
-const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
-  const { userConfig } = useUserConfigStore();
-
+const SubcategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
   const [form, setForm] = useState(
-    CATEGORY_FORM_BASE,
+    SUBCATEGORY_FORM_BASE,
   );
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     setForm({
-      ...CATEGORY_FORM_BASE,
+      ...SUBCATEGORY_FORM_BASE,
       ...initialData,
     });
     setValidationErrors({});
-  }, [initialData, userConfig.main_currency_code]);
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,11 +39,9 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
 
   const validateAndSubmit = () => {
     try {
-      const validatedData = categorySchema
+      const validatedData = subcategorySchema
         .pick({
-          type: true,
           name: true,
-          color: true,
           icon: true,
         })
         .parse(form);
@@ -69,13 +62,6 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
   return (
     <>
       <div className="overflow-y-auto px-2">
-        <CategoryTypeSelector
-          value={form.type}
-          onChange={handleChange}
-          error={validationErrors.type}
-          disabled={loading}
-        />
-
         <Input
           label="Name"
           name="name"
@@ -86,16 +72,6 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           required
           autoFocus
           placeholder="Enter category name"
-        />
-
-        <ColorPicker
-          label="Color"
-          name="color"
-          value={form.color}
-          onChange={handleChange}
-          error={validationErrors.color}
-          disabled={loading}
-          showPreview={true}
         />
 
         <IconPicker
@@ -109,7 +85,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
         />
       </div>
 
-      <CategoryModalButtons
+      <SubcategoryModalButtons
         validateAndSubmit={validateAndSubmit}
         onCancel={onCancel}
         loading={loading}
@@ -118,4 +94,4 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
   );
 };
 
-export default CategoryModal;
+export default SubcategoryModal;

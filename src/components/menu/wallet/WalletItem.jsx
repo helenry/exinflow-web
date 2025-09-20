@@ -1,4 +1,4 @@
-// components/menu/wallets/WalletItem.jsx
+// components/menu/wallet/WalletItem.jsx
 import CircleButton from "../../ui/buttons/CircleButton";
 import { formatMoney, getCurrencySymbol } from "../../../utils/format";
 import Tooltip from "../../ui/Tooltip";

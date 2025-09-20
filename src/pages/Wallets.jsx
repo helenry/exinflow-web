@@ -1,7 +1,7 @@
 // pages/Wallets.jsx
 import { useCallback, useEffect, useState } from "react";
 import Title from "@/components/ui/texts/Title";
-import WalletList from "@/components/menu/wallets/WalletList";
+import WalletList from "@/components/menu/wallet/WalletList";
 import useAuthStore from "../stores/auth/authStore";
 import useWalletStore from "../stores/wallet/walletStore";
 import useModalStore from "../stores/modal/modalStore";
@@ -10,7 +10,7 @@ import {
   deleteWalletHandler,
   editWalletHandler,
 } from "../handlers/walletHandlers";
-import WalletSummary from "../components/menu/wallets/WalletSummary";
+import WalletSummary from "../components/menu/wallet/WalletSummary";
 
 const Wallets = () => {
   // STATES

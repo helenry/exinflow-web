@@ -1,4 +1,4 @@
-// components/menu/categories/CategoryModalContainer.jsx
+// components/menu/category/CategoryModalContainer.jsx
 import { useCallback } from "react";
 import useCategoryStore from "../../../stores/category/categoryStore";
 import CategoryModal from "./CategoryModal";

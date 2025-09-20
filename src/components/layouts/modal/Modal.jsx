@@ -35,6 +35,7 @@ const Modal = () => {
           action={modal.action}
           itemId={modal.itemId}
           initialData={modal.data}
+          parentId={modal.parentId}
           onClose={closeModal}
         />
       </div>

@@ -1,4 +1,4 @@
-// components/menu/wallets/WalletModalContainer.jsx
+// components/menu/wallet/WalletModalContainer.jsx
 import { useCallback } from "react";
 import useWalletStore from "../../../stores/wallet/walletStore";
 import WalletModal from "./WalletModal";

@@ -1,4 +1,4 @@
-// components/menu/wallets/WalletModalButtons.jsx
+// components/menu/wallet/WalletModalButtons.jsx
 const WalletModalButtons = ({ validateAndSubmit, onCancel, loading }) => {
   return (
     <div className="flex gap-2">

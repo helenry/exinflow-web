@@ -1,4 +1,4 @@
-// components/menu/wallets/WalletModal.jsx
+// components/menu/wallet/WalletModal.jsx
 import { useState, useEffect } from "react";
 import { walletSchema } from "../../../models/walletSchema";
 import { z } from "zod";

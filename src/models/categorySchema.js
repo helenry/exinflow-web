@@ -1,25 +1,15 @@
 // models/categorySchema.js
 import { z } from "zod";
 import { TRANSACTION_TYPES } from "@/constants";
+import { baseEntitySchema, validationPatterns } from "./baseSchema";
 
-export const categorySchema = z.object({
-  name: z.string().min(1),
+export const categorySchema = baseEntitySchema.extend({
   type: z
     .string()
     .refine((val) => Object.values(TRANSACTION_TYPES).includes(val), {
       message: "Invalid transaction type",
     }),
-  icon: z.string().min(1, { message: "icon cannot be empty" }),
-  color: z.string().regex(/^([0-9a-fA-F]{6})$/, "Invalid hex color code"),
-  user_uid: z.string().min(1),
-  created_at: z.instanceof(Date).or(z.any()),
-  created_by: z.string().min(1),
-  updated_at: z.instanceof(Date).nullable(),
-  updated_by: z
-    .string()
-    .nullable()
-    .refine((val) => val === null || val.trim() !== "", {
-      message: "updated_by cannot be empty string",
-    }),
-  is_deleted: z.boolean(),
+  name: validationPatterns.name,
+  icon: validationPatterns.icon,
+  color: validationPatterns.hexColor,
 });

@@ -1,4 +1,4 @@
-// components/menu/wallets/WalletList.jsx
+// components/menu/wallet/WalletList.jsx
 import WalletItem from "./WalletItem";
 
 const WalletList = ({

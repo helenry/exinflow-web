@@ -7,10 +7,12 @@ import {
 } from "../../services/categoryService";
 import { trimStrings } from "../../utils/format";
 import { convertFirestoreTimestamps } from "../../utils/type";
-import { validateCategory, validateCategoryUniqueness } from "./categoryValidation";
-import { z } from "zod";
-import { serverTimestamp } from "firebase/firestore";
-import toast from "react-hot-toast";
+import {
+  validateCategory,
+  validateCategoryUniqueness,
+} from "./categoryValidation";
+import { createBaseEntityData, createUpdateData, handleStoreError, throwErrorWithToast } from "../../utils/storeHelpers";
+import { showToast } from "../../utils/toast";
 
 export const categoryActions = (set, get) => ({
   setCurrentUser: (userUid) => {
@@ -58,30 +60,17 @@ export const categoryActions = (set, get) => ({
     const { categories, currentUserUid } = get();
 
     set({ error: null });
-    let errorMessage;
 
     try {
       const trimmed = trimStrings(categoryData);
       
       if (!validateCategoryUniqueness(categories, trimmed.name)) {
-        errorMessage = "Category name must be unique";
-        toast.error(errorMessage);
-        throw new Error(errorMessage);
+        throwErrorWithToast("Category name must be unique");
       }
 
-      const newCategory = {
-        ...trimmed,
-        amount: 0,
-        user_uid: currentUserUid,
-        is_deleted: false,
-        created_at: serverTimestamp(),
-        created_by: currentUserUid,
-        updated_at: null,
-        updated_by: null,
-      };
+      const newCategory = createBaseEntityData(trimmed, currentUserUid);
 
-      validateCategory({ ...newCategory, created_at: new Date() }); // zod doesn't like serverTimestamp
-
+      validateCategory(newCategory);
       const docRef = await createCategoryService(newCategory);
 
       set((state) => ({
@@ -91,16 +80,10 @@ export const categoryActions = (set, get) => ({
         ],
       }));
 
-      toast.success("Category created successfully!");
+      showToast.success("Category created successfully!");
     } catch (e) {
-      console.error(e);
-      errorMessage =
-        e instanceof z.ZodError
-          ? "Validation error: " + e.errors.map((err) => err.message).join(", ")
-          : e.message || "Failed to create category";
-      set({ error: errorMessage });
-      toast.error(errorMessage);
-      throw e; // Re-throw to allow component to handle if needed
+      handleStoreError(e, "Failed to create category", set);
+      throw e;
     }
   },
 
@@ -108,55 +91,37 @@ export const categoryActions = (set, get) => ({
     const { categories, currentUserUid } = get();
 
     set({ error: null });
-    let errorMessage;
 
     try {
-      const existing = categories.find((w) => w.id === categoryId);
+      const existing = categories.find((c) => c.id === categoryId);
       if (!existing) {
-        errorMessage = "Category not found";
-        toast.error(errorMessage);
-        throw new Error(errorMessage);
+        throwErrorWithToast("Category not found");
       }
 
       const trimmed = trimStrings(updatedData);
       
       if (!validateCategoryUniqueness(categories, trimmed.name, categoryId)) {
-        errorMessage = "Category name must be unique";
-        toast.error(errorMessage);
-        throw new Error(errorMessage);
+        throwErrorWithToast("Category name must be unique");
       }
 
-      const merged = {
-        ...existing,
-        ...trimmed,
-        updated_at: new Date(),
-        updated_by: currentUserUid,
-      };
+      const updateData = createUpdateData(
+        { ...existing, ...trimmed },
+        currentUserUid
+      );
 
-      validateCategory(merged);
-
-      await updateCategoryService(categoryId, {
-        ...trimmed,
-        updated_at: serverTimestamp(),
-        updated_by: currentUserUid,
-      });
+      validateCategory(updateData);
+      await updateCategoryService(categoryId, updateData);
 
       set((state) => ({
-        categories: state.categories.map((w) =>
-          w.id === categoryId ? { ...w, ...trimmed, updated_at: new Date() } : w,
+        categories: state.categories.map((c) =>
+          c.id === categoryId ? { ...c, ...trimmed, updated_at: new Date() } : c,
         ),
       }));
 
-      toast.success("Category updated successfully!");
+      showToast.success("Category updated successfully!");
     } catch (e) {
-      console.error(e);
-      errorMessage =
-        e instanceof z.ZodError
-          ? "Validation error: " + e.errors.map((err) => err.message).join(", ")
-          : e.message || "Failed to update category";
-      set({ error: errorMessage });
-      toast.error(errorMessage);
-      throw e; // Re-throw to allow component to handle if needed
+      handleStoreError(e, "Failed to update category", set);
+      throw e;
     }
   },
 
@@ -165,16 +130,14 @@ export const categoryActions = (set, get) => ({
 
     try {
       await deleteCategoryService(categoryId);
+      
       set((state) => ({
-        categories: state.categories.filter((w) => w.id !== categoryId),
+        categories: state.categories.filter((c) => c.id !== categoryId),
       }));
-      toast.success("Category deleted successfully!");
+      showToast.success("Category deleted successfully!");
     } catch (e) {
-      console.error(e);
-      const errorMessage = "Failed to delete category";
-      set({ error: errorMessage });
-      toast.error(errorMessage);
-      throw e; // Re-throw to allow component to handle if needed
+      handleStoreError(e, "Failed to delete category", set);
+      throw e;
     }
   },
 

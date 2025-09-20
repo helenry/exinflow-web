@@ -1,5 +1,5 @@
-// stores/modalStore.js
 import { create } from "zustand";
+import { modalActions } from "./modalActions";
 
 const initialModalState = {
   isOpen: false,
@@ -7,26 +7,15 @@ const initialModalState = {
   action: null,
   itemId: null,
   data: null,
+  parentId: null
 };
 
 const useModalStore = create((set) => ({
+  // State
   modal: { ...initialModalState },
 
-  openModal: ({ type, action, itemId = null, data = null }) => {
-    set({
-      modal: {
-        isOpen: true,
-        type,
-        action,
-        itemId,
-        data,
-      },
-    });
-  },
-
-  closeModal: () => {
-    set({ modal: { ...initialModalState } });
-  },
+  // Actions
+  ...modalActions(set, initialModalState),
 }));
 
 export default useModalStore;

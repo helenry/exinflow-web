@@ -14,3 +14,8 @@ export const CATEGORY_FORM_BASE = {
   color: THEME_COLOR.RAW,
   icon: "lusmile",
 };
+
+export const SUBCATEGORY_FORM_BASE = {
+  name: "",
+  icon: "lusmile",
+};

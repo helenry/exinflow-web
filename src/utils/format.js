@@ -25,14 +25,6 @@ export const trimStrings = (input) => {
 };
 
 /**
- * Normalizes a string by converting it to lowercase.
- * This is often used for case-insensitive comparisons, such as in searches or validation.
- * @param {string} input - The string to normalize.
- * @returns {string} The normalized, lowercase string.
- */
-export const normalizeString = (input) => input.toLowerCase();
-
-/**
  * Finds and returns the currency object for a given ISO code.
  * @param {string} isoCode - The three-letter ISO currency code (e.g., 'USD').
  * @returns {object|undefined} The currency object from CURRENCY_OPTIONS, or undefined if not found.

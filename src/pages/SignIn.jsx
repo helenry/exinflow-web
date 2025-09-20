@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import sign_in from "../assets/images/sign_in.jpg";
 import logo_white from "../assets/images/logo/logo_white.png";
-import useAuthStore from "../stores/authStore";
+import useAuthStore from "../stores/auth/authStore";
 import { FONTS } from "../constants/fonts";
 
 const SignIn = () => {

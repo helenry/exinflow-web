@@ -1,4 +1,4 @@
-// components/menu/wallets/WalletSummary.jsx
+// components/menu/wallet/WalletSummary.jsx
 import { LuChevronDown, LuChevronUp } from "react-icons/lu"; // or use any other icons you like
 import CircleButton from "../../ui/buttons/CircleButton";
 import { formatMoney, getCurrencySymbol } from "../../../utils/format";

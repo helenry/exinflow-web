@@ -1,11 +1,17 @@
-// components/menu/categories/CategoryList.jsx
+// components/menu/category/CategoryList.jsx
 import React, { useCallback } from "react";
-import CategoryItem from "../categories/CategoryItem";
+import CategoryItem from "./CategoryItem";
+import SubcategoryItem from "./subcategory/SubcategoryItem";
 
 const CategoryList = ({
   categories,
   expandedCategories,
   setExpandedCategories,
+  handleEditCategoryClick,
+  handleDeleteCategoryClick,
+  handleCreateSubcategoryClick,
+  handleEditSubcategoryClick,
+  handleDeleteSubcategoryClick,
   loading,
   error,
 }) => {
@@ -35,13 +41,18 @@ const CategoryList = ({
             category={category}
             expandedCategories={expandedCategories}
             setExpandedCategories={setExpandedCategories}
+            handleEditCategoryClick={handleEditCategoryClick}
+            handleDeleteCategoryClick={handleDeleteCategoryClick}
+            handleCreateSubcategoryClick={handleCreateSubcategoryClick}
             />
           {
             category.subcategories && category.subcategories.length > 0 && category.subcategories.map((subcategory) => (
-              <CategoryItem
+              <SubcategoryItem
                 key={subcategory.id} // Add a key if available
                 category={category}
                 subcategory={subcategory}
+                handleEditSubcategoryClick={handleEditSubcategoryClick}
+                handleDeleteSubcategoryClick={handleDeleteSubcategoryClick}
               />
             ))
           }
