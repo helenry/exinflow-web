@@ -11,16 +11,17 @@ export const throwErrorWithToast = (message) => {
 // Helper function to handle common error processing
 export const handleStoreError = (e, defaultMessage, set) => {
   console.error(e);
-  const errorMessage = e instanceof z.ZodError
-    ? "Validation error: " + e.errors.map((err) => err.message).join(", ")
-    : e.message || defaultMessage;
+  const errorMessage =
+    e instanceof z.ZodError
+      ? "Validation error: " + e.errors.map((err) => err.message).join(", ")
+      : e.message || defaultMessage;
   set({ error: errorMessage });
   showToast.error(errorMessage);
   return errorMessage;
 };
 
 // Helper function to create base entity data
-export const createBaseEntityData = (data, currentUserUid) => ({
+export const createBaseData = (data, currentUserUid) => ({
   ...data,
   user_uid: currentUserUid,
   is_deleted: false,

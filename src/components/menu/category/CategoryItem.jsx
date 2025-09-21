@@ -9,12 +9,12 @@ const CategoryItem = ({
   setExpandedCategories,
   handleEditCategoryClick,
   handleDeleteCategoryClick,
-  handleCreateSubcategoryClick
+  handleCreateSubcategoryClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   let Icon = ICON_OPTIONS[category.icon];
-  
+
   return (
     <div
       className={`flex items-center rounded-full w-fit relative group px-5 py-2 text-base`}
@@ -22,17 +22,15 @@ const CategoryItem = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {Icon && (
-        <Icon 
-          className={`text-white mr-2 text-base`} 
-        />
-      )}
+      {Icon && <Icon className={`text-white mr-2 text-base`} />}
 
       <p className="text-white">{category.name}</p>
 
-      <div className={`gap-3 ${(category.subcategories && category.subcategories.length > 0) || isHovered ? 'ml-2' : ''} flex`}>
-        {
-          category.subcategories && category.subcategories.length > 0 && <button
+      <div
+        className={`gap-3 ${(category.subcategories && category.subcategories.length > 0) || isHovered ? "ml-2" : ""} flex`}
+      >
+        {category.subcategories && category.subcategories.length > 0 && (
+          <button
             className="text-white text-lg hover:text-yellow-300 transition-colors cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
@@ -41,11 +39,11 @@ const CategoryItem = ({
           >
             <ICONS.ARROW_LEFT />
           </button>
-        }
+        )}
 
         {/* Add/Edit/Delete Icons with Animation */}
-        {
-          isHovered && <div className={`gap-3 flex transition-all duration-200`}>
+        {isHovered && (
+          <div className={`gap-3 flex transition-all duration-200`}>
             <button
               className="text-white text-base hover:text-yellow-300 transition-colors cursor-pointer"
               onClick={() => handleCreateSubcategoryClick(category.id)}
@@ -67,7 +65,7 @@ const CategoryItem = ({
               <ICONS.DELETE />
             </button>
           </div>
-        }
+        )}
       </div>
     </div>
   );

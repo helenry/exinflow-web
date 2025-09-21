@@ -1,19 +1,19 @@
 /* styles/fonts.css */
-@import '@fontsource/open-sans/300.css'; /* Light */
-@import '@fontsource/open-sans/400.css'; /* Regular */
-@import '@fontsource/open-sans/500.css'; /* Medium */
-@import '@fontsource/open-sans/600.css'; /* Semi-bold */
-@import '@fontsource/open-sans/700.css'; /* Bold */
+@import "@fontsource/open-sans/300.css"; /* Light */
+@import "@fontsource/open-sans/400.css"; /* Regular */
+@import "@fontsource/open-sans/500.css"; /* Medium */
+@import "@fontsource/open-sans/600.css"; /* Semi-bold */
+@import "@fontsource/open-sans/700.css"; /* Bold */
 
 /* Import Source Sans 3 weights */
-@import '@fontsource/source-sans-3/200.css'; /* Extra Light */
-@import '@fontsource/source-sans-3/300.css'; /* Light */
-@import '@fontsource/source-sans-3/400.css'; /* Regular */
-@import '@fontsource/source-sans-3/500.css'; /* Medium */
-@import '@fontsource/source-sans-3/600.css'; /* Semi-bold */
-@import '@fontsource/source-sans-3/700.css'; /* Bold */
-@import '@fontsource/source-sans-3/800.css'; /* Extra Bold */
-@import '@fontsource/source-sans-3/900.css'; /* Black */
+@import "@fontsource/source-sans-3/200.css"; /* Extra Light */
+@import "@fontsource/source-sans-3/300.css"; /* Light */
+@import "@fontsource/source-sans-3/400.css"; /* Regular */
+@import "@fontsource/source-sans-3/500.css"; /* Medium */
+@import "@fontsource/source-sans-3/600.css"; /* Semi-bold */
+@import "@fontsource/source-sans-3/700.css"; /* Bold */
+@import "@fontsource/source-sans-3/800.css"; /* Extra Bold */
+@import "@fontsource/source-sans-3/900.css"; /* Black */
 
 @font-face {
   font-family: "Anderson Grotesk";
@@ -97,9 +97,15 @@
 }
 
 :root {
-  --font-open-sans: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-anderson-grotesk: 'Anderson Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-source-sans-3: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-open-sans:
+    "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  --font-anderson-grotesk:
+    "Anderson Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  --font-source-sans-3:
+    "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
 }
 
 @layer components {

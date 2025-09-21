@@ -2,14 +2,19 @@
 import {
   createSubcategoryService,
   updateSubcategoryService,
-  deleteSubcategoryService
+  deleteSubcategoryService,
 } from "../../../services/subcategoryService";
 import { trimStrings } from "../../../utils/format";
 import {
   validateSubcategory,
-  validateSubcategoryUniqueness 
+  validateSubcategoryUniqueness,
 } from "./subcategoryValidation";
-import { createBaseEntityData, createUpdateData, handleStoreError, throwErrorWithToast } from "../../../utils/storeHelpers";
+import {
+  createBaseData,
+  createUpdateData,
+  handleStoreError,
+  throwErrorWithToast,
+} from "../../../utils/storeHelpers";
 import { showToast } from "../../../utils/toast";
 
 export const subcategoryActions = (set, get) => ({
@@ -25,12 +30,19 @@ export const subcategoryActions = (set, get) => ({
       }
 
       const trimmed = trimStrings(subcategoryData);
-      
-      if (!validateSubcategoryUniqueness(category.subcategories || [], trimmed.name)) {
-        throwErrorWithToast("Subcategory name must be unique within this category");
+
+      if (
+        !validateSubcategoryUniqueness(
+          category.subcategories || [],
+          trimmed.name,
+        )
+      ) {
+        throwErrorWithToast(
+          "Subcategory name must be unique within this category",
+        );
       }
 
-      const newSubcategory = createBaseEntityData(trimmed, currentUserUid);
+      const newSubcategory = createBaseData(trimmed, currentUserUid);
 
       validateSubcategory(newSubcategory);
       const docRef = await createSubcategoryService(categoryId, newSubcategory);
@@ -67,20 +79,30 @@ export const subcategoryActions = (set, get) => ({
         throwErrorWithToast("Category not found");
       }
 
-      const existing = category.subcategories?.find((s) => s.id === subcategoryId);
+      const existing = category.subcategories?.find(
+        (s) => s.id === subcategoryId,
+      );
       if (!existing) {
         throwErrorWithToast("Subcategory not found");
       }
 
       const trimmed = trimStrings(updatedData);
-      
-      if (!validateSubcategoryUniqueness(category.subcategories || [], trimmed.name, subcategoryId)) {
-        throwErrorWithToast("Subcategory name must be unique within this category");
+
+      if (
+        !validateSubcategoryUniqueness(
+          category.subcategories || [],
+          trimmed.name,
+          subcategoryId,
+        )
+      ) {
+        throwErrorWithToast(
+          "Subcategory name must be unique within this category",
+        );
       }
 
       const updateData = createUpdateData(
         { ...existing, ...trimmed },
-        currentUserUid
+        currentUserUid,
       );
 
       validateSubcategory(updateData);
@@ -109,17 +131,33 @@ export const subcategoryActions = (set, get) => ({
   },
 
   deleteSubcategory: async (categoryId, subcategoryId) => {
+    const { categories } = get();
+
     set({ error: null });
 
     try {
+      const category = categories.find((c) => c.id === categoryId);
+      if (!category) {
+        throwErrorWithToast("Category not found");
+      }
+
+      const existing = category.subcategories?.find(
+        (s) => s.id === subcategoryId,
+      );
+      if (!existing) {
+        throwErrorWithToast("Subcategory not found");
+      }
+
       await deleteSubcategoryService(categoryId, subcategoryId);
-      
+
       set((state) => ({
         categories: state.categories.map((cat) =>
           cat.id === categoryId
             ? {
                 ...cat,
-                subcategories: cat.subcategories?.filter((sub) => sub.id !== subcategoryId),
+                subcategories: cat.subcategories?.filter(
+                  (sub) => sub.id !== subcategoryId,
+                ),
               }
             : cat,
         ),

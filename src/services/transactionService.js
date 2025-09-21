@@ -16,8 +16,10 @@ export const getTransactionsService = async (userUid) => {
     collection(db, "transactions"),
     where("is_deleted", "==", false),
     where("user_uid", "==", userUid),
-    orderBy("created_at", "asc")
+    orderBy("date", "desc"),
+    orderBy("created_at", "desc"),
   );
+
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };

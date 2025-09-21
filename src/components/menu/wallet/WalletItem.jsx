@@ -19,13 +19,17 @@ const WalletItem = ({
       className="p-2 flex justify-between items-center rounded-2xl border"
       style={{
         borderColor:
-          activeWallet && wallet.id == activeWallet ? `#${wallet.color}` : "#e6e6e6",
+          activeWallet && wallet.id == activeWallet
+            ? `#${wallet.color}`
+            : "#e6e6e6",
         borderWidth: 1,
       }}
     >
       <div className="min-w-0">
         <p className="text-lg font-bold" style={{ color: `#${wallet.color}` }}>
-          <span className="block max-w-[150px] truncate">{wallet.name || "Unnamed"}</span>
+          <span className="block max-w-[150px] truncate">
+            {wallet.name || "Unnamed"}
+          </span>
         </p>
         <p>
           {currency?.symbol}
@@ -37,12 +41,28 @@ const WalletItem = ({
       </div>
 
       <div className="space-x-2 flex">
-        <Tooltip key={`${wallet.id}-edit`} content="Edit" position="top" delay={500}>
-          <CircleButton onClick={() => handleEditWalletClick(wallet)} icon={ICONS.EDIT} />
+        <Tooltip
+          key={`${wallet.id}-edit`}
+          content="Edit"
+          position="top"
+          delay={500}
+        >
+          <CircleButton
+            onClick={() => handleEditWalletClick(wallet)}
+            icon={ICONS.EDIT}
+          />
         </Tooltip>
 
-        <Tooltip key={`${wallet.id}-delete`} content="Delete" position="top" delay={500}>
-          <CircleButton onClick={() => handleDeleteWalletClick(wallet.id)} icon={ICONS.DELETE} />
+        <Tooltip
+          key={`${wallet.id}-delete`}
+          content="Delete"
+          position="top"
+          delay={500}
+        >
+          <CircleButton
+            onClick={() => handleDeleteWalletClick(wallet.id)}
+            icon={ICONS.DELETE}
+          />
         </Tooltip>
       </div>
     </li>

@@ -7,7 +7,7 @@ const initialModalState = {
   action: null,
   itemId: null,
   data: null,
-  parentId: null
+  parentId: null,
 };
 
 const useModalStore = create((set) => ({

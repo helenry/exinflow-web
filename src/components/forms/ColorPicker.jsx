@@ -70,7 +70,9 @@ const ColorPicker = ({
                   setShowPalette(false);
                 }}
                 className={`${color.BG} w-6 h-6 rounded-full cursor-pointer transition-transform hover:scale-110 ${
-                  inputValue === color.RAW ? "ring-2 ring-offset-2 ring-blue-500" : ""
+                  inputValue === color.RAW
+                    ? "ring-2 ring-offset-2 ring-blue-500"
+                    : ""
                 }`}
                 title={`#${color.RAW}`}
               />
@@ -79,9 +81,7 @@ const ColorPicker = ({
         </div>
       )}
 
-      {error && (
-        <p className="text-red-600 text-sm mt-1">{error}</p>
-      )}
+      {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
 
       {inputValue && !isValidHex(inputValue) && (
         <p className="text-yellow-600 text-sm mt-1">

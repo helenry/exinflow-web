@@ -50,12 +50,12 @@ export const authActions = (set, get) => ({
 
   initializeAuth: () => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      set({ 
-        currentUser: user, 
-        isAuthenticated: !!user, 
-        isLoading: false 
+      set({
+        currentUser: user,
+        isAuthenticated: !!user,
+        isLoading: false,
       });
-      
+
       if (user) {
         try {
           useUserConfigStore.getState().getUserConfig(user.uid);
@@ -66,7 +66,7 @@ export const authActions = (set, get) => ({
         useUserConfigStore.getState().clearUserConfig();
       }
     });
-    
+
     return unsubscribe;
   },
 });

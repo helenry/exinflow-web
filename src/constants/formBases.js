@@ -1,5 +1,6 @@
 // constants/formBases.js
 import { THEME_COLOR } from "./colors";
+import { TRANSACTION_TYPES } from "./types";
 
 export const WALLET_FORM_BASE = (mainCurrencyCode) => ({
   name: "",
@@ -9,7 +10,7 @@ export const WALLET_FORM_BASE = (mainCurrencyCode) => ({
 });
 
 export const CATEGORY_FORM_BASE = {
-  type: "",
+  type: TRANSACTION_TYPES.EXPENSE,
   name: "",
   color: THEME_COLOR.RAW,
   icon: "lusmile",
@@ -18,4 +19,7 @@ export const CATEGORY_FORM_BASE = {
 export const SUBCATEGORY_FORM_BASE = {
   name: "",
   icon: "lusmile",
+};
+
+export const TRANSACTION_FORM_BASE = {
 };

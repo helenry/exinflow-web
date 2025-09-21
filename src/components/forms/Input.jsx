@@ -20,11 +20,11 @@ const Input = ({
   ...props
 }) => {
   const baseClassName = "border rounded-full px-2 py-1 w-full";
-  const stateClassName = disabled 
-    ? "disabled:bg-gray-100 disabled:cursor-not-allowed" 
+  const stateClassName = disabled
+    ? "disabled:bg-gray-100 disabled:cursor-not-allowed"
     : "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
   const errorClassName = error ? "border-red-500" : "border-gray-300";
-  
+
   const inputClassName = `${baseClassName} ${stateClassName} ${errorClassName} ${className}`;
 
   return (
@@ -50,9 +50,7 @@ const Input = ({
         className={inputClassName}
         {...props}
       />
-      {error && (
-        <p className="text-red-600 text-sm mt-1">{error}</p>
-      )}
+      {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
     </div>
   );
 };

@@ -14,13 +14,20 @@ import { db } from "../api/firebase";
 import { DEFAULT_CREATOR, DEFAULT_WALLET } from "@/constants";
 import { DEFAULT_CURRENCY } from "../constants";
 
-export const getWalletsService = async (userUid) => {
-  const q = query(
-    collection(db, "wallets"),
-    where("is_deleted", "==", false),
-    where("user_uid", "==", userUid),
-    orderBy("created_at", "asc")
-  );
+export const getWalletsService = async (userUid, includeDeleted = false) => {
+  const q = includeDeleted
+    ? query(
+        collection(db, "wallets"),
+        where("user_uid", "==", userUid),
+        orderBy("created_at", "asc"),
+      )
+    : query(
+        collection(db, "wallets"),
+        where("is_deleted", "==", false),
+        where("user_uid", "==", userUid),
+        orderBy("created_at", "asc"),
+      );
+
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
@@ -42,7 +49,7 @@ export const createStarterWalletService = async (userId) => {
     where("is_deleted", "==", false),
   );
   const snapshot = await getDocs(q);
-  
+
   if (snapshot.empty) {
     const defaultWalletData = {
       ...DEFAULT_WALLET,
@@ -54,7 +61,7 @@ export const createStarterWalletService = async (userId) => {
       updated_by: null,
       is_deleted: false,
     };
-    
+
     await createWalletService(defaultWalletData);
     console.log("Default wallet created");
   } else {

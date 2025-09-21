@@ -10,10 +10,11 @@ const WalletSummary = ({
   activeWallet,
   setActiveWallet,
   summaryExpanded,
-  toggleExpand
+  toggleExpand,
 }) => {
-  const wallet = wallets.find(wallet => wallet.id == activeWallet);
-  if(wallet && activeWallet) wallet.currency = getCurrencySymbol(wallet.currency_code)
+  const wallet = wallets.find((wallet) => wallet.id == activeWallet);
+  if (wallet && activeWallet)
+    wallet.currency = getCurrencySymbol(wallet.currency_code);
 
   return (
     <div className="rounded-2xl p-4 border border-gray-200 mb-5 bg-white">
@@ -48,13 +49,16 @@ const WalletSummary = ({
             {wallet && activeWallet && (
               <>
                 <p className="text-4xl">
-                  {wallet.currency?.symbol}{formatMoney(wallet.base_amount || 0)}
+                  {wallet.currency?.symbol}
+                  {formatMoney(wallet.base_amount || 0)}
                 </p>
               </>
             )}
-            {!activeWallet && <>
-              <p>Hello World</p>
-            </>}
+            {!activeWallet && (
+              <>
+                <p>Hello World</p>
+              </>
+            )}
           </div>
         </div>
       )}

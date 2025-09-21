@@ -22,9 +22,10 @@ const Dropdown = ({
     }
 
     if (option.iso_code && option.name) {
-      const label = showSymbol && option.symbol
-        ? `${option.iso_code} - ${option.name} (${option.symbol})`
-        : `${option.iso_code} - ${option.name}`;
+      const label =
+        showSymbol && option.symbol
+          ? `${option.iso_code} - ${option.name} (${option.symbol})`
+          : `${option.iso_code} - ${option.name}`;
       return { value: option.iso_code, label };
     }
 
@@ -38,7 +39,8 @@ const Dropdown = ({
   const selectOptions = options.map(renderOption);
 
   // Find selected option
-  const selectedOption = selectOptions.find(opt => opt.value === value) || null;
+  const selectedOption =
+    selectOptions.find((opt) => opt.value === value) || null;
 
   return (
     <div className={`mb-3 ${className}`}>
@@ -51,28 +53,29 @@ const Dropdown = ({
       <Select
         name={name}
         value={selectedOption}
-        onChange={(selected) => onChange({ target: { name, value: selected?.value || "" } })}
+        onChange={(selected) =>
+          onChange({ target: { name, value: selected?.value || "" } })
+        }
         options={selectOptions}
         isDisabled={disabled}
         placeholder={placeholder}
         classNames={{
-          control: () => `border ${error ? "border-red-500" : "border-gray-300"} rounded-full`,
+          control: () =>
+            `border ${error ? "border-red-500" : "border-gray-300"} rounded-full`,
         }}
         styles={{
           control: (base) => ({
             ...base,
-            borderRadius: '9999px', // Forces a fully rounded control
+            borderRadius: "9999px", // Forces a fully rounded control
           }),
           menu: (base) => ({
             ...base,
-            borderRadius: '12px',
+            borderRadius: "12px",
           }),
         }}
         {...props}
       />
-      {error && (
-        <p className="text-red-600 text-sm mt-1">{error}</p>
-      )}
+      {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
     </div>
   );
 };

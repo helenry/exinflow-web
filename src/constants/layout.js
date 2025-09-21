@@ -9,7 +9,7 @@ export const NAVBAR = {
 
 export const SIDEBAR = {
   WIDTH: "w-20",
-  WIDTH_RAW: 20
+  WIDTH_RAW: 20,
 };
 
 export const MODAL = {
@@ -19,5 +19,5 @@ export const MODAL = {
   MARGIN_Y_PIXEL: "32px",
   MARGIN_Y_PIXEL_RAW: 32,
 
-  HEIGHT: "h-[calc(100vh-80px-16px)]" // screen height - NAVBAR.HEIGHT_PIXEL - MODAL.MARGIN_PIXEL
-}
+  HEIGHT: "h-[calc(100vh-80px-16px)]", // screen height - NAVBAR.HEIGHT_PIXEL - MODAL.MARGIN_PIXEL
+};

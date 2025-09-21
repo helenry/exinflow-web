@@ -11,7 +11,12 @@ import {
   validateCategory,
   validateCategoryUniqueness,
 } from "./categoryValidation";
-import { createBaseEntityData, createUpdateData, handleStoreError, throwErrorWithToast } from "../../utils/storeHelpers";
+import {
+  createBaseData,
+  createUpdateData,
+  handleStoreError,
+  throwErrorWithToast,
+} from "../../utils/storeHelpers";
 import { showToast } from "../../utils/toast";
 
 export const categoryActions = (set, get) => ({
@@ -63,12 +68,12 @@ export const categoryActions = (set, get) => ({
 
     try {
       const trimmed = trimStrings(categoryData);
-      
+
       if (!validateCategoryUniqueness(categories, trimmed.name)) {
         throwErrorWithToast("Category name must be unique");
       }
 
-      const newCategory = createBaseEntityData(trimmed, currentUserUid);
+      const newCategory = createBaseData(trimmed, currentUserUid);
 
       validateCategory(newCategory);
       const docRef = await createCategoryService(newCategory);
@@ -99,14 +104,14 @@ export const categoryActions = (set, get) => ({
       }
 
       const trimmed = trimStrings(updatedData);
-      
+
       if (!validateCategoryUniqueness(categories, trimmed.name, categoryId)) {
         throwErrorWithToast("Category name must be unique");
       }
 
       const updateData = createUpdateData(
         { ...existing, ...trimmed },
-        currentUserUid
+        currentUserUid,
       );
 
       validateCategory(updateData);
@@ -114,7 +119,9 @@ export const categoryActions = (set, get) => ({
 
       set((state) => ({
         categories: state.categories.map((c) =>
-          c.id === categoryId ? { ...c, ...trimmed, updated_at: new Date() } : c,
+          c.id === categoryId
+            ? { ...c, ...trimmed, updated_at: new Date() }
+            : c,
         ),
       }));
 
@@ -126,11 +133,18 @@ export const categoryActions = (set, get) => ({
   },
 
   deleteCategory: async (categoryId) => {
+    const { categories } = get();
+
     set({ error: null });
 
     try {
+      const existing = categories.find((c) => c.id === categoryId);
+      if (!existing) {
+        throwErrorWithToast("Category not found");
+      }
+
       await deleteCategoryService(categoryId);
-      
+
       set((state) => ({
         categories: state.categories.filter((c) => c.id !== categoryId),
       }));

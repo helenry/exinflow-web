@@ -1,5 +1,5 @@
 // hooks/useClickOutside.js
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * A custom React hook that triggers a callback function when a click occurs outside of the referenced component.
@@ -27,13 +27,13 @@ const useClickOutside = (callback) => {
     };
 
     // Add a 'mousedown' event listener to the entire document.
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     // This return function is the cleanup mechanism for the effect.
     // It runs when the component unmounts or before the effect re-runs.
     return () => {
       // Remove the 'mousedown' event listener to prevent memory leaks.
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [callback]); // The effect re-runs if the callback function changes.
 

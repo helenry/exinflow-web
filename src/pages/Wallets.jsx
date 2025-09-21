@@ -4,13 +4,8 @@ import Title from "@/components/ui/texts/Title";
 import WalletList from "@/components/menu/wallet/WalletList";
 import useAuthStore from "../stores/auth/authStore";
 import useWalletStore from "../stores/wallet/walletStore";
-import useModalStore from "../stores/modal/modalStore";
-import {
-  createWalletHandler,
-  deleteWalletHandler,
-  editWalletHandler,
-} from "../handlers/walletHandlers";
 import WalletSummary from "../components/menu/wallet/WalletSummary";
+import { useModifyHandler } from "../hooks/useModifyHandler";
 
 const Wallets = () => {
   // STATES
@@ -19,9 +14,14 @@ const Wallets = () => {
 
   // STORES
   const { currentUser } = useAuthStore();
-  const { openModal, closeModal, modal } = useModalStore();
   const { wallets, deleteWallet, setCurrentUser, loading, error } =
     useWalletStore();
+
+  const { handleCreate, handleEdit, handleDelete } = useModifyHandler(
+    "wallet",
+    deleteWallet,
+    (walletId) => setActiveWallet((prev) => (prev === walletId ? null : prev)),
+  );
 
   // TRIGGER FETCH BASED ON USER
   useEffect(() => {
@@ -37,21 +37,16 @@ const Wallets = () => {
     e.stopPropagation();
     setActiveWallet(walletId);
   };
-  const handleCreateWalletClick = createWalletHandler(openModal);
-  const handleEditWalletClick = editWalletHandler(openModal);
-  const handleDeleteWalletClick = deleteWalletHandler(
-    deleteWallet,
-    closeModal,
-    setActiveWallet,
-    modal,
+
+  const handleContainerClick = useCallback(
+    (e) => {
+      if (e.target === e.currentTarget) {
+        setActiveWallet(null);
+      }
+    },
+    [setActiveWallet],
   );
 
-  const handleContainerClick = useCallback((e) => {
-    if (e.target === e.currentTarget) {
-      setActiveWallet(null);
-    }
-  }, [setActiveWallet]);
-  
   // JSX
   return (
     <div className="relative">
@@ -70,7 +65,7 @@ const Wallets = () => {
         <div className="flex justify-between items-center mb-6">
           <Title>Wallets</Title>
           <button
-            onClick={handleCreateWalletClick}
+            onClick={handleCreate}
             className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
           >
             + New Wallet
@@ -81,8 +76,8 @@ const Wallets = () => {
           wallets={wallets}
           activeWallet={activeWallet}
           handleWalletItemClick={handleWalletItemClick}
-          handleEditWalletClick={handleEditWalletClick}
-          handleDeleteWalletClick={handleDeleteWalletClick}
+          handleEditWalletClick={handleEdit}
+          handleDeleteWalletClick={handleDelete}
           handleContainerClick={handleContainerClick}
           loading={loading}
           error={error}

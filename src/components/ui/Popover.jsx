@@ -1,19 +1,19 @@
 // components/ui/Popover.jsx
-import React from 'react';
+import React from "react";
 
-export default function Popover({ 
-  isOpen, 
-  position = { top: 0 }, 
+export default function Popover({
+  isOpen,
+  position = { top: 0 },
   children,
   className = "",
   style = {},
-  onClose
+  onClose,
 }) {
   if (!isOpen) return null;
 
-  const defaultStyle = { 
+  const defaultStyle = {
     top: position.top,
-    ...style 
+    ...style,
   };
 
   return (

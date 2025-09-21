@@ -8,7 +8,7 @@ export const validateWallet = (wallet) => {
 export const validateWalletUniqueness = (wallets, name, excludeId = null) => {
   const trimmedName = name?.trim().toLowerCase();
   if (!trimmedName) return false;
-  
+
   return !wallets.some((wallet) => {
     const walletName = wallet.name?.trim().toLowerCase();
     return walletName === trimmedName && wallet.id !== excludeId;

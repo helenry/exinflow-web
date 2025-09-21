@@ -8,7 +8,12 @@ import {
 import { trimStrings } from "../../utils/format";
 import { convertFirestoreTimestamps } from "../../utils/type";
 import { validateWallet, validateWalletUniqueness } from "./walletValidation";
-import { createBaseEntityData, createUpdateData, handleStoreError, throwErrorWithToast } from "../../utils/storeHelpers";
+import {
+  createBaseData,
+  createUpdateData,
+  handleStoreError,
+  throwErrorWithToast,
+} from "../../utils/storeHelpers";
 import { showToast } from "../../utils/toast";
 
 export const walletActions = (set, get) => ({
@@ -60,17 +65,17 @@ export const walletActions = (set, get) => ({
 
     try {
       const trimmed = trimStrings(walletData);
-      
+
       if (!validateWalletUniqueness(wallets, trimmed.name)) {
         throwErrorWithToast("Wallet name must be unique");
       }
 
-      const newWallet = createBaseEntityData(
+      const newWallet = createBaseData(
         {
           ...trimmed,
-          amount: 0
+          amount: 0,
         },
-        currentUserUid
+        currentUserUid,
       );
 
       validateWallet(newWallet);
@@ -102,14 +107,14 @@ export const walletActions = (set, get) => ({
       }
 
       const trimmed = trimStrings(updatedData);
-      
+
       if (!validateWalletUniqueness(wallets, trimmed.name, walletId)) {
-        throwErrorWithToast("Wallet name must be unique")
+        throwErrorWithToast("Wallet name must be unique");
       }
 
       const updateData = createUpdateData(
         { ...existing, ...trimmed },
-        currentUserUid
+        currentUserUid,
       );
 
       validateWallet(updateData);
@@ -129,11 +134,18 @@ export const walletActions = (set, get) => ({
   },
 
   deleteWallet: async (walletId) => {
+    const { wallets } = get();
+
     set({ error: null });
 
     try {
+      const existing = wallets.find((w) => w.id === walletId);
+      if (!existing) {
+        throwErrorWithToast("Wallet not found");
+      }
+
       await deleteWalletService(walletId);
-      
+
       set((state) => ({
         wallets: state.wallets.filter((w) => w.id !== walletId),
       }));

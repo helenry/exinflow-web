@@ -1,63 +1,24 @@
 // components/menu/category/subcategory/SubcategoryModal.jsx
-import { useState, useEffect } from "react";
-import { z } from "zod";
 import { SUBCATEGORY_FORM_BASE } from "@/constants";
 import Input from "../../../forms/Input";
-import SubcategoryModalButtons from "./SubcategoryModalButtons";
 import { subcategorySchema } from "../../../../models/subcategorySchema";
 import IconPicker from "../../../forms/IconPicker";
+import ModalButtons from "../../../layouts/modal/ModalButtons";
+import { useModalForm } from "../../../../hooks/useModalForm";
 
 const SubcategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
-  const [form, setForm] = useState(
-    SUBCATEGORY_FORM_BASE,
-  );
-  const [validationErrors, setValidationErrors] = useState({});
-
-  useEffect(() => {
-    setForm({
-      ...SUBCATEGORY_FORM_BASE,
-      ...initialData,
-    });
-    setValidationErrors({});
-  }, [initialData]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    
-    // Clear validation error for this field when user starts typing
-    if (validationErrors[name]) {
-      setValidationErrors(prev => ({
-        ...prev,
-        [name]: undefined
-      }));
-    }
+  const validationFields = {
+    name: true,
+    icon: true,
   };
 
-  const validateAndSubmit = () => {
-    try {
-      const validatedData = subcategorySchema
-        .pick({
-          name: true,
-          icon: true,
-        })
-        .parse(form);
-
-      setValidationErrors({});
-      onSubmit(validatedData);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        const errs = {};
-        e.errors.forEach((err) => {
-          if (err.path[0]) errs[err.path[0]] = err.message;
-        });
-        setValidationErrors(errs);
-      }
-    }
-  };
+  const { form, validationErrors, handleChange, validateAndSubmit } =
+    useModalForm(
+      SUBCATEGORY_FORM_BASE,
+      subcategorySchema,
+      validationFields,
+      initialData,
+    );
 
   return (
     <>
@@ -73,7 +34,6 @@ const SubcategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           autoFocus
           placeholder="Enter subcategory name"
         />
-
         <IconPicker
           label="Icon"
           name="icon"
@@ -85,8 +45,8 @@ const SubcategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
         />
       </div>
 
-      <SubcategoryModalButtons
-        validateAndSubmit={validateAndSubmit}
+      <ModalButtons
+        onSubmit={() => validateAndSubmit(onSubmit)}
         onCancel={onCancel}
         loading={loading}
       />

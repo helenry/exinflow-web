@@ -1,15 +1,40 @@
-// components/menu/wallet/WalletModal.jsx
-import { walletSchema } from "../../../models/walletSchema";
-import useUserConfigStore from "../../../stores/userConfig/userConfigStore";
-import { WALLET_FORM_BASE, CURRENCY_OPTIONS } from "@/constants";
+// components/menu/transaction/TransactionModal.jsx
+import { TRANSACTION_FORM_BASE, CURRENCY_OPTIONS } from "@/constants";
 import Input from "../../forms/Input";
 import Dropdown from "../../forms/Dropdown";
 import ColorPicker from "../../forms/ColorPicker";
 import ModalButtons from "../../layouts/modal/ModalButtons";
 import { useModalForm } from "../../../hooks/useModalForm";
+import useCategoryStore from "../../../stores/category/categoryStore";
+import useWalletStore from "../../../stores/wallet/walletStore";
+import { useEffect } from "react";
+import useAuthStore from "../../../stores/auth/authStore";
 
-const WalletModal = ({ onSubmit, initialData, onCancel, loading }) => {
-  const { userConfig } = useUserConfigStore();
+const TransactionModal = ({ onSubmit, initialData, onCancel, loading }) => {
+  const { currentUser } = useAuthStore();
+  const {
+    categories,
+    setCurrentUser: setCategoryCurrentUser,
+    loading: categoryLoading,
+    error: categoryError,
+  } = useCategoryStore();
+
+  const {
+    wallets,
+    setCurrentUser: setWalletCurrentUser,
+    loading: walletLoading,
+    error: walletError,
+  } = useWalletStore();
+
+  useEffect(() => {
+    setCategoryCurrentUser(currentUser?.uid);
+    setWalletCurrentUser(currentUser?.uid);
+  }, [currentUser?.uid, setCategoryCurrentUser, setWalletCurrentUser]);
+
+  console.log("wallets")
+  console.log(wallets)
+  console.log("categories")
+  console.log(categories)
 
   const validationFields = {
     name: true,
@@ -20,14 +45,15 @@ const WalletModal = ({ onSubmit, initialData, onCancel, loading }) => {
 
   const { form, validationErrors, handleChange, validateAndSubmit } =
     useModalForm(
-      WALLET_FORM_BASE(userConfig.main_currency_code),
-      walletSchema,
+      TRANSACTION_FORM_BASE,
+      transactionSchema,
       validationFields,
       initialData,
     );
 
   return (
     <>
+    helo
       <div className="overflow-y-auto px-2">
         <Input
           label="Name"
@@ -38,7 +64,7 @@ const WalletModal = ({ onSubmit, initialData, onCancel, loading }) => {
           disabled={loading}
           required
           autoFocus
-          placeholder="Enter wallet name"
+          placeholder="Enter transaction name"
         />
         <Input
           label="Base Amount"
@@ -84,4 +110,4 @@ const WalletModal = ({ onSubmit, initialData, onCancel, loading }) => {
   );
 };
 
-export default WalletModal;
+export default TransactionModal;

@@ -1,4 +1,11 @@
-import { LuChevronDown, LuChevronLeft, LuChevronRight, LuChevronUp, LuPencil, LuTrash2 } from "react-icons/lu";
+import {
+  LuChevronDown,
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronUp,
+  LuPencil,
+  LuTrash2,
+} from "react-icons/lu";
 import { PiPlusBold } from "react-icons/pi";
 
 export const ICONS = {
@@ -8,5 +15,5 @@ export const ICONS = {
   ARROW_UP: LuChevronUp,
   ARROR_DOWN: LuChevronDown,
   ARROW_LEFT: LuChevronLeft,
-  ARROW_RIGHT: LuChevronRight
-}
+  ARROW_RIGHT: LuChevronRight,
+};

@@ -1,12 +1,11 @@
 // components/layout/sidebar/Sidebar.jsx
-import React from 'react';
-import { usePopover } from '../../../hooks/usePopover';
 import { SIDEBAR_BUTTONS } from "../../../constants";
-import Popover from '../../ui/Popover';
-import CreateMenu from './CreateMenu';
-import Tooltip from '../../ui/Tooltip';
-import CircleButton from '../../ui/buttons/CircleButton';
-import useModalStore from '../../../stores/modal/modalStore';
+import CreateMenu from "./CreateMenu";
+import Popover from "../../ui/Popover";
+import Tooltip from "../../ui/Tooltip";
+import CircleButton from "../../ui/buttons/CircleButton";
+import useModalStore from "../../../stores/modal/modalStore";
+import { usePopover } from "../../../hooks/usePopover";
 
 export default function Sidebar() {
   const {
@@ -14,30 +13,35 @@ export default function Sidebar() {
     popoverPosition,
     buttonRefs,
     togglePopover,
-    closePopover
+    closePopover,
   } = usePopover();
-  const { openModal } = useModalStore();
 
-  const executeHandler = (onClick) => {
-    const handler = onClick(openModal);
-    handler();
-  };
+  const { openModal } = useModalStore();
 
   const handleButtonClick = (button) => {
     if (button.menu) {
       const buttonKey = button.key;
       togglePopover(buttonKey, buttonRefs.current[buttonKey]);
     } else {
-      executeHandler(button.onClick);
+      // For direct buttons without menu
+      openModal({
+        type: button.id,
+        action: "create",
+      });
     }
   };
 
   const handleMenuItemClick = (item) => {
-    executeHandler(item.onClick);
+    openModal({
+      type: item.id,
+      action: "create",
+    });
     closePopover();
   };
 
-  const activeConfig = SIDEBAR_BUTTONS.find(item => item.key === activePopover);
+  const activeConfig = SIDEBAR_BUTTONS.find(
+    (item) => item.key === activePopover,
+  );
 
   return (
     <>
@@ -52,12 +56,12 @@ export default function Sidebar() {
             <div
               ref={(el) => (buttonRefs.current[button.key] = el)}
               {...(button.menu && {
-                'data-popover-trigger': true, // Also fixed this attribute name
+                "data-popover-trigger": true,
               })}
             >
               <CircleButton
                 icon={button.icon}
-                onClick={() => handleButtonClick(button)} // Removed the event parameter
+                onClick={() => handleButtonClick(button)}
                 isActive={activePopover === button.key}
               />
             </div>
@@ -66,14 +70,14 @@ export default function Sidebar() {
       </div>
 
       <Popover
-        isOpen={!!activePopover && !!activeConfig?.menu} // FIXED: Changed from hasMenu to menu
+        isOpen={!!activePopover && !!activeConfig?.menu}
         position={popoverPosition}
         onClose={closePopover}
       >
         {activeConfig?.menu && (
           <CreateMenu
             title={activeConfig.name}
-            items={activeConfig.menu} // FIXED: Changed from menuItems to menu
+            items={activeConfig.menu}
             onClose={closePopover}
             onItemClick={handleMenuItemClick}
           />

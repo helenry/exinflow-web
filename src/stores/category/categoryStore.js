@@ -12,7 +12,7 @@ const useCategoryStore = create((set, get) => ({
 
   // Category Actions
   ...categoryActions(set, get),
-  
+
   // Subcategory Actions
   ...subcategoryActions(set, get),
 }));

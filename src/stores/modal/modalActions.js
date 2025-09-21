@@ -5,7 +5,7 @@ export const modalActions = (set, initialModalState) => ({
     action,
     itemId = null,
     data = null,
-    parentId = null
+    parentId = null,
   }) => {
     set({
       modal: {
@@ -14,7 +14,7 @@ export const modalActions = (set, initialModalState) => ({
         action,
         itemId,
         data,
-        parentId
+        parentId,
       },
     });
   },

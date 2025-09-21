@@ -31,10 +31,10 @@ export const trimStrings = (input) => {
  */
 export const getCurrencySymbol = (isoCode) => {
   const currency = CURRENCY_OPTIONS.find(
-    (item) => item.iso_code === isoCode.toUpperCase()
+    (item) => item.iso_code === isoCode.toUpperCase(),
   );
   return currency;
-}
+};
 
 /**
  * Formats a numeric amount as a money string with two decimal places.
@@ -43,11 +43,11 @@ export const getCurrencySymbol = (isoCode) => {
  */
 export const formatMoney = (amount) => {
   // Ensures the input is a number to prevent errors.
-  if (typeof amount !== 'number') return '0.00';
+  if (typeof amount !== "number") return "0.00";
 
   // Uses the browser's built-in locale-aware number formatting.
-  return amount.toLocaleString('en-US', {
+  return amount.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-}
+};

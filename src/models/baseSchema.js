@@ -27,7 +27,9 @@ export const validationPatterns = {
       message: "Invalid transaction type",
     }),
   hexColor: z.string().regex(/^([0-9a-fA-F]{6})$/, "Invalid hex color code"),
-  currencyCode: z.string().length(3, "Currency Code must be exactly 3 characters"),
+  currencyCode: z
+    .string()
+    .length(3, "Currency Code must be exactly 3 characters"),
   nonNegativeAmount: z.number().nonnegative(),
   positiveAmount: z.number().positive("Amount must be greater than 0"),
   walletId: z.string().min(1, "Wallet ID cannot be empty"),

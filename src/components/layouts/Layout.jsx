@@ -19,7 +19,11 @@ const Layout = ({ children }) => {
       >
         <Sidebar />
 
-        <main className={`overflow-y-auto pl-4 ${modal.isOpen ? 'pr-2' : 'pr-4'} pb-4`}>{children}</main>
+        <main
+          className={`overflow-y-auto pl-4 ${modal.isOpen ? "pr-2" : "pr-4"} pb-4`}
+        >
+          {children}
+        </main>
 
         <Modal />
       </div>

@@ -44,9 +44,10 @@ const CategoryList = ({
             handleEditCategoryClick={handleEditCategoryClick}
             handleDeleteCategoryClick={handleDeleteCategoryClick}
             handleCreateSubcategoryClick={handleCreateSubcategoryClick}
-            />
-          {
-            category.subcategories && category.subcategories.length > 0 && category.subcategories.map((subcategory) => (
+          />
+          {category.subcategories &&
+            category.subcategories.length > 0 &&
+            category.subcategories.map((subcategory) => (
               <SubcategoryItem
                 key={subcategory.id} // Add a key if available
                 category={category}
@@ -54,8 +55,7 @@ const CategoryList = ({
                 handleEditSubcategoryClick={handleEditSubcategoryClick}
                 handleDeleteSubcategoryClick={handleDeleteSubcategoryClick}
               />
-            ))
-          }
+            ))}
         </React.Fragment>
       ))}
     </div>

@@ -33,7 +33,9 @@ const IconPicker = ({
   }, []);
 
   const isValidIcon = (iconKey) => iconKey && ICON_OPTIONS[iconKey];
-  const IconComponent = isValidIcon(inputValue) ? ICON_OPTIONS[inputValue] : null;
+  const IconComponent = isValidIcon(inputValue)
+    ? ICON_OPTIONS[inputValue]
+    : null;
 
   const handleChange = (iconKey) => {
     setInputValue(iconKey);
@@ -79,8 +81,8 @@ const IconPicker = ({
                   setShowPalette(false);
                 }}
                 className={`w-10 h-10 rounded-full cursor-pointer flex items-center justify-center transition-all hover:scale-110 hover:bg-gray-50 ${
-                  inputValue === iconKey 
-                    ? "border-blue-500 bg-blue-50" 
+                  inputValue === iconKey
+                    ? "border-blue-500 bg-blue-50"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
                 title={iconKey}
@@ -92,9 +94,7 @@ const IconPicker = ({
         </div>
       )}
 
-      {error && (
-        <p className="text-red-600 text-sm mt-1">{error}</p>
-      )}
+      {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
 
       {inputValue && !isValidIcon(inputValue) && (
         <p className="text-yellow-600 text-sm mt-1">

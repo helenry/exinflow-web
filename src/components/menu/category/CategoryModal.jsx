@@ -1,67 +1,28 @@
 // components/menu/category/CategoryModal.jsx
-import { useState, useEffect } from "react";
-import { z } from "zod";
 import { CATEGORY_FORM_BASE } from "@/constants";
 import Input from "../../forms/Input";
 import ColorPicker from "../../forms/ColorPicker";
-import CategoryModalButtons from "./CategoryModalButtons";
 import { categorySchema } from "../../../models/categorySchema";
 import IconPicker from "../../forms/IconPicker";
 import CategoryTypeSelector from "../../forms/CategoryTypeSelector";
+import ModalButtons from "../../layouts/modal/ModalButtons";
+import { useModalForm } from "../../../hooks/useModalForm";
 
 const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
-  const [form, setForm] = useState(
-    CATEGORY_FORM_BASE,
-  );
-  const [validationErrors, setValidationErrors] = useState({});
-
-  useEffect(() => {
-    setForm({
-      ...CATEGORY_FORM_BASE,
-      ...initialData,
-    });
-    setValidationErrors({});
-  }, [initialData]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    
-    // Clear validation error for this field when user starts typing
-    if (validationErrors[name]) {
-      setValidationErrors(prev => ({
-        ...prev,
-        [name]: undefined
-      }));
-    }
+  const validationFields = {
+    type: true,
+    name: true,
+    color: true,
+    icon: true,
   };
 
-  const validateAndSubmit = () => {
-    try {
-      const validatedData = categorySchema
-        .pick({
-          type: true,
-          name: true,
-          color: true,
-          icon: true,
-        })
-        .parse(form);
-
-      setValidationErrors({});
-      onSubmit(validatedData);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        const errs = {};
-        e.errors.forEach((err) => {
-          if (err.path[0]) errs[err.path[0]] = err.message;
-        });
-        setValidationErrors(errs);
-      }
-    }
-  };
+  const { form, validationErrors, handleChange, validateAndSubmit } =
+    useModalForm(
+      CATEGORY_FORM_BASE,
+      categorySchema,
+      validationFields,
+      initialData,
+    );
 
   return (
     <>
@@ -75,7 +36,6 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           required
           disabled={loading}
         />
-
         <Input
           label="Name"
           name="name"
@@ -87,7 +47,6 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           autoFocus
           placeholder="Enter category name"
         />
-
         <ColorPicker
           label="Color"
           name="color"
@@ -97,7 +56,6 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           disabled={loading}
           showPreview={true}
         />
-
         <IconPicker
           label="Icon"
           name="icon"
@@ -109,8 +67,8 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
         />
       </div>
 
-      <CategoryModalButtons
-        validateAndSubmit={validateAndSubmit}
+      <ModalButtons
+        onSubmit={() => validateAndSubmit(onSubmit)}
         onCancel={onCancel}
         loading={loading}
       />

@@ -1,20 +1,16 @@
-// components/forms/CategoryTypeSelector.jsx
+// components/forms/TypeSelector.jsx
 import React from "react";
 
-const CategoryTypeSelector = ({
+const TypeSelector = ({
   label,
   name,
   value,
   onChange,
+  options,
   error,
   required = false,
   disabled,
 }) => {
-  const options = [
-    { label: "Expense", value: "expense", color: "bg-red-500" },
-    { label: "Income", value: "income", color: "bg-green-500" },
-  ];
-
   return (
     <div className="mb-4">
       {label && (
@@ -23,7 +19,6 @@ const CategoryTypeSelector = ({
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-
       <div className="flex gap-3">
         {options.map((opt) => {
           const isActive = value === opt.value;
@@ -46,10 +41,9 @@ const CategoryTypeSelector = ({
           );
         })}
       </div>
-
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   );
 };
 
-export default CategoryTypeSelector;
+export default TypeSelector;
