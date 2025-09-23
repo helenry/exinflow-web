@@ -4,7 +4,7 @@ import { z } from "zod";
 
 export const useModalForm = (
   initialFormBase,
-  schema,
+  schemaOrValidator,
   validationFields,
   initialData,
 ) => {
@@ -24,7 +24,9 @@ export const useModalForm = (
     setForm((prev) => ({
       ...prev,
       [name]:
-        name === "base_amount" || name === "amount" ? Number(value) : value,
+        name === "base_amount" || name === "amount" ? 
+          (value === "" ? "" : Number(value)) : 
+          value,
     }));
 
     // Clear validation error for this field
@@ -38,7 +40,15 @@ export const useModalForm = (
 
   const validateAndSubmit = (onSubmit) => {
     try {
-      const validatedData = schema.pick(validationFields).parse(form);
+      let validatedData;
+
+      // Check if it's a function (new transaction pattern) or Zod schema (old pattern)
+      if (typeof schemaOrValidator === "function") {
+        validatedData = schemaOrValidator(form);
+      } else {
+        validatedData = schemaOrValidator.pick(validationFields).parse(form);
+      }
+
       setValidationErrors({});
       onSubmit(validatedData);
     } catch (e) {

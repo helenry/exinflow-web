@@ -59,16 +59,23 @@ export const walletActions = (set, get) => ({
   },
 
   createWallet: async (walletData) => {
-    const { wallets, currentUserUid } = get();
+  const { wallets, currentUserUid } = get();
 
-    set({ error: null });
+  console.log("[createWallet] Starting wallet creation");
+  console.log("[createWallet] Current user UID:", currentUserUid);
+  console.log("[createWallet] Existing wallets:", wallets);
+  console.log("[createWallet] Incoming walletData:", walletData);
 
-    try {
-      const trimmed = trimStrings(walletData);
+  set({ error: null });
 
-      if (!validateWalletUniqueness(wallets, trimmed.name)) {
-        throwErrorWithToast("Wallet name must be unique");
-      }
+  try {
+    const trimmed = trimStrings(walletData);
+    console.log("[createWallet] Trimmed walletData:", trimmed);
+
+    if (!validateWalletUniqueness(wallets, trimmed.name)) {
+      console.error("[createWallet] Wallet name not unique:", trimmed.name);
+      throwErrorWithToast("Wallet name must be unique");
+    }
 
       const newWallet = createBaseData(
         {

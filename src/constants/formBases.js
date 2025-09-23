@@ -22,4 +22,13 @@ export const SUBCATEGORY_FORM_BASE = {
 };
 
 export const TRANSACTION_FORM_BASE = {
+  type: TRANSACTION_TYPES.EXPENSE,
+  amount: 0,
+  date: new Date().toISOString().split('T')[0], // Today's date
+  wallet_id: "",
+  source_wallet_id: "",
+  destination_wallet_id: "",
+  category_id: "",
+  subcategory_id: "",
+  note: "",
 };

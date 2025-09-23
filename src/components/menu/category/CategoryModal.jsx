@@ -4,9 +4,10 @@ import Input from "../../forms/Input";
 import ColorPicker from "../../forms/ColorPicker";
 import { categorySchema } from "../../../models/categorySchema";
 import IconPicker from "../../forms/IconPicker";
-import CategoryTypeSelector from "../../forms/CategoryTypeSelector";
 import ModalButtons from "../../layouts/modal/ModalButtons";
 import { useModalForm } from "../../../hooks/useModalForm";
+import { CATEGORY_TYPE_OPTIONS } from "../../../constants/options/transactionTypeOptions";
+import TypeSelector from "../../forms/TypeSelector";
 
 const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
   const validationFields = {
@@ -27,15 +28,17 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
   return (
     <>
       <div className="overflow-y-auto px-2">
-        <CategoryTypeSelector
+        <TypeSelector
           label="Type"
           name="type"
           value={form.type}
           onChange={handleChange}
+          options={CATEGORY_TYPE_OPTIONS}
           error={validationErrors.type}
           required
           disabled={loading}
         />
+        
         <Input
           label="Name"
           name="name"
@@ -47,6 +50,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           autoFocus
           placeholder="Enter category name"
         />
+        
         <ColorPicker
           label="Color"
           name="color"
@@ -56,6 +60,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           disabled={loading}
           showPreview={true}
         />
+        
         <IconPicker
           label="Icon"
           name="icon"
@@ -66,7 +71,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           showPreview={true}
         />
       </div>
-
+      
       <ModalButtons
         onSubmit={() => validateAndSubmit(onSubmit)}
         onCancel={onCancel}
