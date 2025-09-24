@@ -24,9 +24,15 @@ export const useModalForm = (
     setForm((prev) => ({
       ...prev,
       [name]:
-        name === "base_amount" || name === "amount" ? 
-          (value === "" ? "" : Number(value)) : 
-          value,
+        name === "base_amount" || name === "amount"
+          ? value === ""
+            ? ""
+            : Number(value)
+          : name === "category_id" || name === "subcategory_id"
+            ? value === ""
+              ? null
+              : value // Convert empty strings to null for optional fields
+            : value, // Keep empty strings for required dropdown fields
     }));
 
     // Clear validation error for this field
@@ -42,7 +48,6 @@ export const useModalForm = (
     try {
       let validatedData;
 
-      // Check if it's a function (new transaction pattern) or Zod schema (old pattern)
       if (typeof schemaOrValidator === "function") {
         validatedData = schemaOrValidator(form);
       } else {
@@ -52,6 +57,7 @@ export const useModalForm = (
       setValidationErrors({});
       onSubmit(validatedData);
     } catch (e) {
+      console.error("Validation failed:", e);
       if (e instanceof z.ZodError) {
         const errs = {};
         e.errors.forEach((err) => {

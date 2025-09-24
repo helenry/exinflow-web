@@ -67,7 +67,6 @@ const ModalContainer = ({
             await createFunction(formData);
           }
         } else if (action === "edit") {
-          console.lg("✏️ [handleSubmit] Edit flow triggered");
           if (parentId) {
             await updateFunction(parentId, itemId, formData);
           } else {
@@ -79,10 +78,13 @@ const ModalContainer = ({
 
         onClose();
       } catch (error) {
-        console.error(`❌ [handleSubmit] ${type} modal submission error:`, error);
+        console.error(
+          `❌ [handleSubmit] ${type} modal submission error:`,
+          error,
+        );
       }
     },
-    [action, itemId, parentId, createFunction, updateFunction, onClose, type]
+    [action, itemId, parentId, createFunction, updateFunction, onClose, type],
   );
 
   // Clone children and pass props

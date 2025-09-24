@@ -4,12 +4,12 @@ import Title from "@/components/ui/texts/Title";
 import useTransactionStore from "../stores/transaction/transactionStore";
 import useAuthStore from "../stores/auth/authStore";
 import { useModifyHandler } from "../hooks/useModifyHandler";
+import TransactionTable from "../components/menu/transaction/TransactionTable";
 
 const Transactions = () => {
   const { currentUser } = useAuthStore();
   const { transactions, deleteTransaction, setCurrentUser, loading, error } =
     useTransactionStore();
-
   const { handleCreate, handleEdit, handleDelete } = useModifyHandler(
     "transaction",
     deleteTransaction,
@@ -18,9 +18,6 @@ const Transactions = () => {
   useEffect(() => {
     setCurrentUser(currentUser?.uid);
   }, [currentUser?.uid, setCurrentUser]);
-
-  console.log("transactions");
-  console.log(transactions);
 
   return (
     <div>
@@ -34,7 +31,24 @@ const Transactions = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-8">helo</div>
+      {/* Error State */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="text-red-800">
+            Error loading transactions: {error}
+          </div>
+        </div>
+      )}
+
+      {/* Transactions Table */}
+      <div className="bg-white rounded-lg shadow mt-5">
+        <TransactionTable
+          transactions={transactions}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          loading={loading}
+        />
+      </div>
     </div>
   );
 };

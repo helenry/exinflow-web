@@ -38,7 +38,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           required
           disabled={loading}
         />
-        
+
         <Input
           label="Name"
           name="name"
@@ -50,7 +50,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           autoFocus
           placeholder="Enter category name"
         />
-        
+
         <ColorPicker
           label="Color"
           name="color"
@@ -60,7 +60,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           disabled={loading}
           showPreview={true}
         />
-        
+
         <IconPicker
           label="Icon"
           name="icon"
@@ -71,7 +71,7 @@ const CategoryModal = ({ onSubmit, initialData, onCancel, loading }) => {
           showPreview={true}
         />
       </div>
-      
+
       <ModalButtons
         onSubmit={() => validateAndSubmit(onSubmit)}
         onCancel={onCancel}

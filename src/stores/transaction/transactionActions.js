@@ -124,6 +124,8 @@ export const transactionActions = (set, get) => ({
     set({ error: null });
 
     try {
+      console.log("updatedData");
+      console.log(updatedData);
       const existing = transactions.find((c) => c.id === transactionId);
       if (!existing) {
         throwErrorWithToast("Transaction not found");
@@ -131,10 +133,16 @@ export const transactionActions = (set, get) => ({
 
       const trimmed = trimStrings(updatedData);
 
-      const updateData = createUpdateData(
-        { ...existing, ...trimmed },
-        currentUserUid,
-      );
+      const {
+        source_wallet,
+        destination_wallet,
+        category,
+        subcategory,
+        wallet,
+        ...rest
+      } = { ...existing, ...trimmed };
+
+      const updateData = createUpdateData(rest, currentUserUid);
 
       validateTransaction(updateData);
       await updateTransactionService(transactionId, updateData);

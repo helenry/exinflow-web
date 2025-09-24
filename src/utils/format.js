@@ -51,3 +51,45 @@ export const formatMoney = (amount) => {
     maximumFractionDigits: 2,
   });
 };
+
+// Helper function to get normalized date
+export const getNormalizedDate = (date) => {
+  if (!date) return null;
+
+  let normalizedDate;
+
+  if (typeof date === "string") {
+    normalizedDate = new Date(date);
+  } else if (date.seconds) {
+    normalizedDate = new Date(date.seconds * 1000);
+  } else if (date instanceof Date) {
+    normalizedDate = date;
+  } else {
+    return null;
+  }
+
+  // Reset time to start of day for grouping
+  normalizedDate.setHours(0, 0, 0, 0);
+  return normalizedDate;
+};
+
+// Helper function to format date with day name
+export const formatDateWithDay = (date) => {
+  if (!date) return "Unknown Date";
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const isToday = date.getTime() === today.getTime();
+  const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
+  const dateString = date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  return {
+    displayText: `${dayName}, ${dateString}`,
+    isToday,
+  };
+};

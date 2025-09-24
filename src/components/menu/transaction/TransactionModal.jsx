@@ -6,7 +6,7 @@ import ModalButtons from "../../layouts/modal/ModalButtons";
 import { useModalForm } from "../../../hooks/useModalForm";
 import useCategoryStore from "../../../stores/category/categoryStore";
 import useWalletStore from "../../../stores/wallet/walletStore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { TRANSACTION_TYPE_OPTIONS } from "../../../constants/options/transactionTypeOptions";
 import { TRANSACTION_TYPES } from "../../../constants";
 import TypeSelector from "../../forms/TypeSelector";
@@ -34,98 +34,102 @@ const TransactionModal = ({ onSubmit, initialData, onCancel, loading }) => {
     setWalletCurrentUser(currentUser?.uid);
   }, [currentUser?.uid, setCategoryCurrentUser, setWalletCurrentUser]);
 
-  console.log("wallets")
-  console.log(wallets)
-  console.log("categories")
-  console.log(categories)
-
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Dynamic validation fields based on transaction type
-  const getValidationFields = (type) => {
-    const baseFields = {
-      type: true,
-      amount: true,
-      date: true,
-      note: true,
-    };
+  const { form, validationErrors, handleChange, validateAndSubmit } =
+    useModalForm(
+      TRANSACTION_FORM_BASE,
+      validateTransactionByType,
+      {}, // Not used since validateTransactionByType is a function
+      initialData,
+    );
 
-    switch (type) {
-      case TRANSACTION_TYPES.INCOME:
-      case TRANSACTION_TYPES.EXPENSE:
-        return {
-          ...baseFields,
-          wallet_id: true,
-          category_id: true,
-          subcategory_id: true,
-        };
-      case TRANSACTION_TYPES.TRANSFER:
-        return {
-          ...baseFields,
-          source_wallet_id: true,
-          destination_wallet_id: true,
-        };
-      default:
-        return baseFields;
+  // Filter categories based on transaction type
+  const filteredCategories = useMemo(() => {
+    if (form.type === TRANSACTION_TYPES.INCOME) {
+      return categories.filter(
+        (category) => category.type === TRANSACTION_TYPES.INCOME,
+      );
     }
-  };
-
-  const { form, validationErrors, handleChange, validateAndSubmit } = useModalForm(
-    TRANSACTION_FORM_BASE,
-    validateTransactionByType,
-    {}, // Not used since validateTransactionByType is a function
-    initialData,
-  );
+    if (form.type === TRANSACTION_TYPES.EXPENSE) {
+      return categories.filter(
+        (category) => category.type === TRANSACTION_TYPES.EXPENSE,
+      );
+    }
+    // For TRANSFER type, no categories are shown
+    return [];
+  }, [categories, form.type]);
 
   // Handle category selection and update subcategory options
   useEffect(() => {
     if (form.category_id) {
-      const category = categories.find(cat => cat.id === form.category_id);
+      const category = filteredCategories.find(
+        (cat) => cat.id === form.category_id,
+      );
       setSelectedCategory(category);
-      
+
       // Clear subcategory if it doesn't belong to selected category
       if (form.subcategory_id && category) {
-        const validSubcategory = category.subcategories?.find(sub => sub.id === form.subcategory_id);
+        const validSubcategory = category.subcategories?.find(
+          (sub) => sub.id === form.subcategory_id,
+        );
         if (!validSubcategory) {
-          handleChange({ target: { name: 'subcategory_id', value: '' } });
+          handleChange({ target: { name: "subcategory_id", value: "" } });
         }
       }
     } else {
       setSelectedCategory(null);
-      handleChange({ target: { name: 'subcategory_id', value: '' } });
+      handleChange({ target: { name: "subcategory_id", value: "" } });
     }
-  }, [form.category_id, categories]);
+  }, [form.category_id, filteredCategories, form.subcategory_id, handleChange]);
+
+  // Clear category and subcategory when transaction type changes
+  useEffect(() => {
+    // Only clear if current category doesn't match the new transaction type
+    if (form.category_id) {
+      const currentCategory = categories.find(
+        (cat) => cat.id === form.category_id,
+      );
+      if (currentCategory && currentCategory.type !== form.type) {
+        handleChange({ target: { name: "category_id", value: "" } });
+        handleChange({ target: { name: "subcategory_id", value: "" } });
+      }
+    }
+  }, [form.type, form.category_id, categories, handleChange]);
 
   // Prepare wallet options
-  const walletOptions = wallets.map(wallet => ({
+  const walletOptions = wallets.map((wallet) => ({
     value: wallet.id,
     label: wallet.name,
-    symbol: wallet.currency_code // Can show currency if needed
+    symbol: wallet.currency_code, // Can show currency if needed
   }));
 
-  // Prepare category options
-  const categoryOptions = categories.map(category => ({
+  // Prepare category options (now using filtered categories)
+  const categoryOptions = filteredCategories.map((category) => ({
     value: category.id,
     label: category.name,
   }));
 
   // Prepare subcategory options based on selected category
-  const subcategoryOptions = selectedCategory?.subcategories?.map(subcategory => ({
-    value: subcategory.id,
-    label: subcategory.name,
-  })) || [];
+  const subcategoryOptions =
+    selectedCategory?.subcategories?.map((subcategory) => ({
+      value: subcategory.id,
+      label: subcategory.name,
+    })) || [];
 
   // Filter source wallet options for transfers (exclude destination)
   const sourceWalletOptions = walletOptions.filter(
-    wallet => wallet.value !== form.destination_wallet_id
+    (wallet) => wallet.value !== form.destination_wallet_id,
   );
 
   // Filter destination wallet options for transfers (exclude source)
   const destinationWalletOptions = walletOptions.filter(
-    wallet => wallet.value !== form.source_wallet_id
+    (wallet) => wallet.value !== form.source_wallet_id,
   );
 
-  const isIncomeOrExpense = form.type === TRANSACTION_TYPES.INCOME || form.type === TRANSACTION_TYPES.EXPENSE;
+  const isIncomeOrExpense =
+    form.type === TRANSACTION_TYPES.INCOME ||
+    form.type === TRANSACTION_TYPES.EXPENSE;
   const isTransfer = form.type === TRANSACTION_TYPES.TRANSFER;
 
   return (
@@ -222,7 +226,11 @@ const TransactionModal = ({ onSubmit, initialData, onCancel, loading }) => {
               options={categoryOptions}
               error={validationErrors.category_id}
               disabled={loading || categoryOptions.length === 0}
-              placeholder="Select category (optional)"
+              placeholder={
+                categoryOptions.length === 0
+                  ? `No ${form.type.toLowerCase()} categories available`
+                  : "Select category (optional)"
+              }
             />
 
             {/* Subcategory Selection - only show if category is selected and has subcategories */}
@@ -258,6 +266,14 @@ const TransactionModal = ({ onSubmit, initialData, onCancel, loading }) => {
             You need at least 2 wallets to create a transfer transaction.
           </p>
         )}
+
+        {/* Category availability warning */}
+        {isIncomeOrExpense && categoryOptions.length === 0 && (
+          <p className="text-amber-600 text-sm mb-4">
+            No {form.type.toLowerCase()} categories available. You can still
+            create the transaction without a category.
+          </p>
+        )}
       </div>
 
       <ModalButtons
@@ -265,9 +281,7 @@ const TransactionModal = ({ onSubmit, initialData, onCancel, loading }) => {
         onCancel={onCancel}
         loading={loading}
         submitDisabled={
-          (isTransfer && walletOptions.length < 2) || 
-          (!form.type) || 
-          (!form.amount)
+          (isTransfer && walletOptions.length < 2) || !form.type || !form.amount
         }
       />
     </>

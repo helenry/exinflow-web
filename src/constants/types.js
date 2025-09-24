@@ -7,6 +7,6 @@ export const TRANSACTION_TYPES = Object.freeze({
 
 export const TRANSACTION_LABELS = Object.freeze({
   [TRANSACTION_TYPES.EXPENSE]: "Expense",
-  [TRANSACTION_TYPES.INCOME]: "Income", 
+  [TRANSACTION_TYPES.INCOME]: "Income",
   [TRANSACTION_TYPES.TRANSFER]: "Transfer",
 });
