@@ -33,7 +33,7 @@ const WalletItem = ({
         </p>
         <p>
           {currency?.symbol}
-          {formatMoney(wallet.base_amount || 0)}
+          {formatMoney(wallet.current_balance || 0)}
         </p>
         <p className="text-gray-400">
           ({currency?.iso_code}) {currency?.name}

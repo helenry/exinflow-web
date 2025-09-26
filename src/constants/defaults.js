@@ -8,7 +8,7 @@ export const DEFAULT_CURRENCY = "IDR";
 export const DEFAULT_WALLET = {
   name: "Cash",
   base_amount: 0,
-  amount: 0,
+  current_balance: 0,
   color: THEME_COLOR.RAW,
 };
 

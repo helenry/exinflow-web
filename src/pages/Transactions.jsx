@@ -1,23 +1,47 @@
 // pages/Transactions.jsx
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Title from "@/components/ui/texts/Title";
 import useTransactionStore from "../stores/transaction/transactionStore";
 import useAuthStore from "../stores/auth/authStore";
 import { useModifyHandler } from "../hooks/useModifyHandler";
 import TransactionTable from "../components/menu/transaction/TransactionTable";
+import useCategoryStore from "../stores/category/categoryStore";
+import useWalletStore from "../stores/wallet/walletStore";
 
 const Transactions = () => {
   const { currentUser } = useAuthStore();
-  const { transactions, deleteTransaction, setCurrentUser, loading, error } =
-    useTransactionStore();
+  const {
+    transactions,
+    deleteTransaction,
+    setCurrentUser,
+    refreshTransactionData,
+    loading,
+    error,
+  } = useTransactionStore();
+  const wallets = useWalletStore((state) => state.walletsWithDeleted);
+  const categories = useCategoryStore((state) => state.categoriesWithDeleted);
+
   const { handleCreate, handleEdit, handleDelete } = useModifyHandler(
     "transaction",
     deleteTransaction,
   );
 
+  // Main effect to set current user and load initial data
   useEffect(() => {
     setCurrentUser(currentUser?.uid);
   }, [currentUser?.uid, setCurrentUser]);
+
+  // Effect to refresh transaction data when wallet/category references might be stale
+  useEffect(() => {
+    const hasTransactions = transactions && transactions.length > 0;
+    const hasWallets = wallets && wallets.length > 0;
+    const hasCategories = categories && categories.length > 0;
+
+    // If we have transactions loaded but fresh wallet/category data, refresh the references
+    if (hasTransactions && (hasWallets || hasCategories)) {
+      refreshTransactionData();
+    }
+  }, [wallets, categories, refreshTransactionData, transactions.length]);
 
   return (
     <div>

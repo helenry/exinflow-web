@@ -64,7 +64,7 @@ const Categories = () => {
       <div className="grid grid-cols-2 gap-8">
         {/* Expense column */}
         <div>
-          <p className="cursor-pointer select-none mb-2">Expense</p>
+          <p className="mb-2">Expense</p>
           <CategoryList
             categories={expenseCategories}
             expandedCategories={expandedCategories}
@@ -81,7 +81,7 @@ const Categories = () => {
 
         {/* Income column */}
         <div>
-          <p className="cursor-pointer select-none mb-2">Income</p>
+          <p className="mb-2">Income</p>
           <CategoryList
             categories={incomeCategories}
             expandedCategories={expandedCategories}

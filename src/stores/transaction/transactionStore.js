@@ -5,8 +5,6 @@ import { transactionActions } from "./transactionActions";
 const useTransactionStore = create((set, get) => ({
   // State
   transactions: [],
-  allCategories: [], // All categories including deleted ones
-  allWallets: [], // All wallets including deleted ones
   loading: false,
   error: null,
   currentUserUid: null,

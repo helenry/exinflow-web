@@ -18,6 +18,7 @@ import {
   throwErrorWithToast,
 } from "../../utils/storeHelpers";
 import { showToast } from "../../utils/toast";
+import useTransactionStore from "../transaction/transactionStore";
 
 export const categoryActions = (set, get) => ({
   setCurrentUser: (userUid) => {
@@ -54,7 +55,29 @@ export const categoryActions = (set, get) => ({
           }
         });
 
-      set({ categories: categoryList, loading: false });
+      const activeCategories = categoryList
+        .filter((item) => !item.is_deleted) // keep only non-deleted categories
+        .map((item) => ({
+          ...item,
+          subcategories: item.subcategories
+            ? item.subcategories.filter((sub) => !sub.is_deleted)
+            : [],
+        }));
+
+      set({
+        categories: activeCategories,
+        categoriesWithDeleted: categoryList,
+        loading: false,
+      });
+
+      // Refresh transaction store if it has data and current user matches
+      const transactionStore = useTransactionStore.getState();
+      if (
+        transactionStore.currentUserUid === userUid &&
+        transactionStore.transactions.length > 0
+      ) {
+        transactionStore.refreshTransactionData();
+      }
     } catch (e) {
       console.error(e);
       set({ error: "Failed to load categories", loading: false });
@@ -78,12 +101,26 @@ export const categoryActions = (set, get) => ({
       validateCategory(newCategory);
       const docRef = await createCategoryService(newCategory);
 
+      // Update local state
       set((state) => ({
         categories: [
           ...state.categories,
           { id: docRef.id, ...newCategory, created_at: new Date() },
         ],
+        categoriesWithDeleted: [
+          ...state.categoriesWithDeleted,
+          { id: docRef.id, ...newCategory, created_at: new Date() },
+        ],
       }));
+
+      // Trigger cross-store update
+      const transactionStore = useTransactionStore.getState();
+      if (
+        transactionStore.currentUserUid === currentUserUid &&
+        transactionStore.transactions.length > 0
+      ) {
+        transactionStore.refreshTransactionData();
+      }
 
       showToast.success("Category created successfully!");
     } catch (e) {
@@ -117,13 +154,28 @@ export const categoryActions = (set, get) => ({
       validateCategory(updateData);
       await updateCategoryService(categoryId, updateData);
 
+      // Update local state
       set((state) => ({
         categories: state.categories.map((c) =>
           c.id === categoryId
             ? { ...c, ...trimmed, updated_at: new Date() }
             : c,
         ),
+        categoriesWithDeleted: state.categoriesWithDeleted.map((c) =>
+          c.id === categoryId
+            ? { ...c, ...trimmed, updated_at: new Date() }
+            : c,
+        ),
       }));
+
+      // Trigger cross-store update
+      const transactionStore = useTransactionStore.getState();
+      if (
+        transactionStore.currentUserUid === currentUserUid &&
+        transactionStore.transactions.length > 0
+      ) {
+        transactionStore.refreshTransactionData();
+      }
 
       showToast.success("Category updated successfully!");
     } catch (e) {
@@ -133,7 +185,7 @@ export const categoryActions = (set, get) => ({
   },
 
   deleteCategory: async (categoryId) => {
-    const { categories } = get();
+    const { categories, currentUserUid } = get();
 
     set({ error: null });
 
@@ -148,6 +200,10 @@ export const categoryActions = (set, get) => ({
       set((state) => ({
         categories: state.categories.filter((c) => c.id !== categoryId),
       }));
+
+      // Reload categories to update categoriesWithDeleted (showing soft deleted)
+      await get().getCategories(currentUserUid);
+
       showToast.success("Category deleted successfully!");
     } catch (e) {
       handleStoreError(e, "Failed to delete category", set);
@@ -158,6 +214,7 @@ export const categoryActions = (set, get) => ({
   reset: () => {
     set({
       categories: [],
+      categoriesWithDeleted: [],
       loading: false,
       error: null,
     });

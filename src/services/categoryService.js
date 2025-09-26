@@ -14,21 +14,14 @@ import { db } from "../api/firebase";
 import { DEFAULT_CATEGORIES, DEFAULT_CREATOR } from "@/constants";
 import { createSubcategoryService } from "./subcategoryService";
 
-export const getCategoriesService = async (userUid, includeDeleted = false) => {
+export const getCategoriesService = async (userUid) => {
   try {
     // Build query conditionally
-    const categoryQuery = includeDeleted
-      ? query(
-          collection(db, "categories"),
-          where("user_uid", "==", userUid),
-          orderBy("name", "asc"), // Sort categories by name
-        )
-      : query(
-          collection(db, "categories"),
-          where("is_deleted", "==", false),
-          where("user_uid", "==", userUid),
-          orderBy("name", "asc"), // Sort categories by name
-        );
+    const categoryQuery = query(
+      collection(db, "categories"),
+      where("user_uid", "==", userUid),
+      orderBy("name", "asc"), // Sort categories by name
+    );
 
     const categoriesSnapshot = await getDocs(categoryQuery);
     const categories = categoriesSnapshot.docs.map((doc) => ({
@@ -38,16 +31,10 @@ export const getCategoriesService = async (userUid, includeDeleted = false) => {
 
     const categoriesWithSubs = await Promise.all(
       categories.map(async (category) => {
-        const subcategoryQuery = includeDeleted
-          ? query(
-              collection(db, "categories", category.id, "subcategories"),
-              orderBy("name", "asc"), // Sort subcategories by name
-            )
-          : query(
-              collection(db, "categories", category.id, "subcategories"),
-              where("is_deleted", "==", false),
-              orderBy("name", "asc"), // Sort subcategories by name
-            );
+        const subcategoryQuery = query(
+          collection(db, "categories", category.id, "subcategories"),
+          orderBy("name", "asc"), // Sort subcategories by name
+        );
 
         const subcategoriesSnapshot = await getDocs(subcategoryQuery);
         const subcategories = subcategoriesSnapshot.docs.map((subDoc) => ({

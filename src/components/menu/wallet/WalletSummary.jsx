@@ -50,7 +50,7 @@ const WalletSummary = ({
               <>
                 <p className="text-4xl">
                   {wallet.currency?.symbol}
-                  {formatMoney(wallet.base_amount || 0)}
+                  {formatMoney(wallet.current_balance || 0)}
                 </p>
               </>
             )}

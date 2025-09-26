@@ -10,7 +10,7 @@ import { PIE_CHART_CONFIG } from "../../constants/configs"; // Configuration con
 /**
  * A custom hook to transform raw wallet data into a format suitable for a pie chart.
  * It also handles the logic for dimming inactive wallets.
- * @param {Array} data - An array of wallet objects. Each object is expected to have properties: `base_amount`, `name`, `color`, and `id`.
+ * @param {Array} data - An array of wallet objects. Each object is expected to have properties: `current_balance`, `name`, `color`, and `id`.
  * @param {string|null} activeWallet - The ID of the currently active wallet, or `null` if no wallet is selected.
  * @returns {Array} An array of formatted objects, ready to be used by a pie chart library.
  */
@@ -28,7 +28,7 @@ export const usePieChartData = (data, activeWallet) => {
       .map((item) => {
         // Validate that each data item has the required properties.
         // If a required property is missing, log a warning and return null for that item.
-        if (!item.base_amount || !item.name || !item.color || !item.id) {
+        if (!item.current_balance || !item.name || !item.color || !item.id) {
           console.warn("Invalid data item:", item);
           return null;
         }
@@ -44,8 +44,8 @@ export const usePieChartData = (data, activeWallet) => {
 
         // Return the new, formatted object for the pie chart.
         return {
-          // Use `Number()` to ensure `base_amount` is a number, defaulting to 0 if invalid.
-          value: Number(item.base_amount) || 0,
+          // Use `Number()` to ensure `current_balance` is a number, defaulting to 0 if invalid.
+          value: Number(item.current_balance) || 0,
           label: item.name,
           // Conditionally apply the color. If the item is active, use its original color.
           // If not, use the `hexToRgba` utility to make it semi-transparent based on the config.

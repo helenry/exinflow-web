@@ -9,24 +9,18 @@ import {
   doc,
   serverTimestamp,
   orderBy,
+  runTransaction,
 } from "firebase/firestore";
 import { db } from "../api/firebase";
 import { DEFAULT_CREATOR, DEFAULT_WALLET } from "@/constants";
 import { DEFAULT_CURRENCY } from "../constants";
 
-export const getWalletsService = async (userUid, includeDeleted = false) => {
-  const q = includeDeleted
-    ? query(
-        collection(db, "wallets"),
-        where("user_uid", "==", userUid),
-        orderBy("created_at", "asc"),
-      )
-    : query(
-        collection(db, "wallets"),
-        where("is_deleted", "==", false),
-        where("user_uid", "==", userUid),
-        orderBy("created_at", "asc"),
-      );
+export const getWalletsService = async (userUid) => {
+  const q = query(
+    collection(db, "wallets"),
+    where("user_uid", "==", userUid),
+    orderBy("created_at", "asc"),
+  );
 
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -37,6 +31,133 @@ export const createWalletService = async (newWallet) =>
 
 export const updateWalletService = async (walletId, updateData) =>
   await updateDoc(doc(db, "wallets", walletId), updateData);
+
+// Enhanced wallet update with efficient balance adjustment when base_amount changes
+export const updateWalletWithBalanceRecalculation = async (
+  walletId,
+  updateData,
+  userUid,
+) => {
+  return await runTransaction(db, async (transaction) => {
+    const walletRef = doc(db, "wallets", walletId);
+    const walletDoc = await transaction.get(walletRef);
+
+    if (!walletDoc.exists()) {
+      throw new Error("Wallet not found");
+    }
+
+    const currentWallet = walletDoc.data();
+
+    // Check if base_amount is being changed
+    const isBaseAmountChanged =
+      updateData.base_amount !== undefined &&
+      updateData.base_amount !== currentWallet.base_amount;
+
+    if (isBaseAmountChanged) {
+      // Efficiently adjust current_balance by the difference in base_amount
+      // Formula: new_current_balance = old_current_balance + (new_base_amount - old_base_amount)
+      const baseAmountDifference =
+        updateData.base_amount - (currentWallet.base_amount || 0);
+      const oldCurrentBalance = currentWallet.current_balance || 0;
+
+      updateData.current_balance = oldCurrentBalance + baseAmountDifference;
+
+      console.log(
+        `[updateWalletWithBalanceRecalculation] Base amount: ${currentWallet.base_amount} → ${updateData.base_amount}`,
+      );
+      console.log(
+        `[updateWalletWithBalanceRecalculation] Current balance: ${oldCurrentBalance} → ${updateData.current_balance}`,
+      );
+      console.log(
+        `[updateWalletWithBalanceRecalculation] Difference applied: ${baseAmountDifference}`,
+      );
+    }
+
+    // Update wallet with new data
+    transaction.update(walletRef, {
+      ...updateData,
+      updated_at: new Date(),
+    });
+
+    return walletRef;
+  });
+};
+
+// Helper function to calculate transaction sum for a wallet
+const calculateWalletTransactionSum = async (
+  walletId,
+  userUid,
+  firestoreTransaction = null,
+) => {
+  const transactionsQuery = query(
+    collection(db, "transactions"),
+    where("user_uid", "==", userUid),
+    where("is_deleted", "==", false),
+  );
+
+  let snapshot;
+  if (firestoreTransaction) {
+    // If called within a Firestore transaction, we can't use the transaction to query
+    // So we'll get fresh data (this is a limitation of Firestore transactions)
+    snapshot = await getDocs(transactionsQuery);
+  } else {
+    snapshot = await getDocs(transactionsQuery);
+  }
+
+  const transactions = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return transactions.reduce((sum, t) => {
+    // Regular transactions
+    if (t.wallet_id === walletId) {
+      return sum + (t.type === "income" ? t.amount : -t.amount);
+    }
+
+    // Transfer transactions
+    if (t.type === "transfer") {
+      if (t.source_wallet_id === walletId) {
+        return sum - t.amount; // Money going out
+      }
+      if (t.destination_wallet_id === walletId) {
+        return sum + t.amount; // Money coming in
+      }
+    }
+
+    return sum;
+  }, 0);
+};
+
+// Full balance recalculation utility (for data repair/validation)
+export const recalculateWalletBalanceFromTransactions = async (
+  walletId,
+  userUid,
+) => {
+  return await runTransaction(db, async (transaction) => {
+    const walletRef = doc(db, "wallets", walletId);
+    const walletDoc = await transaction.get(walletRef);
+
+    if (!walletDoc.exists()) {
+      throw new Error("Wallet not found");
+    }
+
+    const wallet = walletDoc.data();
+    const transactionSum = await calculateWalletTransactionSum(
+      walletId,
+      userUid,
+    );
+    const correctBalance = wallet.base_amount + transactionSum;
+
+    transaction.update(walletRef, {
+      current_balance: correctBalance,
+      updated_at: new Date(),
+      last_balance_check: new Date(),
+    });
+
+    return correctBalance;
+  });
+};
 
 export const deleteWalletService = async (walletId) =>
   await updateDoc(doc(db, "wallets", walletId), { is_deleted: true });

@@ -4,6 +4,7 @@ import {
   createWalletService,
   updateWalletService,
   deleteWalletService,
+  updateWalletWithBalanceRecalculation,
 } from "../../services/walletService";
 import { trimStrings } from "../../utils/format";
 import { convertFirestoreTimestamps } from "../../utils/type";
@@ -15,6 +16,7 @@ import {
   throwErrorWithToast,
 } from "../../utils/storeHelpers";
 import { showToast } from "../../utils/toast";
+import useTransactionStore from "../transaction/transactionStore";
 
 export const walletActions = (set, get) => ({
   setCurrentUser: (userUid) => {
@@ -51,7 +53,22 @@ export const walletActions = (set, get) => ({
           }
         });
 
-      set({ wallets: walletList, loading: false });
+      const activeWallets = walletList.filter((wallet) => !wallet.is_deleted);
+
+      set({
+        wallets: activeWallets,
+        walletsWithDeleted: walletList,
+        loading: false,
+      });
+
+      // Refresh transaction store if it has data and current user matches
+      const transactionStore = useTransactionStore.getState();
+      if (
+        transactionStore.currentUserUid === userUid &&
+        transactionStore.transactions.length > 0
+      ) {
+        transactionStore.refreshTransactionData();
+      }
     } catch (e) {
       console.error(e);
       set({ error: "Failed to load wallets", loading: false });
@@ -61,26 +78,20 @@ export const walletActions = (set, get) => ({
   createWallet: async (walletData) => {
     const { wallets, currentUserUid } = get();
 
-    console.log("[createWallet] Starting wallet creation");
-    console.log("[createWallet] Current user UID:", currentUserUid);
-    console.log("[createWallet] Existing wallets:", wallets);
-    console.log("[createWallet] Incoming walletData:", walletData);
-
     set({ error: null });
 
     try {
       const trimmed = trimStrings(walletData);
-      console.log("[createWallet] Trimmed walletData:", trimmed);
 
       if (!validateWalletUniqueness(wallets, trimmed.name)) {
-        console.error("[createWallet] Wallet name not unique:", trimmed.name);
         throwErrorWithToast("Wallet name must be unique");
       }
 
       const newWallet = createBaseData(
         {
           ...trimmed,
-          amount: 0,
+          // Set current_balance equal to base_amount for new wallets (no transactions yet)
+          current_balance: trimmed.base_amount || 0,
         },
         currentUserUid,
       );
@@ -88,12 +99,26 @@ export const walletActions = (set, get) => ({
       validateWallet(newWallet);
       const docRef = await createWalletService(newWallet);
 
+      // Update local state
       set((state) => ({
         wallets: [
           ...state.wallets,
           { id: docRef.id, ...newWallet, created_at: new Date() },
         ],
+        walletsWithDeleted: [
+          ...state.walletsWithDeleted,
+          { id: docRef.id, ...newWallet, created_at: new Date() },
+        ],
       }));
+
+      // Trigger cross-store update
+      const transactionStore = useTransactionStore.getState();
+      if (
+        transactionStore.currentUserUid === currentUserUid &&
+        transactionStore.transactions.length > 0
+      ) {
+        transactionStore.refreshTransactionData();
+      }
 
       showToast.success("Wallet created successfully!");
     } catch (e) {
@@ -119,21 +144,57 @@ export const walletActions = (set, get) => ({
         throwErrorWithToast("Wallet name must be unique");
       }
 
-      const updateData = createUpdateData(
-        { ...existing, ...trimmed },
-        currentUserUid,
-      );
+      const { currency, ...rest } = { ...existing, ...trimmed };
+      const updateData = createUpdateData(rest, currentUserUid);
 
       validateWallet(updateData);
-      await updateWalletService(walletId, updateData);
 
-      set((state) => ({
-        wallets: state.wallets.map((w) =>
-          w.id === walletId ? { ...w, ...trimmed, updated_at: new Date() } : w,
-        ),
-      }));
+      // Check if base_amount is being changed
+      const isBaseAmountChanged =
+        updateData.base_amount !== undefined &&
+        updateData.base_amount !== existing.base_amount;
 
-      showToast.success("Wallet updated successfully!");
+      if (isBaseAmountChanged) {
+        // Use enhanced update method that recalculates current_balance
+        await updateWalletWithBalanceRecalculation(
+          walletId,
+          updateData,
+          currentUserUid,
+        );
+
+        // Reload wallets to get the updated balances
+        await get().getWallets(currentUserUid);
+
+        showToast.success("Wallet updated and balance recalculated!");
+      } else {
+        // Regular update without balance recalculation
+        await updateWalletService(walletId, updateData);
+
+        // Update local state
+        set((state) => ({
+          wallets: state.wallets.map((w) =>
+            w.id === walletId
+              ? { ...w, ...trimmed, updated_at: new Date() }
+              : w,
+          ),
+          walletsWithDeleted: state.walletsWithDeleted.map((w) =>
+            w.id === walletId
+              ? { ...w, ...trimmed, updated_at: new Date() }
+              : w,
+          ),
+        }));
+
+        // Trigger cross-store update for regular updates too
+        const transactionStore = useTransactionStore.getState();
+        if (
+          transactionStore.currentUserUid === currentUserUid &&
+          transactionStore.transactions.length > 0
+        ) {
+          transactionStore.refreshTransactionData();
+        }
+
+        showToast.success("Wallet updated successfully!");
+      }
     } catch (e) {
       handleStoreError(e, "Failed to update wallet", set);
       throw e;
@@ -141,7 +202,7 @@ export const walletActions = (set, get) => ({
   },
 
   deleteWallet: async (walletId) => {
-    const { wallets } = get();
+    const { wallets, currentUserUid } = get();
 
     set({ error: null });
 
@@ -151,11 +212,18 @@ export const walletActions = (set, get) => ({
         throwErrorWithToast("Wallet not found");
       }
 
+      // TODO: Add validation to prevent deletion of wallets with existing transactions
+      // This should be implemented based on your business logic
+
       await deleteWalletService(walletId);
 
       set((state) => ({
         wallets: state.wallets.filter((w) => w.id !== walletId),
       }));
+
+      // Reload wallets to update walletsWithDeleted (showing soft deleted)
+      await get().getWallets(currentUserUid);
+
       showToast.success("Wallet deleted successfully!");
     } catch (e) {
       handleStoreError(e, "Failed to delete wallet", set);
@@ -166,6 +234,7 @@ export const walletActions = (set, get) => ({
   reset: () => {
     set({
       wallets: [],
+      walletsWithDeleted: [],
       loading: false,
       error: null,
     });

@@ -6,6 +6,7 @@ import { subcategoryActions } from "./subcategory/subcategoryActions";
 const useCategoryStore = create((set, get) => ({
   // State
   categories: [],
+  categoriesWithDeleted: [],
   loading: false,
   error: null,
   currentUserUid: null,
