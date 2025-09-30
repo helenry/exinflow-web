@@ -16,7 +16,6 @@ export const createEmptyUserConfigService = async (userId) => {
   const docSnap = await getDoc(userConfigRef);
 
   if (docSnap.exists()) {
-    console.log("User config already exists");
     return;
   }
 

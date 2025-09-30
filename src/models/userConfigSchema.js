@@ -1,7 +1,8 @@
 // models/userConfigSchema.js
 import { z } from "zod";
+import { validationPatterns } from "./baseSchema";
 
 export const userConfigSchema = z.object({
-  main_currency_code: z.string().length(3).nullable(),
-  used_currency_codes: z.array(z.string().length(3)),
+  main_currency_code: validationPatterns.currencyCode.nullable(),
+  used_currency_codes: z.array(validationPatterns.currencyCode),
 });

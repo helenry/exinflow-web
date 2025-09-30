@@ -20,7 +20,7 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         <Tooltip
           key={`navbar-settings`}
-          content="Settngs"
+          content="Settings"
           position="bottom"
           delay={500}
         >

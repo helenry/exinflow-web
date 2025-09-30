@@ -11,9 +11,12 @@ export const signInWithGoogle = async () => {
     const user = result.user;
     const userId = user.uid;
 
-    await createEmptyUserConfigService(userId);
-    await createStarterWalletService(userId);
-    await createStarterCategoriesService(userId);
+    // Run bootstrap tasks in parallel (faster)
+    await Promise.allSettled([
+      createEmptyUserConfigService(userId),
+      createStarterWalletService(userId),
+      createStarterCategoriesService(userId),
+    ]);
 
     return user;
   } catch (error) {

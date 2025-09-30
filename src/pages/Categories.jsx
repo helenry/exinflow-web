@@ -1,72 +1,100 @@
 // pages/Categories.jsx
-import React, { useEffect, useState } from "react";
-import useCategoryStore from "../stores/categoryStore";
-import useAuthStore from "../stores/authStore";
+import { useEffect, useState } from "react";
+
 import Title from "@/components/ui/texts/Title";
-import CategoryList from "../components/menu/categories/CategoryList";
+import CategoryList from "../components/menu/category/CategoryList";
+
+import useCategoryStore from "../stores/category/categoryStore";
+import useAuthStore from "../stores/auth/authStore";
+
+import { useModifyHandler } from "../hooks/useModifyHandler";
+
+import { TRANSACTION_TYPES } from "../constants";
 
 const Categories = () => {
   const { currentUser } = useAuthStore();
-  const { categories, setCurrentUser, loading, error } = useCategoryStore();
+  const {
+    categories,
+    deleteCategory,
+    deleteSubcategory,
+    setCurrentUser,
+    loading,
+    error,
+  } = useCategoryStore();
+
+  const {
+    handleCreate: handleCreateCategory,
+    handleEdit: handleEditCategory,
+    handleDelete: handleDeleteCategory,
+  } = useModifyHandler("category", deleteCategory);
+
+  const {
+    handleCreate: handleCreateSubcategory,
+    handleEdit: handleEditSubcategory,
+    handleDelete: handleDeleteSubcategory,
+  } = useModifyHandler("subcategory", deleteSubcategory);
+
   const [expandedCategories, setExpandedCategories] = useState([]);
-  const [expenseExpanded, setExpenseExpanded] = useState(true);
-  const [incomeExpanded, setIncomeExpanded] = useState(true);
 
   // TRIGGER FETCH BASED ON USER
   useEffect(() => {
     setCurrentUser(currentUser?.uid);
   }, [currentUser?.uid, setCurrentUser]);
 
-  console.log("categories")
-  console.log(categories)
-
-  const expenseCategories = categories.filter(cat => cat.type === 1);
-  const incomeCategories = categories.filter(cat => cat.type === 2);
+  const expenseCategories = categories.filter(
+    (cat) => cat.type === TRANSACTION_TYPES.EXPENSE,
+  );
+  const incomeCategories = categories.filter(
+    (cat) => cat.type === TRANSACTION_TYPES.INCOME,
+  );
 
   return (
-    <div className="">
-      <div>
-        <div className="flex justify-between items-center mb-6">
-          <Title>Categories</Title>
-          <button
-            // onClick={handleCreateWalletClick}
-            className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
-          >
-            + New Category
-          </button>
-        </div>
-
-        <p 
-          onClick={() => setExpenseExpanded(!expenseExpanded)} 
-          className="cursor-pointer select-none"
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <Title>Categories</Title>
+        <button
+          onClick={() => handleCreateCategory()}
+          className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
         >
-          {expenseExpanded ? '▼' : '▶'} Expense
-        </p>
-        {expenseExpanded && (
+          + New Category
+        </button>
+      </div>
+
+      {/* Two-column layout */}
+      <div className="grid grid-cols-2 gap-8">
+        {/* Expense column */}
+        <div>
+          <p className="mb-2">Expense</p>
           <CategoryList
             categories={expenseCategories}
             expandedCategories={expandedCategories}
             setExpandedCategories={setExpandedCategories}
+            handleEditCategoryClick={handleEditCategory}
+            handleDeleteCategoryClick={handleDeleteCategory}
+            handleCreateSubcategoryClick={handleCreateSubcategory}
+            handleEditSubcategoryClick={handleEditSubcategory}
+            handleDeleteSubcategoryClick={handleDeleteSubcategory}
             loading={loading}
             error={error}
           />
-        )}
+        </div>
 
-        <p 
-          onClick={() => setIncomeExpanded(!incomeExpanded)} 
-          className="cursor-pointer select-none"
-        >
-          {incomeExpanded ? '▼' : '▶'} Income
-        </p>
-        {incomeExpanded && (
+        {/* Income column */}
+        <div>
+          <p className="mb-2">Income</p>
           <CategoryList
             categories={incomeCategories}
             expandedCategories={expandedCategories}
             setExpandedCategories={setExpandedCategories}
+            handleEditCategoryClick={handleEditCategory}
+            handleDeleteCategoryClick={handleDeleteCategory}
+            handleCreateSubcategoryClick={handleCreateSubcategory}
+            handleEditSubcategoryClick={handleEditSubcategory}
+            handleDeleteSubcategoryClick={handleDeleteSubcategory}
             loading={loading}
             error={error}
           />
-        )}
+        </div>
       </div>
     </div>
   );

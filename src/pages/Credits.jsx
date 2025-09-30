@@ -1,10 +1,11 @@
 // pages/Credits.jsx
 import React from "react";
+import Title from "@/components/ui/texts/Title";
 
 const Credits = () => {
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-4">Credits</h1>
+      <Title>Credits</Title>
       <p className="text-gray-600">Welcome to your credits!</p>
     </div>
   );

@@ -1,12 +1,12 @@
 // /components/layout/sidebar/CreateMenu.jsx
-import React from 'react';
-import { PiXBold } from 'react-icons/pi';
+import React from "react";
+import { PiXBold } from "react-icons/pi";
 
-export default function CreateMenu({ 
-  title, 
-  items = [], 
-  onClose, 
-  onItemClick 
+export default function CreateMenu({
+  title,
+  items = [],
+  onClose,
+  onItemClick,
 }) {
   return (
     <>

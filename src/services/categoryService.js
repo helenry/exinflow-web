@@ -8,56 +8,50 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "../api/firebase";
 import { DEFAULT_CATEGORIES, DEFAULT_CREATOR } from "@/constants";
+import { createSubcategoryService } from "./subcategoryService";
 
 export const getCategoriesService = async (userUid) => {
   try {
-    // Execute both queries in parallel - this is the key optimization
-    const [categoriesSnapshot, subcategoriesSnapshot] = await Promise.all([
-      getDocs(query(
-        collection(db, "categories"),
-        where("is_deleted", "==", false),
-        where("user_uid", "==", userUid)
-      )),
-      getDocs(query(
-        collection(db, "subcategories"),
-        where("is_deleted", "==", false),
-        where("user_uid", "==", userUid) // Assuming subcategories also have user_uid
-      ))
-    ]);
+    // Build query conditionally
+    const categoryQuery = query(
+      collection(db, "categories"),
+      where("user_uid", "==", userUid),
+      orderBy("name", "asc"), // Sort categories by name
+    );
 
-    const categories = categoriesSnapshot.docs.map((doc) => ({ 
-      id: doc.id, 
-      ...doc.data() 
-    }));
-    console.log("categories")
-    console.log(categories)
-
-    const subcategories = subcategoriesSnapshot.docs.map((doc) => ({ 
-      id: doc.id, 
-      ...doc.data() 
+    const categoriesSnapshot = await getDocs(categoryQuery);
+    const categories = categoriesSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
     }));
 
-    // Create a Map for O(1) lookup performance instead of reduce
-    const subcategoriesMap = new Map();
-    subcategories.forEach(subcategory => {
-      const categoryId = subcategory.category_id;
-      if (!subcategoriesMap.has(categoryId)) {
-        subcategoriesMap.set(categoryId, []);
-      }
-      subcategoriesMap.get(categoryId).push(subcategory);
-    });
+    const categoriesWithSubs = await Promise.all(
+      categories.map(async (category) => {
+        const subcategoryQuery = query(
+          collection(db, "categories", category.id, "subcategories"),
+          orderBy("name", "asc"), // Sort subcategories by name
+        );
 
-    // Combine categories with their subcategories
-    return categories.map(category => ({
-      ...category,
-      subcategories: subcategoriesMap.get(category.id) || []
-    }));
+        const subcategoriesSnapshot = await getDocs(subcategoryQuery);
+        const subcategories = subcategoriesSnapshot.docs.map((subDoc) => ({
+          id: subDoc.id,
+          ...subDoc.data(),
+        }));
 
+        return {
+          ...category,
+          subcategories,
+        };
+      }),
+    );
+
+    return categoriesWithSubs;
   } catch (error) {
-    console.error('Error fetching categories with subcategories:', error);
+    console.error("Error fetching categories with subcategories:", error);
     throw error;
   }
 };
@@ -73,19 +67,17 @@ export const deleteCategoryService = async (categoryId) =>
 
 export const createStarterCategoriesService = async (userId) => {
   const categoriesRef = collection(db, "categories");
-  const subcategoriesRef = collection(db, "subcategories");
-
   const q = query(
     categoriesRef,
     where("user_uid", "==", userId),
     where("is_deleted", "==", false),
   );
-
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
     for (const category of DEFAULT_CATEGORIES) {
-      const categoryDocRef = await addDoc(categoriesRef, {
+      // Create category document using the service
+      const categoryData = {
         name: category.name,
         type: category.type,
         icon: category.icon,
@@ -95,15 +87,15 @@ export const createStarterCategoriesService = async (userId) => {
         updated_at: null,
         updated_by: null,
         is_deleted: false,
-      });
+      };
 
+      const categoryDocRef = await createCategoryService(categoryData);
       console.log(`Category "${category.name}" created`);
 
-      // Create subcategories
+      // Create subcategories using the subcategory service
       if (category.subcategories && category.subcategories.length > 0) {
         for (const sub of category.subcategories) {
-          await addDoc(subcategoriesRef, {
-            category_id: categoryDocRef.id,
+          const subcategoryData = {
             name: sub.name,
             icon: sub.icon,
             created_at: serverTimestamp(),
@@ -111,7 +103,9 @@ export const createStarterCategoriesService = async (userId) => {
             updated_at: null,
             updated_by: null,
             is_deleted: false,
-          });
+          };
+
+          await createSubcategoryService(categoryDocRef.id, subcategoryData);
           console.log(
             `Subcategory "${sub.name}" created under "${category.name}"`,
           );

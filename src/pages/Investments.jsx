@@ -1,10 +1,11 @@
 // pages/Investments.jsx
 import React from "react";
+import Title from "@/components/ui/texts/Title";
 
 const Investments = () => {
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-4">Investments</h1>
+      <Title>Investments</Title>
       <p className="text-gray-600">Welcome to your investments!</p>
     </div>
   );

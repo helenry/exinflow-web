@@ -5,7 +5,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import { paths, routes } from "./allRoutes";
-import useAuthStore from "../stores/authStore";
+import useAuthStore from "../stores/auth/authStore";
 
 const RouteRenderer = ({ route }) => {
   const { component: Component, layout: Layout, title } = route;

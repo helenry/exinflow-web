@@ -1,7 +1,7 @@
 // routes/PublicRoute.jsx
 import React from "react";
 import { Navigate } from "react-router-dom";
-import useAuthStore from "../stores/authStore";
+import useAuthStore from "../stores/auth/authStore";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { paths } from "./allRoutes";
 

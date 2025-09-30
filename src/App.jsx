@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes/Routes";
 import { Toaster } from "react-hot-toast";
-import useAuthStore from "./stores/authStore";
+import useAuthStore from "./stores/auth/authStore";
 
 function App() {
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
