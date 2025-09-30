@@ -43,11 +43,11 @@ export const SIDEBAR_BUTTONS = [
       },
     ],
   },
-  // {
-  //   key: "ai",
-  //   icon: LuWandSparkles,
-  //   name: "Open AI Assistant",
-  // },
+  {
+    key: "ai",
+    icon: LuWandSparkles,
+    name: "Open AI Assistant",
+  },
   // {
   //   key: "report",
   //   icon: PiSirenBold,

@@ -28,7 +28,7 @@ export const getTransactionsService = async (userUid) => {
 };
 
 // Enhanced create transaction with atomic balance update
-export const createTransactionWithBalanceUpdate = async (transactionData) => {
+export const createTransactionService = async (transactionData) => {
   return await runTransaction(db, async (transaction) => {
     // STEP 1: ALL READS FIRST (before any writes)
     let sourceDoc, destDoc, walletDoc;
@@ -143,7 +143,7 @@ export const createTransactionWithBalanceUpdate = async (transactionData) => {
 };
 
 // Enhanced update transaction with balance adjustment
-export const updateTransactionWithBalanceUpdate = async (
+export const updateTransactionService = async (
   transactionId,
   oldTransactionData,
   newTransactionData,
@@ -210,7 +210,7 @@ export const updateTransactionWithBalanceUpdate = async (
 };
 
 // Enhanced delete transaction with balance restoration
-export const deleteTransactionWithBalanceUpdate = async (
+export const deleteTransactionService = async (
   transactionId,
   transactionData,
 ) => {
@@ -345,13 +345,3 @@ const calculateBalanceAdjustments = (oldTransaction, newTransaction) => {
 
   return adjustments;
 };
-
-// Legacy methods for backward compatibility (will be removed)
-export const createTransactionService = async (newTransaction) =>
-  await addDoc(collection(db, "transactions"), newTransaction);
-
-export const updateTransactionService = async (transactionId, updateData) =>
-  await updateDoc(doc(db, "transactions", transactionId), updateData);
-
-export const deleteTransactionService = async (transactionId) =>
-  await updateDoc(doc(db, "transactions", transactionId), { is_deleted: true });

@@ -41,15 +41,16 @@ export const getCurrencySymbol = (isoCode) => {
  * @param {number} amount - The numeric value to format.
  * @returns {string} The formatted string, e.g., "1,234.56". Returns "0.00" for non-numeric input.
  */
-export const formatMoney = (amount) => {
-  // Ensures the input is a number to prevent errors.
-  if (typeof amount !== "number") return "0.00";
+export const formatMoney = (amount, type = "money") => {
+  if (typeof amount !== "number" || isNaN(amount))
+    return type === "rate" ? "0.0000" : "0.00";
 
-  // Uses the browser's built-in locale-aware number formatting.
-  return amount.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const options =
+    type === "rate"
+      ? { minimumFractionDigits: 5, maximumFractionDigits: 5 }
+      : { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+
+  return amount.toLocaleString("en-US", options);
 };
 
 // Helper function to get normalized date

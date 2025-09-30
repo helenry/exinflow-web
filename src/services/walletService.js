@@ -29,15 +29,20 @@ export const getWalletsService = async (userUid) => {
 export const createWalletService = async (newWallet) =>
   await addDoc(collection(db, "wallets"), newWallet);
 
-export const updateWalletService = async (walletId, updateData) =>
-  await updateDoc(doc(db, "wallets", walletId), updateData);
-
-// Enhanced wallet update with efficient balance adjustment when base_amount changes
-export const updateWalletWithBalanceRecalculation = async (
+export const updateWalletService = async (
   walletId,
   updateData,
-  userUid,
+  recalculateBalance = false,
 ) => {
+  // If balance recalculation is not needed, use simple update
+  if (!recalculateBalance) {
+    return await updateDoc(doc(db, "wallets", walletId), {
+      ...updateData,
+      updated_at: new Date(),
+    });
+  }
+
+  // Use transaction for balance recalculation
   return await runTransaction(db, async (transaction) => {
     const walletRef = doc(db, "wallets", walletId);
     const walletDoc = await transaction.get(walletRef);
@@ -63,13 +68,13 @@ export const updateWalletWithBalanceRecalculation = async (
       updateData.current_balance = oldCurrentBalance + baseAmountDifference;
 
       console.log(
-        `[updateWalletWithBalanceRecalculation] Base amount: ${currentWallet.base_amount} → ${updateData.base_amount}`,
+        `[updateWalletService] Base amount: ${currentWallet.base_amount} → ${updateData.base_amount}`,
       );
       console.log(
-        `[updateWalletWithBalanceRecalculation] Current balance: ${oldCurrentBalance} → ${updateData.current_balance}`,
+        `[updateWalletService] Current balance: ${oldCurrentBalance} → ${updateData.current_balance}`,
       );
       console.log(
-        `[updateWalletWithBalanceRecalculation] Difference applied: ${baseAmountDifference}`,
+        `[updateWalletService] Difference applied: ${baseAmountDifference}`,
       );
     }
 

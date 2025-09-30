@@ -2,16 +2,16 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { FIREBASE } from "@/constants";
+import { ENV } from "@/constants";
 
 const firebaseConfig = {
-  apiKey: FIREBASE.API_KEY,
-  authDomain: FIREBASE.AUTH_DOMAIN,
-  projectId: FIREBASE.PROJECT_ID,
-  storageBucket: FIREBASE.STORAGE_BUCKET,
-  messagingSenderId: FIREBASE.MESSAGING_SENDER_ID,
-  appId: FIREBASE.APP_ID,
-  measurementId: FIREBASE.MEASUREMENT_ID,
+  apiKey: ENV.FIREBASE.API_KEY,
+  authDomain: ENV.FIREBASE.AUTH_DOMAIN,
+  projectId: ENV.FIREBASE.PROJECT_ID,
+  storageBucket: ENV.FIREBASE.STORAGE_BUCKET,
+  messagingSenderId: ENV.FIREBASE.MESSAGING_SENDER_ID,
+  appId: ENV.FIREBASE.APP_ID,
+  measurementId: ENV.FIREBASE.MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);

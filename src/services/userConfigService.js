@@ -21,7 +21,6 @@ export const createEmptyUserConfigService = async (userId) => {
 
   await setDoc(userConfigRef, {
     main_currency_code: null,
-    used_currency_codes: null,
   });
 
   console.log("Default user config created");
