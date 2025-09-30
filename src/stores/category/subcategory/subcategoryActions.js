@@ -10,11 +10,13 @@ import {
   validateSubcategoryUniqueness,
 } from "./subcategoryValidation";
 import {
-  createBaseData,
-  createUpdateData,
   handleStoreError,
   throwErrorWithToast,
-} from "../../../utils/storeHelpers";
+} from "../../../utils/store/storeError";
+import {
+  createBaseData,
+  createUpdateData,
+} from "../../../utils/store/storeData";
 import { showToast } from "../../../utils/toast";
 
 export const subcategoryActions = (set, get) => ({

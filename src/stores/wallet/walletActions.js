@@ -4,19 +4,19 @@ import {
   createWalletService,
   updateWalletService,
   deleteWalletService,
-  updateWalletWithBalanceRecalculation,
 } from "../../services/walletService";
 import { trimStrings } from "../../utils/format";
 import { convertFirestoreTimestamps } from "../../utils/type";
 import { validateWallet, validateWalletUniqueness } from "./walletValidation";
 import {
-  createBaseData,
-  createUpdateData,
   handleStoreError,
   throwErrorWithToast,
-} from "../../utils/storeHelpers";
+} from "../../utils/store/storeError";
+import { createBaseData, createUpdateData } from "../../utils/store/storeData";
 import { showToast } from "../../utils/toast";
 import useTransactionStore from "../transaction/transactionStore";
+import { currencyActions } from "../currency/currencyActions";
+import authStore from "../../stores/auth/authStore";
 
 export const walletActions = (set, get) => ({
   setCurrentUser: (userUid) => {
@@ -61,6 +61,16 @@ export const walletActions = (set, get) => ({
         loading: false,
       });
 
+      // Initialize currency rates after wallets are loaded
+      const userConfig = authStore.getState().userConfig;
+      if (userConfig?.main_currency_code) {
+        await currencyActions.initializeRates(
+          userUid,
+          activeWallets,
+          userConfig.main_currency_code,
+        );
+      }
+
       // Refresh transaction store if it has data and current user matches
       const transactionStore = useTransactionStore.getState();
       if (
@@ -99,17 +109,44 @@ export const walletActions = (set, get) => ({
       validateWallet(newWallet);
       const docRef = await createWalletService(newWallet);
 
+      const createdWallet = {
+        id: docRef.id,
+        ...newWallet,
+        created_at: new Date(),
+      };
+
       // Update local state
       set((state) => ({
-        wallets: [
-          ...state.wallets,
-          { id: docRef.id, ...newWallet, created_at: new Date() },
-        ],
-        walletsWithDeleted: [
-          ...state.walletsWithDeleted,
-          { id: docRef.id, ...newWallet, created_at: new Date() },
-        ],
+        wallets: [...state.wallets, createdWallet],
+        walletsWithDeleted: [...state.walletsWithDeleted, createdWallet],
       }));
+
+      // Handle currency rate fetching for new wallet
+      const userConfig = authStore.getState().userConfig;
+      if (userConfig?.main_currency_code) {
+        const newCurrency = createdWallet.currency_code;
+        const mainCurrency = userConfig.main_currency_code;
+
+        // Only fetch rates if:
+        // 1. New currency is different from main currency
+        // 2. New currency is not already used by other wallets
+        if (newCurrency !== mainCurrency) {
+          const existingCurrencies = wallets
+            .filter((w) => w.currency_code !== mainCurrency)
+            .map((w) => w.currency_code);
+
+          if (!existingCurrencies.includes(newCurrency)) {
+            // This is a new currency that requires rates
+            const updatedWallets = [...wallets, createdWallet];
+            await currencyActions.handleNewWallet(
+              currentUserUid,
+              wallets,
+              createdWallet,
+              mainCurrency,
+            );
+          }
+        }
+      }
 
       // Trigger cross-store update
       const transactionStore = useTransactionStore.getState();
@@ -144,10 +181,13 @@ export const walletActions = (set, get) => ({
         throwErrorWithToast("Wallet name must be unique");
       }
 
-      const { currency, ...rest } = { ...existing, ...trimmed };
+      const { id, currency, ...rest } = { ...existing, ...trimmed };
       const updateData = createUpdateData(rest, currentUserUid);
 
       validateWallet(updateData);
+
+      // Store old wallet for currency comparison
+      const oldWallet = { ...existing };
 
       // Check if base_amount is being changed
       const isBaseAmountChanged =
@@ -156,33 +196,61 @@ export const walletActions = (set, get) => ({
 
       if (isBaseAmountChanged) {
         // Use enhanced update method that recalculates current_balance
-        await updateWalletWithBalanceRecalculation(
-          walletId,
-          updateData,
-          currentUserUid,
-        );
-
+        await updateWalletService(walletId, updateData, true);
         // Reload wallets to get the updated balances
         await get().getWallets(currentUserUid);
-
         showToast.success("Wallet updated and balance recalculated!");
       } else {
         // Regular update without balance recalculation
         await updateWalletService(walletId, updateData);
 
+        const updatedWallet = {
+          ...existing,
+          ...trimmed,
+          updated_at: new Date(),
+        };
+
         // Update local state
         set((state) => ({
           wallets: state.wallets.map((w) =>
-            w.id === walletId
-              ? { ...w, ...trimmed, updated_at: new Date() }
-              : w,
+            w.id === walletId ? updatedWallet : w,
           ),
           walletsWithDeleted: state.walletsWithDeleted.map((w) =>
-            w.id === walletId
-              ? { ...w, ...trimmed, updated_at: new Date() }
-              : w,
+            w.id === walletId ? updatedWallet : w,
           ),
         }));
+
+        // Handle currency rate fetching for wallet update
+        const userConfig = authStore.getState().userConfig;
+        if (userConfig?.main_currency_code) {
+          const oldCurrency = oldWallet.currency_code;
+          const newCurrency = updatedWallet.currency_code;
+          const mainCurrency = userConfig.main_currency_code;
+
+          // Only fetch rates if currency changed AND:
+          // 1. New currency is different from main currency
+          // 2. New currency is not already used by other wallets
+          if (oldCurrency !== newCurrency && newCurrency !== mainCurrency) {
+            const otherWallets = wallets.filter((w) => w.id !== walletId);
+            const existingCurrencies = otherWallets
+              .filter((w) => w.currency_code !== mainCurrency)
+              .map((w) => w.currency_code);
+
+            if (!existingCurrencies.includes(newCurrency)) {
+              // This is a new currency that requires rates
+              const updatedWallets = wallets.map((w) =>
+                w.id === walletId ? updatedWallet : w,
+              );
+              await currencyActions.handleWalletUpdate(
+                currentUserUid,
+                updatedWallets,
+                oldWallet,
+                updatedWallet,
+                mainCurrency,
+              );
+            }
+          }
+        }
 
         // Trigger cross-store update for regular updates too
         const transactionStore = useTransactionStore.getState();
@@ -192,7 +260,6 @@ export const walletActions = (set, get) => ({
         ) {
           transactionStore.refreshTransactionData();
         }
-
         showToast.success("Wallet updated successfully!");
       }
     } catch (e) {
@@ -220,6 +287,9 @@ export const walletActions = (set, get) => ({
       set((state) => ({
         wallets: state.wallets.filter((w) => w.id !== walletId),
       }));
+
+      // Note: No need to refetch currency rates when deleting wallet
+      // The total balance calculation will automatically handle missing wallets
 
       // Reload wallets to update walletsWithDeleted (showing soft deleted)
       await get().getWallets(currentUserUid);

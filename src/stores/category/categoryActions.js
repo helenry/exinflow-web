@@ -12,11 +12,10 @@ import {
   validateCategoryUniqueness,
 } from "./categoryValidation";
 import {
-  createBaseData,
-  createUpdateData,
   handleStoreError,
   throwErrorWithToast,
-} from "../../utils/storeHelpers";
+} from "../../utils/store/storeError";
+import { createBaseData, createUpdateData } from "../../utils/store/storeData";
 import { showToast } from "../../utils/toast";
 import useTransactionStore from "../transaction/transactionStore";
 
@@ -146,10 +145,9 @@ export const categoryActions = (set, get) => ({
         throwErrorWithToast("Category name must be unique");
       }
 
-      const updateData = createUpdateData(
-        { ...existing, ...trimmed },
-        currentUserUid,
-      );
+      const { id, subcategories, ...rest } = { ...existing, ...trimmed };
+
+      const updateData = createUpdateData(rest, currentUserUid);
 
       validateCategory(updateData);
       await updateCategoryService(categoryId, updateData);

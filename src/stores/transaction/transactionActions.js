@@ -3,19 +3,18 @@ import { validateTransaction } from "./transactionValidation";
 
 import {
   getTransactionsService,
-  updateTransactionWithBalanceUpdate,
-  deleteTransactionWithBalanceUpdate,
-  createTransactionWithBalanceUpdate,
+  updateTransactionService,
+  deleteTransactionService,
+  createTransactionService,
 } from "../../services/transactionService";
 
 import { trimStrings } from "../../utils/format";
 import { convertFirestoreTimestamps } from "../../utils/type";
 import {
-  createBaseData,
-  createUpdateData,
   handleStoreError,
   throwErrorWithToast,
-} from "../../utils/storeHelpers";
+} from "../../utils/store/storeError";
+import { createBaseData, createUpdateData } from "../../utils/store/storeData";
 import { showToast } from "../../utils/toast";
 import useWalletStore from "../wallet/walletStore";
 import useCategoryStore from "../category/categoryStore";
@@ -173,13 +172,16 @@ export const transactionActions = (set, get) => ({
       validateTransaction(newTransaction);
 
       // Use atomic transaction creation with balance update
-      await createTransactionWithBalanceUpdate(newTransaction);
+      await createTransactionService(newTransaction);
 
       // Refresh wallet store to get updated balances
       await useWalletStore.getState().getWallets(currentUserUid);
 
       // Reload transaction data with fresh wallet references
       await get().getTransactions(currentUserUid);
+
+      // Note: No need to refetch currency rates when creating transactions
+      // The total balance calculation will use existing rates and automatically recount
 
       showToast.success("Transaction created successfully!");
     } catch (e) {
@@ -209,6 +211,7 @@ export const transactionActions = (set, get) => ({
       const trimmed = trimStrings(updatedData);
 
       const {
+        id,
         source_wallet,
         destination_wallet,
         category,
@@ -231,7 +234,7 @@ export const transactionActions = (set, get) => ({
       };
 
       // Use atomic transaction update with balance adjustment
-      await updateTransactionWithBalanceUpdate(
+      await updateTransactionService(
         transactionId,
         oldTransactionData,
         updateData,
@@ -242,6 +245,9 @@ export const transactionActions = (set, get) => ({
 
       // Reload transactions to get enhanced data with updated balances
       await get().getTransactions(currentUserUid);
+
+      // Note: No need to refetch currency rates when updating transactions
+      // The total balance calculation will use existing rates and automatically recount
 
       showToast.success("Transaction updated successfully!");
     } catch (e) {
@@ -275,13 +281,16 @@ export const transactionActions = (set, get) => ({
       };
 
       // Use atomic transaction deletion with balance restoration
-      await deleteTransactionWithBalanceUpdate(transactionId, transactionData);
+      await deleteTransactionService(transactionId, transactionData);
 
       // Refresh wallet store to get updated balances
       await useWalletStore.getState().getWallets(currentUserUid);
 
       // Reload transactions to reflect updated balances
       await get().getTransactions(currentUserUid);
+
+      // Note: No need to refetch currency rates when deleting transactions
+      // The total balance calculation will use existing rates and automatically recount
 
       showToast.success("Transaction deleted successfully!");
     } catch (e) {
