@@ -1,219 +1,286 @@
-import { currencyStore } from "./currencyStore";
+// stores/currency/currencyActions.js
 import { currencyService } from "../../services/currencyService";
-import toast from "react-hot-toast";
+import { showToast } from "../../utils/toast";
+import { handleStoreError } from "../../utils/store/storeError";
 
-/**
- * Currency actions for managing exchange rates
- */
-export const currencyActions = {
-  /**
-   * Get unique currencies from wallets (excluding main currency)
-   * @param {Array} wallets - Array of wallet objects
-   * @param {string} mainCurrency - User's main currency
-   * @returns {Array<string>} Array of unique currencies
-   */
-  getUniqueCurrencies(wallets, mainCurrency) {
+export const currencyActions = (set, get) => ({
+  // Setters
+  setRates: (ratesData) => {
+    set({
+      rates: ratesData,
+      lastFetchTime: Date.now(),
+      error: null,
+    });
+  },
+
+  setLoading: (loading) => {
+    set({ loading });
+  },
+
+  setError: (error) => {
+    set({ error });
+  },
+
+  clearError: () => {
+    set({ error: null });
+  },
+
+  clearRates: () => {
+    set({
+      rates: null,
+      lastFetchTime: null,
+      error: null,
+    });
+  },
+
+  // Getters
+  getRates: () => {
+    return get().rates;
+  },
+
+  getRate: (currencyCode) => {
+    const { rates } = get();
+    return rates?.rates?.[currencyCode] || null;
+  },
+
+  getBaseCurrency: () => {
+    const { rates } = get();
+    return rates?.base_currency || null;
+  },
+
+  isLoading: () => {
+    return get().loading;
+  },
+
+  hasError: () => {
+    return get().error !== null;
+  },
+
+  getError: () => {
+    return get().error;
+  },
+
+  hasRates: () => {
+    return get().rates !== null;
+  },
+
+  isRatesFromCache: () => {
+    const { rates } = get();
+    return rates?.from_cache === true;
+  },
+
+  getLastUpdated: () => {
+    const { rates } = get();
+    return rates?.last_updated_at || null;
+  },
+
+  getLastFetchTime: () => {
+    return get().lastFetchTime;
+  },
+
+  isStale: () => {
+    const { rates } = get();
+    if (!rates?.last_updated_at) {
+      return true;
+    }
+
+    const lastUpdated = new Date(rates.last_updated_at);
+    const now = new Date();
+    const ageInHours = (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
+    
+    return ageInHours >= 24;
+  },
+
+  hasAllCurrencies: (requiredCurrencies) => {
+    const { rates } = get();
+    if (!rates?.rates) {
+      return false;
+    }
+
+    const availableCurrencies = Object.keys(rates.rates);
+    return requiredCurrencies.every((currency) =>
+      availableCurrencies.includes(currency)
+    );
+  },
+
+  getMissingCurrencies: (requiredCurrencies) => {
+    const { rates } = get();
+    if (!rates?.rates) {
+      return requiredCurrencies;
+    }
+
+    const availableCurrencies = Object.keys(rates.rates);
+    return requiredCurrencies.filter(
+      (currency) => !availableCurrencies.includes(currency)
+    );
+  },
+
+  // Utility Methods
+  getUniqueCurrencies: (wallets, mainCurrency) => {
     const uniqueCurrencies = [
       ...new Set(
         wallets
           .map((wallet) => wallet.currency_code)
-          .filter((currency) => currency && currency !== mainCurrency),
+          .filter((currency) => currency && currency !== mainCurrency)
       ),
     ];
 
     return uniqueCurrencies;
   },
 
-  /**
-   * Check if currency rates need to be fetched
-   * @param {Array} wallets - Array of wallet objects
-   * @param {string} mainCurrency - User's main currency
-   * @returns {boolean} True if rates are needed
-   */
-  shouldFetchRates(wallets, mainCurrency) {
-    const uniqueCurrencies = this.getUniqueCurrencies(wallets, mainCurrency);
-    const shouldFetch = uniqueCurrencies.length > 0;
-
-    return shouldFetch;
+  shouldFetchRates: (wallets, mainCurrency) => {
+    const { getUniqueCurrencies } = get();
+    const uniqueCurrencies = getUniqueCurrencies(wallets, mainCurrency);
+    return uniqueCurrencies.length > 0;
   },
 
-  /**
-   * Fetch currency rates and update store
-   * @param {string} userId - User ID
-   * @param {Array} wallets - Array of wallet objects
-   * @param {string} mainCurrency - User's main currency
-   * @param {boolean} forceRefresh - Force refresh from API
-   * @returns {Promise<void>}
-   */
-  async fetchRates(userId, wallets, mainCurrency, forceRefresh = false) {
-    try {
-      currencyStore.getState().setLoading(true);
-      currencyStore.getState().clearError();
+  needsRefresh: () => {
+    const { rates } = get();
 
+    if (!rates || !rates.last_updated_at) {
+      return true;
+    }
+
+    const lastUpdated = new Date(rates.last_updated_at);
+    const now = new Date();
+    const ageInHours = (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
+
+    // Refresh if older than 24 hours
+    return ageInHours >= 24;
+  },
+
+  isNewCurrencyRequiringRates: (newCurrency, mainCurrency) => {
+    if (newCurrency === mainCurrency) {
+      return false;
+    }
+
+    const { rates } = get();
+    const currentRates = rates?.rates || {};
+
+    return !currentRates.hasOwnProperty(newCurrency);
+  },
+
+  // Main Actions
+  fetchRates: async (userId, wallets, mainCurrency, forceRefresh = false) => {
+    const { shouldFetchRates, getUniqueCurrencies } = get();
+
+    set({ loading: true, error: null });
+
+    try {
       // Check if we need to fetch rates
-      if (!this.shouldFetchRates(wallets, mainCurrency)) {
-        currencyStore.getState().setRates({
-          base_currency: mainCurrency,
-          rates: {},
-          last_updated_at: new Date().toISOString(),
-          from_cache: true,
+      if (!shouldFetchRates(wallets, mainCurrency)) {
+        set({
+          rates: {
+            base_currency: mainCurrency,
+            rates: {},
+            last_updated_at: new Date().toISOString(),
+            from_cache: true,
+          },
+          lastFetchTime: Date.now(),
+          loading: false,
         });
         return;
       }
 
-      const uniqueCurrencies = this.getUniqueCurrencies(wallets, mainCurrency);
+      const uniqueCurrencies = getUniqueCurrencies(wallets, mainCurrency);
 
       const ratesData = await currencyService.getRates(
         userId,
         mainCurrency,
         uniqueCurrencies,
-        forceRefresh,
+        forceRefresh
       );
 
-      currencyStore.getState().setRates(ratesData);
+      set({
+        rates: ratesData,
+        lastFetchTime: Date.now(),
+        loading: false,
+        error: null,
+      });
 
       if (!forceRefresh && !ratesData.from_cache) {
-        toast.success("Exchange rates updated successfully");
+        showToast.success("Exchange rates updated successfully");
       } else if (forceRefresh) {
-        toast.success("Exchange rates refreshed");
+        showToast.success("Exchange rates refreshed");
       }
-    } catch (error) {
-      currencyStore.getState().setError(error.message);
-
-      if (forceRefresh) {
-        toast.error("Failed to refresh exchange rates");
-      } else {
-        toast.error("Failed to fetch exchange rates");
-      }
-    } finally {
-      currencyStore.getState().setLoading(false);
+    } catch (e) {
+      const errorMessage = forceRefresh
+        ? "Failed to refresh exchange rates"
+        : "Failed to fetch exchange rates";
+      
+      handleStoreError(e, errorMessage, set);
+      throw e;
     }
   },
 
-  /**
-   * Force refresh currency rates
-   * @param {string} userId - User ID
-   * @param {Array} wallets - Array of wallet objects
-   * @param {string} mainCurrency - User's main currency
-   * @returns {Promise<void>}
-   */
-  async refreshRates(userId, wallets, mainCurrency) {
-    await this.fetchRates(userId, wallets, mainCurrency, true);
+  refreshRates: async (userId, wallets, mainCurrency) => {
+    const { fetchRates } = get();
+    await fetchRates(userId, wallets, mainCurrency, true);
   },
 
-  /**
-   * Check if rates are stale and need refresh
-   * @returns {boolean} True if rates need refresh
-   */
-  needsRefresh() {
-    const state = currencyStore.getState().getState();
-
-    if (!state.rates || !state.rates.last_updated_at) {
-      return true;
+  initializeRates: async (userId, wallets, mainCurrency) => {
+    const { shouldFetchRates, fetchRates } = get();
+    
+    if (shouldFetchRates(wallets, mainCurrency)) {
+      await fetchRates(userId, wallets, mainCurrency, false);
     }
-
-    const lastUpdated = new Date(state.rates.last_updated_at);
-    const now = new Date();
-    const ageInHours =
-      (now.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60);
-
-    const needs = ageInHours >= 24;
-
-    // Refresh if older than 24 hours
-    return needs;
   },
 
-  /**
-   * Check if a new currency requires rate fetching
-   * @param {string} newCurrency - The new currency code
-   * @param {string} mainCurrency - User's main currency
-   * @returns {boolean} True if new currency needs rates
-   */
-  isNewCurrencyRequiringRates(newCurrency, mainCurrency) {
-    if (newCurrency === mainCurrency) {
-      return false;
-    }
-
-    const state = currencyStore.getState().getState();
-    const currentRates = state.rates?.rates || {};
-
-    const needsFetch = !currentRates.hasOwnProperty(newCurrency);
-
-    return needsFetch;
-  },
-
-  /**
-   * Handle new wallet creation with currency check
-   * @param {string} userId - User ID
-   * @param {Array} wallets - Current wallets array
-   * @param {Object} newWallet - New wallet object
-   * @param {string} mainCurrency - User's main currency
-   * @returns {Promise<void>}
-   */
-  async handleNewWallet(userId, wallets, newWallet, mainCurrency) {
+  handleNewWallet: async (userId, wallets, newWallet, mainCurrency) => {
+    const { isNewCurrencyRequiringRates, fetchRates } = get();
     const allWallets = [...wallets, newWallet];
 
     // Check if the new wallet introduces a currency we don't have rates for
-    if (
-      this.isNewCurrencyRequiringRates(newWallet.currency_code, mainCurrency)
-    ) {
-      await this.fetchRates(userId, allWallets, mainCurrency, false);
+    if (isNewCurrencyRequiringRates(newWallet.currency_code, mainCurrency)) {
+      await fetchRates(userId, allWallets, mainCurrency, false);
     }
   },
 
-  /**
-   * Handle wallet update with currency check
-   * @param {string} userId - User ID
-   * @param {Array} wallets - Current wallets array (already updated)
-   * @param {Object} oldWallet - Previous wallet state
-   * @param {Object} updatedWallet - Updated wallet object
-   * @param {string} mainCurrency - User's main currency
-   * @returns {Promise<void>}
-   */
-  async handleWalletUpdate(
+  handleWalletUpdate: async (
     userId,
     wallets,
     oldWallet,
     updatedWallet,
-    mainCurrency,
-  ) {
+    mainCurrency
+  ) => {
+    const { isNewCurrencyRequiringRates, fetchRates } = get();
     const oldCurrency = oldWallet.currency_code;
     const newCurrency = updatedWallet.currency_code;
 
     // If currency changed, we might need to fetch new rates
     if (oldCurrency !== newCurrency) {
-      if (this.isNewCurrencyRequiringRates(newCurrency, mainCurrency)) {
+      if (isNewCurrencyRequiringRates(newCurrency, mainCurrency)) {
         // The 'wallets' array passed here should be the final array containing the updated wallet
-        await this.fetchRates(userId, wallets, mainCurrency, false);
+        await fetchRates(userId, wallets, mainCurrency, false);
       }
     }
   },
 
-  /**
-   * Initialize currency rates on app start
-   * @param {string} userId - User ID
-   * @param {Array} wallets - Array of wallet objects
-   * @param {string} mainCurrency - User's main currency
-   * @returns {Promise<void>}
-   */
-  async initializeRates(userId, wallets, mainCurrency) {
-    if (this.shouldFetchRates(wallets, mainCurrency)) {
-      await this.fetchRates(userId, wallets, mainCurrency, false);
+  clearCache: async (userId) => {
+    set({ error: null });
+
+    try {
+      await currencyService.clearCache(userId);
+      
+      set({
+        rates: null,
+        lastFetchTime: null,
+        error: null,
+      });
+
+      showToast.success("Currency cache cleared");
+    } catch (e) {
+      handleStoreError(e, "Failed to clear currency cache", set);
+      throw e;
     }
   },
 
-  /**
-   * Clear currency cache
-   * @param {string} userId - User ID
-   * @returns {Promise<void>}
-   */
-  async clearCache(userId) {
-    try {
-      await currencyService.clearCache(userId);
-      currencyStore.getState().clearRates();
-      toast.success("Currency cache cleared");
-    } catch (error) {
-      toast.error("Failed to clear currency cache", error);
-    }
+  reset: () => {
+    set({
+      rates: null,
+      loading: false,
+      error: null,
+      lastFetchTime: null,
+    });
   },
-};
+});

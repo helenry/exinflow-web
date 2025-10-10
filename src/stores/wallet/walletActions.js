@@ -15,7 +15,7 @@ import {
 import { createBaseData, createUpdateData } from "../../utils/store/storeData";
 import { showToast } from "../../utils/toast";
 import useTransactionStore from "../transaction/transactionStore";
-import { currencyActions } from "../currency/currencyActions";
+import useCurrencyStore from "../currency/currencyStore";
 import authStore from "../../stores/auth/authStore";
 
 export const walletActions = (set, get) => ({
@@ -64,10 +64,11 @@ export const walletActions = (set, get) => ({
       // Initialize currency rates after wallets are loaded
       const userConfig = authStore.getState().userConfig;
       if (userConfig?.main_currency_code) {
-        await currencyActions.initializeRates(
+        const currencyStore = useCurrencyStore.getState();
+        await currencyStore.initializeRates(
           userUid,
           activeWallets,
-          userConfig.main_currency_code,
+          userConfig.main_currency_code
         );
       }
 
@@ -103,7 +104,7 @@ export const walletActions = (set, get) => ({
           // Set current_balance equal to base_amount for new wallets (no transactions yet)
           current_balance: trimmed.base_amount || 0,
         },
-        currentUserUid,
+        currentUserUid
       );
 
       validateWallet(newWallet);
@@ -137,12 +138,12 @@ export const walletActions = (set, get) => ({
 
           if (!existingCurrencies.includes(newCurrency)) {
             // This is a new currency that requires rates
-            const updatedWallets = [...wallets, createdWallet];
-            await currencyActions.handleNewWallet(
+            const currencyStore = useCurrencyStore.getState();
+            await currencyStore.handleNewWallet(
               currentUserUid,
               wallets,
               createdWallet,
-              mainCurrency,
+              mainCurrency
             );
           }
         }
@@ -213,10 +214,10 @@ export const walletActions = (set, get) => ({
         // Update local state
         set((state) => ({
           wallets: state.wallets.map((w) =>
-            w.id === walletId ? updatedWallet : w,
+            w.id === walletId ? updatedWallet : w
           ),
           walletsWithDeleted: state.walletsWithDeleted.map((w) =>
-            w.id === walletId ? updatedWallet : w,
+            w.id === walletId ? updatedWallet : w
           ),
         }));
 
@@ -239,14 +240,15 @@ export const walletActions = (set, get) => ({
             if (!existingCurrencies.includes(newCurrency)) {
               // This is a new currency that requires rates
               const updatedWallets = wallets.map((w) =>
-                w.id === walletId ? updatedWallet : w,
+                w.id === walletId ? updatedWallet : w
               );
-              await currencyActions.handleWalletUpdate(
+              const currencyStore = useCurrencyStore.getState();
+              await currencyStore.handleWalletUpdate(
                 currentUserUid,
                 updatedWallets,
                 oldWallet,
                 updatedWallet,
-                mainCurrency,
+                mainCurrency
               );
             }
           }

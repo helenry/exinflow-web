@@ -1,7 +1,6 @@
 // components/menu/dashboard/TotalBalanceCard.jsx
 import { useTotalBalance } from "../../../hooks/useTotalBalance";
-import { currencyActions } from "../../../stores/currency/currencyActions";
-import walletStore from "../../../stores/wallet/walletStore";
+import useCurrencyStore from "../../../stores/currency/currencyStore";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import CircleButton from "../../ui/buttons/CircleButton";
 import Tooltip from "../../ui/Tooltip";
@@ -15,6 +14,7 @@ export const TotalBalanceCard = () => {
   const { currentUser } = useAuthStore();
   const { userConfig } = useUserConfigStore();
   const { wallets, setCurrentUser } = useWalletStore();
+  const { initializeRates, refreshRates } = useCurrencyStore();
 
   const mainCurrency = userConfig?.main_currency_code;
 
@@ -38,19 +38,15 @@ export const TotalBalanceCard = () => {
   useEffect(() => {
     // Initialize currency rates when wallets are loaded
     if (currentUser?.uid && wallets.length > 0 && mainCurrency) {
-      currencyActions.initializeRates(currentUser.uid, wallets, mainCurrency);
+      initializeRates(currentUser.uid, wallets, mainCurrency);
     }
-  }, [currentUser?.uid, wallets.length, mainCurrency]); // Only re-run when these change
+  }, [currentUser?.uid, wallets.length, mainCurrency, initializeRates]);
 
   const handleRefreshRates = async () => {
     if (!currentUser?.uid) return;
 
     try {
-      await currencyActions.refreshRates(
-        currentUser.uid,
-        wallets,
-        mainCurrency,
-      );
+      await refreshRates(currentUser.uid, wallets, mainCurrency);
     } catch (error) {
       console.error("Error refreshing rates:", error);
     }

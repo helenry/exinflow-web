@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { convertCurrency } from "../utils/currencyConverter";
-import { currencyStore } from "../stores/currency/currencyStore";
+import useCurrencyStore from "../stores/currency/currencyStore";
 
 /**
  * Custom hook to calculate total balance across all wallets
@@ -12,9 +12,9 @@ import { currencyStore } from "../stores/currency/currencyStore";
  */
 export const useTotalBalance = (wallets = [], mainCurrency) => {
   // Subscribe to currency store
-  const currencyRates = currencyStore((state) => state.rates);
-  const isLoadingRates = currencyStore((state) => state.loading);
-  const ratesError = currencyStore((state) => state.error);
+  const currencyRates = useCurrencyStore((state) => state.rates);
+  const isLoadingRates = useCurrencyStore((state) => state.loading);
+  const ratesError = useCurrencyStore((state) => state.error);
 
   const totalBalanceData = useMemo(() => {
     if (!wallets || wallets.length === 0) {
